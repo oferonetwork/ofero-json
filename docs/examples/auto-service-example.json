@@ -1,0 +1,275 @@
+{
+	"language": "en",
+	"availableLanguages": ["en", "es"],
+	"domain": "expertautoservice.com",
+	"canonicalUrl": "https://expertautoservice.com/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-01-22T10:00:00Z",
+		"createdAt": "2024-06-01T10:00:00Z",
+		"updateFrequency": "monthly"
+	},
+	"organization": {
+		"legalName": "Expert Auto Service LLC",
+		"brandName": {
+			"default": "Expert Auto Service",
+			"translations": {
+				"es": "Servicio Automóvil Expert"
+			}
+		},
+		"entityType": "company",
+		"legalForm": "LLC",
+		"industry": "automotive-services",
+		"description": {
+			"default": "Complete auto service for all brands. Computerized diagnostics, mechanics, body work and painting.",
+			"translations": {
+				"es": "Servicio de automóviles completo para todas las marcas. Diagnóstico computarizado, mecánica, chapa y pintura."
+			}
+		},
+		"tagline": {
+			"default": "Professional auto service with warranty",
+			"translations": {
+				"es": "Servicio profesional de automóviles con garantía"
+			}
+		},
+		"foundedDate": "2010-05-20",
+		"employees": 8,
+		"website": "https://expertautoservice.com",
+		"contactEmail": "contact@expertautoservice.com",
+		"contactPhone": "+14085551234",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "US",
+				"registrationNumber": "C2345678",
+				"taxId": "98-7654321",
+				"vatNumber": ""
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": ["automotive-services", "car-repair", "mechanic-shop"],
+		"mccCode": "7538",
+		"primaryProducts": ["car-repair", "diagnostics", "maintenance", "body-work"],
+		"secondaryProducts": ["tire-service", "oil-change", "air-conditioning"],
+		"targetMarket": ["B2C", "B2B"],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-1",
+			"type": "headquarters",
+			"name": "Expert Auto Service - Downtown",
+			"address": {
+				"street": "456 El Camino Real",
+				"city": "San Jose",
+				"region": "CA",
+				"postalCode": "95112",
+				"country": "US"
+			},
+			"coordinates": {
+				"latitude": 37.3382,
+				"longitude": -121.8863
+			},
+			"businessHours": {
+				"monday": "08:00-18:00",
+				"tuesday": "08:00-18:00",
+				"wednesday": "08:00-18:00",
+				"thursday": "08:00-18:00",
+				"friday": "08:00-18:00",
+				"saturday": "09:00-14:00",
+				"sunday": "Closed",
+				"timezone": "America/Los_Angeles"
+			},
+			"contacts": [
+				{
+					"name": "Mike Johnson",
+					"role": "Service Manager",
+					"email": "mike@expertautoservice.com",
+					"phone": "+14085551234",
+					"languages": ["en", "es"],
+					"public": true
+				}
+			]
+		}
+	],
+	"catalog": {
+		"defaultCurrency": "USD",
+		"services": [
+			{
+				"id": "diag-computer",
+				"name": {
+					"default": "Computerized diagnostics"
+				},
+				"description": {
+					"default": "Error reading and clearing, sensor check, electrical system testing"
+				},
+				"category": "diagnostics",
+				"price": 100,
+				"priceUnit": "fixed",
+				"duration": "30 min",
+				"bookingRequired": false,
+				"available": true
+			},
+			{
+				"id": "oil-change",
+				"name": {
+					"default": "Oil and filter change"
+				},
+				"description": {
+					"default": "Engine oil change, oil filter, level check. Price without oil and filter."
+				},
+				"category": "oil-change",
+				"price": 80,
+				"priceUnit": "fixed",
+				"duration": "30 min",
+				"bookingRequired": false,
+				"warranty": "30 days",
+				"available": true
+			},
+			{
+				"id": "brake-pads",
+				"name": {
+					"default": "Brake pad replacement"
+				},
+				"description": {
+					"default": "Front or rear brake pad replacement. Labor only, parts not included."
+				},
+				"category": "brakes",
+				"priceFrom": 100,
+				"priceTo": 200,
+				"priceUnit": "fixed",
+				"duration": "1-2 hours",
+				"bookingRequired": true,
+				"warranty": "6 months or 10,000 km",
+				"available": true
+			},
+			{
+				"id": "timing-belt",
+				"name": {
+					"default": "Timing belt kit replacement"
+				},
+				"description": {
+					"default": "Belt, rollers, water pump replacement. Price varies by model."
+				},
+				"category": "engine",
+				"priceFrom": 400,
+				"priceTo": 1200,
+				"priceUnit": "quote",
+				"duration": "4-8 hours",
+				"bookingRequired": true,
+				"warranty": "1 year or 30,000 km",
+				"available": true
+			},
+			{
+				"id": "ac-recharge",
+				"name": {
+					"default": "A/C refrigerant recharge"
+				},
+				"description": {
+					"default": "Leak check, evacuation, R134a or R1234yf refrigerant recharge"
+				},
+				"category": "air-conditioning",
+				"priceFrom": 150,
+				"priceTo": 300,
+				"priceUnit": "fixed",
+				"duration": "1 hour",
+				"bookingRequired": true,
+				"warranty": "3 months",
+				"available": true
+			},
+			{
+				"id": "tire-change",
+				"name": {
+					"default": "Tire change (4 wheels)"
+				},
+				"description": {
+					"default": "Dismounting, mounting, balancing for 4 wheels"
+				},
+				"category": "tires",
+				"price": 120,
+				"priceUnit": "fixed",
+				"duration": "45 min",
+				"bookingRequired": false,
+				"available": true
+			},
+			{
+				"id": "itp",
+				"name": {
+					"default": "Technical inspection preparation"
+				},
+				"description": {
+					"default": "Complete check and adjustments for passing technical inspection"
+				},
+				"category": "inspection",
+				"price": 150,
+				"priceUnit": "fixed",
+				"duration": "2 hours",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "body-repair",
+				"name": {
+					"default": "Body work and painting"
+				},
+				"description": {
+					"default": "Body repairs, dent removal, painting. Price on request."
+				},
+				"category": "body-work",
+				"priceUnit": "quote",
+				"duration": "2-7 days",
+				"bookingRequired": true,
+				"warranty": "2 years",
+				"available": true
+			}
+		],
+		"priceListUrl": "https://expertautoservice.com/pricing.pdf"
+	},
+	"certificates": [
+		{
+			"type": "ASE",
+			"name": "ASE Certified Master Technician",
+			"issuer": "National Institute for Automotive Service Excellence",
+			"certificateNumber": "ASE-A123456",
+			"validFrom": "2024-01-01",
+			"validTo": "2026-12-31",
+			"description": "ASE Master Automobile Technician certification"
+		}
+	],
+	"communications": {
+		"social": {
+			"facebook": "https://facebook.com/expertautoservice"
+		},
+		"messaging": {
+			"whatsapp": {
+				"number": "+14085551234"
+			}
+		},
+		"support": {
+			"email": "contact@expertautoservice.com",
+			"phone": "+14085551234",
+			"languages": ["en", "es"]
+		}
+	},
+	"platformAccounts": {
+		"google": {
+			"businessProfileId": "ChIJyyyyyy"
+		}
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"contentNotes": "Auto service in San Jose, CA. Appointments via phone or WhatsApp. Warranty on all work."
+	},
+	"keywords": {
+		"default": "auto service, car repair, oil change, brakes, timing belt, inspection, body work, painting, San Jose",
+		"translations": {
+			"es": "servicio auto, reparación auto, cambio aceite, frenos, correa distribución, inspección, chapa, pintura, San Jose"
+		}
+	}
+}

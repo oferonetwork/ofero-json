@@ -1,0 +1,96 @@
+{
+  "language": "en",
+  "domain": "globalfashion.example.com",
+  "canonicalUrl": "https://globalfashion.example.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "1.0.0",
+    "schemaVersion": "ofero-metadata-1.0",
+    "lastUpdated": "2025-01-15T10:00:00Z",
+    "createdAt": "2025-01-15T10:00:00Z"
+  },
+  "organization": {
+    "legalName": "Global Fashion Boutique LLC",
+    "brandName": "GlobalFashion",
+    "entityType": "company",
+    "legalForm": "LLC",
+    "description": "Premium fashion retailer with global online presence",
+    "tagline": "Style that speaks to the world",
+    "website": "https://globalfashion.example.com",
+    "contactEmail": "contact@globalfashion.example.com",
+    "contactPhone": "+14155551234",
+    "identifiers": {
+      "global": {},
+      "primaryIncorporation": {
+        "country": "US",
+        "registrationNumber": "123456789",
+        "taxId": "12-3456789",
+        "vatNumber": ""
+      },
+      "perCountry": []
+    }
+  },
+  "businessClassification": {
+    "industry": ["retail", "ecommerce", "fashion"],
+    "mccCode": "5651",
+    "primaryProducts": ["clothing", "accessories", "footwear"],
+    "targetMarket": ["B2C"],
+    "operationalStatus": "active"
+  },
+  "platformAccounts": {
+    "facebook": {
+      "pageId": "globalfashion",
+      "businessId": "987654321"
+    },
+    "instagram": {
+      "username": "globalfashion",
+      "businessAccountId": "123456789"
+    },
+    "google": {
+      "businessProfileId": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "merchantCenterId": "456789",
+      "analyticsId": "G-XYZ789ABC"
+    },
+    "linkedin": {
+      "companyId": "7654321",
+      "pageUrl": "https://linkedin.com/company/globalfashion"
+    },
+    "x": {
+      "handle": "@GlobalFashion",
+      "userId": "98765432"
+    },
+    "tiktok": {
+      "username": "globalfashion",
+      "verifiedBadge": true
+    }
+  },
+  "communications": {
+    "social": {
+      "website": "https://globalfashion.example.com",
+      "email": "hello@globalfashion.example.com",
+      "instagram": "https://instagram.com/globalfashion",
+      "facebook": "https://facebook.com/globalfashion",
+      "tiktok": "https://tiktok.com/@globalfashion",
+      "x": "https://twitter.com/GlobalFashion",
+      "linkedin": "https://linkedin.com/company/globalfashion",
+      "pinterest": "https://pinterest.com/globalfashion",
+      "youtube": "https://youtube.com/@globalfashion"
+    },
+    "support": {
+      "email": "support@globalfashion.example.com",
+      "phone": "+14155559999",
+      "languages": ["en", "es", "fr"]
+    }
+  },
+  "brandAssets": {
+    "logos": {
+      "primary": {
+        "svg": "https://globalfashion.example.com/assets/logo.svg",
+        "png": "https://globalfashion.example.com/assets/logo-1024.png"
+      },
+      "icon": {
+        "png": "https://globalfashion.example.com/assets/icon-512.png",
+        "ico": "https://globalfashion.example.com/favicon.ico"
+      }
+    }
+  }
+}

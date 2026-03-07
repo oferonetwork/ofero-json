@@ -1,0 +1,206 @@
+{
+  "language": "en",
+  "domain": "defiprotocol.xyz",
+  "canonicalUrl": "https://defiprotocol.xyz/.well-known/ofero.json",
+  "metadata": {
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-1.0",
+    "lastUpdated": "2025-01-15T16:00:00Z",
+    "createdAt": "2024-06-01T08:00:00Z",
+    "updateFrequency": "weekly"
+  },
+  "organization": {
+    "legalName": "DeFi Protocol Foundation",
+    "brandName": "DeFiProtocol",
+    "entityType": "protocol",
+    "legalForm": "Foundation",
+    "description": "Decentralized lending protocol enabling permissionless borrowing and lending of digital assets",
+    "tagline": "Decentralized lending for the next generation of finance",
+    "website": "https://defiprotocol.xyz",
+    "contactEmail": "team@defiprotocol.xyz",
+    "contactPhone": "+41445551234",
+    "foundedDate": "2023-03-01",
+    "identifiers": {
+      "global": {},
+      "primaryIncorporation": {
+        "country": "CH",
+        "registrationNumber": "CHE-123.456.789",
+        "taxId": "",
+        "vatNumber": ""
+      },
+      "perCountry": []
+    }
+  },
+  "businessClassification": {
+    "industry": ["fintech", "blockchain", "defi", "defi-lending"],
+    "mccCode": "6211",
+    "primaryProducts": ["lending-protocol", "yield-farming", "liquidity-pools"],
+    "targetMarket": ["C2C", "B2C"],
+    "operationalStatus": "active"
+  },
+  "platformAccounts": {
+    "x": {
+      "handle": "@DeFiProtocol",
+      "userId": "1234567890"
+    },
+    "github": {
+      "organization": "defi-protocol",
+      "repository": "https://github.com/defi-protocol/core"
+    },
+    "discord": {
+      "serverId": "123456789012345678",
+      "inviteUrl": "https://discord.gg/defiprotocol"
+    },
+    "telegram": {
+      "channel": "https://t.me/defiprotocol"
+    }
+  },
+  "wallets": [
+    {
+      "blockchain": "ethereum",
+      "network": "mainnet",
+      "address": "0x1234567890123456789012345678901234567890",
+      "purpose": "treasury",
+      "proofUrl": "https://defiprotocol.xyz/proofs/treasury-wallet.json"
+    },
+    {
+      "blockchain": "ethereum",
+      "network": "mainnet",
+      "address": "0x0987654321098765432109876543210987654321",
+      "purpose": "governance",
+      "proofUrl": "https://defiprotocol.xyz/proofs/governance-wallet.json"
+    },
+    {
+      "blockchain": "polygon",
+      "network": "mainnet",
+      "address": "0xABCDEF1234567890ABCDEF1234567890ABCDEF12",
+      "purpose": "protocol",
+      "proofUrl": "https://defiprotocol.xyz/proofs/polygon-protocol.json"
+    }
+  ],
+  "tokenomics": {
+    "token": {
+      "name": "DeFi Protocol Token",
+      "symbol": "DEFI",
+      "decimals": 18,
+      "totalSupply": "100000000",
+      "contracts": [
+        {
+          "blockchain": "ethereum",
+          "network": "mainnet",
+          "address": "0xDEFI1111222233334444555566667777888899990",
+          "standard": "ERC-20"
+        },
+        {
+          "blockchain": "polygon",
+          "network": "mainnet",
+          "address": "0xDEFI9999888877776666555544443333222211110",
+          "standard": "ERC-20"
+        }
+      ]
+    },
+    "distribution": {
+      "team": 20,
+      "investors": 15,
+      "community": 40,
+      "treasury": 15,
+      "ecosystem": 10
+    },
+    "vestingSchedule": {
+      "team": "4 years linear vesting with 1 year cliff",
+      "investors": "3 years linear vesting with 6 month cliff"
+    }
+  },
+  "team": {
+    "leadership": [
+      {
+        "name": "Alice Chen",
+        "role": "CEO & Co-Founder",
+        "bio": "Former blockchain engineer at major DeFi protocols",
+        "linkedin": "https://linkedin.com/in/alicechen",
+        "twitter": "https://twitter.com/alicechen"
+      },
+      {
+        "name": "Bob Martinez",
+        "role": "CTO & Co-Founder",
+        "bio": "PhD in cryptography, smart contract security expert",
+        "linkedin": "https://linkedin.com/in/bobmartinez",
+        "twitter": "https://twitter.com/bobmartinez"
+      }
+    ],
+    "advisors": [
+      {
+        "name": "Dr. Sarah Williams",
+        "role": "DeFi Strategy Advisor",
+        "bio": "Professor of Blockchain Economics at MIT"
+      }
+    ]
+  },
+  "apis": {
+    "rpc": "https://api.defiprotocol.xyz/v1/rpc",
+    "graphql": "https://api.defiprotocol.xyz/graphql",
+    "documentation": "https://docs.defiprotocol.xyz"
+  },
+  "security": {
+    "securityEmail": "security@defiprotocol.xyz",
+    "bugBountyUrl": "https://defiprotocol.xyz/bug-bounty",
+    "audits": [
+      {
+        "auditor": "CertiK",
+        "date": "2024-08-15",
+        "reportUrl": "https://defiprotocol.xyz/audits/certik-2024.pdf",
+        "scope": "Smart Contract Security Audit"
+      },
+      {
+        "auditor": "Trail of Bits",
+        "date": "2024-09-20",
+        "reportUrl": "https://defiprotocol.xyz/audits/trailofbits-2024.pdf",
+        "scope": "Protocol Security Review"
+      }
+    ]
+  },
+  "verification": {
+    "domainProof": {
+      "method": "dns-txt",
+      "record": "_ofero-verification=abc123def456"
+    }
+  },
+  "communications": {
+    "social": {
+      "twitter": "https://twitter.com/DeFiProtocol",
+      "discord": "https://discord.gg/defiprotocol",
+      "telegram": "https://t.me/defiprotocol",
+      "github": "https://github.com/defi-protocol"
+    },
+    "support": {
+      "email": "support@defiprotocol.xyz",
+      "url": "https://defiprotocol.xyz/support"
+    }
+  },
+  "roadmap": {
+    "items": [
+      {
+        "quarter": "Q1 2025",
+        "title": "Multi-Chain Expansion",
+        "description": "Launch on Arbitrum and Optimism networks",
+        "status": "in-progress"
+      },
+      {
+        "quarter": "Q2 2025",
+        "title": "Governance V2",
+        "description": "Implement on-chain governance with quadratic voting",
+        "status": "planned"
+      },
+      {
+        "quarter": "Q3 2025",
+        "title": "Cross-Chain Lending",
+        "description": "Enable cross-chain borrowing and lending via LayerZero",
+        "status": "planned"
+      }
+    ]
+  },
+  "ai": {
+    "allowIndexing": true,
+    "preferredSummary": "DeFiProtocol is a decentralized lending protocol enabling permissionless borrowing and lending of digital assets across multiple blockchains."
+  }
+}

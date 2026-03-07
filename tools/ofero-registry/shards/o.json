@@ -1,0 +1,36 @@
+{
+  "shard": "o",
+  "description": "Partners with domains starting with 'o'",
+  "lastUpdated": "2026-01-27T12:00:00Z",
+  "count": 2,
+  "partners": {
+    "ofero.me": {
+      "verified": true,
+      "verifiedAt": "2024-01-01T00:00:00Z",
+      "license": {
+        "tier": "enterprise",
+        "lifetime": true,
+        "expiresAt": null
+      },
+      "organization": {
+        "name": "Ofero Network",
+        "country": "RO"
+      },
+      "oferoJsonUrl": "https://ofero.me/.well-known/ofero.json"
+    },
+    "ofero.network": {
+      "verified": true,
+      "verifiedAt": "2024-01-01T00:00:00Z",
+      "license": {
+        "tier": "enterprise",
+        "lifetime": true,
+        "expiresAt": null
+      },
+      "organization": {
+        "name": "Ofero Network",
+        "country": "RO"
+      },
+      "oferoJsonUrl": "https://ofero.network/.well-known/ofero.json"
+    }
+  }
+}

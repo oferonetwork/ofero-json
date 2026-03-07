@@ -1,0 +1,134 @@
+{
+  "language": "en",
+  "domain": "techcorp.example.com",
+  "canonicalUrl": "https://techcorp.example.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "1.2.3",
+    "schemaVersion": "ofero-metadata-1.0",
+    "lastUpdated": "2025-01-15T14:30:00Z",
+    "createdAt": "2025-01-10T09:00:00Z",
+    "createdBy": "ofero-cli/1.2.0",
+    "updatedBy": "manual/1.0",
+    "updateFrequency": "weekly"
+  },
+  "organization": {
+    "legalName": "TechCorp Software Solutions Inc.",
+    "brandName": "TechCorp",
+    "entityType": "company",
+    "legalForm": "C-Corp",
+    "description": "Leading provider of enterprise cloud software solutions",
+    "tagline": "Empowering businesses with cutting-edge cloud technology",
+    "website": "https://techcorp.example.com",
+    "contactEmail": "contact@techcorp.example.com",
+    "contactPhone": "+14155551234",
+    "foundedDate": "2018-03-15",
+    "employees": 250,
+    "identifiers": {
+      "global": {
+        "lei": "5493001KJTIIGC8Y1R12",
+        "duns": "123456789"
+      },
+      "primaryIncorporation": {
+        "country": "US",
+        "registrationNumber": "C1234567",
+        "taxId": "12-3456789",
+        "vatNumber": ""
+      },
+      "perCountry": []
+    }
+  },
+  "businessClassification": {
+    "industry": ["technology", "software", "saas", "enterprise-saas"],
+    "mccCode": "5734",
+    "naicsCode": "518210",
+    "sicCode": "7372",
+    "primaryProducts": ["enterprise-software", "cloud-platform", "data-analytics"],
+    "secondaryProducts": ["consulting", "training", "support"],
+    "targetMarket": ["B2B"],
+    "operationalStatus": "active"
+  },
+  "platformAccounts": {
+    "facebook": {
+      "pageId": "techcorp",
+      "businessId": "987654321"
+    },
+    "google": {
+      "businessProfileId": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "merchantCenterId": "123456",
+      "analyticsId": "G-ABC123DEF"
+    },
+    "x": {
+      "handle": "@TechCorp",
+      "userId": "50346649"
+    },
+    "linkedin": {
+      "companyId": "1234567",
+      "pageUrl": "https://linkedin.com/company/techcorp"
+    }
+  },
+  "locations": [
+    {
+      "id": "hq-sf",
+      "type": "headquarters",
+      "name": "TechCorp Headquarters",
+      "address": {
+        "street": "123 Mission Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "postalCode": "94103",
+        "country": "US"
+      },
+      "coordinates": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      },
+      "businessHours": {
+        "monday": "09:00-18:00",
+        "tuesday": "09:00-18:00",
+        "wednesday": "09:00-18:00",
+        "thursday": "09:00-18:00",
+        "friday": "09:00-18:00",
+        "saturday": "closed",
+        "sunday": "closed"
+      }
+    }
+  ],
+  "brandAssets": {
+    "logos": {
+      "primary": {
+        "svg": "https://techcorp.example.com/assets/logo.svg",
+        "png": "https://techcorp.example.com/assets/logo.png"
+      },
+      "icon": {
+        "png": "https://techcorp.example.com/assets/icon.png",
+        "ico": "https://techcorp.example.com/favicon.ico"
+      }
+    },
+    "guidelines": {
+      "colorPalette": {
+        "primary": "#0066CC",
+        "secondary": "#00CC99",
+        "accent": "#FF6600"
+      }
+    }
+  },
+  "communications": {
+    "social": {
+      "twitter": "https://twitter.com/TechCorp",
+      "linkedin": "https://linkedin.com/company/techcorp",
+      "facebook": "https://facebook.com/techcorp"
+    },
+    "support": {
+      "email": "support@techcorp.example.com",
+      "phone": "+14155551234",
+      "url": "https://techcorp.example.com/support"
+    }
+  },
+  "security": {
+    "securityEmail": "security@techcorp.example.com"
+  },
+  "ai": {
+    "allowIndexing": true,
+    "preferredSummary": "TechCorp provides enterprise-grade cloud software solutions for businesses of all sizes."
+  }
+}

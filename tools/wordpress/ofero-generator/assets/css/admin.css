@@ -1,0 +1,571 @@
+/**
+ * Ofero Generator Admin Styles
+ *
+ * @package Ofero_Generator
+ */
+
+/* General Wrapper */
+.ofero-generator-wrap {
+    max-width: 1200px;
+}
+
+/* Cards */
+.ofero-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ofero-card h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.ofero-card h3 {
+    margin-top: 20px;
+}
+
+/* Settings Grid */
+.ofero-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.ofero-settings-grid .ofero-card-full {
+    grid-column: 1 / -1;
+}
+
+/* Tabs */
+.ofero-tabs {
+    margin-bottom: 0;
+}
+
+.ofero-tabs .nav-tab {
+    position: relative;
+}
+
+.ofero-tab-error {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #d63638;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    padding: 0 5px;
+    margin-left: 5px;
+}
+
+.ofero-tab-content {
+    display: none;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-top: none;
+    padding: 20px;
+}
+
+.ofero-tab-content.active {
+    display: block;
+}
+
+/* Validation Banner */
+.ofero-validation-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.ofero-validation-banner.valid {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+.ofero-validation-banner.invalid {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+}
+
+.ofero-validation-banner .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Validation Summary */
+.ofero-validation-summary {
+    margin-bottom: 20px;
+}
+
+/* Form Fields */
+.ofero-field-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.ofero-field {
+    flex: 1;
+    min-width: 200px;
+}
+
+.ofero-field-wide {
+    flex: 2;
+    min-width: 400px;
+}
+
+.ofero-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.required {
+    color: #d63638;
+}
+
+/* Repeater Items */
+.ofero-repeater-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.ofero-repeater-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #f0f0f1;
+    border-bottom: 1px solid #ddd;
+}
+
+.ofero-repeater-title {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.ofero-repeater-content {
+    padding: 15px;
+}
+
+.ofero-repeater-remove {
+    color: #d63638 !important;
+    border-color: #d63638 !important;
+}
+
+.ofero-repeater-remove:hover {
+    background: #d63638 !important;
+    color: #fff !important;
+}
+
+/* Inline Repeater */
+.ofero-repeater-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #f9f9f9;
+}
+
+.ofero-repeater-inline .ofero-field {
+    min-width: auto;
+    margin-bottom: 0;
+}
+
+.ofero-repeater-inline .ofero-field-wide {
+    flex: 2;
+}
+
+/* Add Item Button */
+.ofero-add-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.ofero-add-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Media Field */
+.ofero-media-field {
+    display: flex;
+    gap: 10px;
+}
+
+.ofero-media-field input {
+    flex: 1;
+}
+
+/* Asset Preview */
+.ofero-asset-preview {
+    margin-top: 10px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* JSON Preview */
+.ofero-json-preview {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: "Monaco", "Menlo", "Consolas", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.ofero-json-preview pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* File Info */
+.ofero-file-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f0f1;
+    border-radius: 4px;
+}
+
+.ofero-file-info p {
+    margin: 5px 0;
+}
+
+/* Actions */
+.ofero-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Errors List */
+.ofero-errors {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.ofero-errors h3 {
+    margin-top: 0;
+    color: #991b1b;
+}
+
+.ofero-errors ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.ofero-errors li {
+    margin: 5px 0;
+    color: #7f1d1d;
+}
+
+/* Submit Wrapper */
+.ofero-submit-wrapper {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-top: none;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ofero-autosave-status {
+    color: #72aee6;
+    font-style: italic;
+}
+
+/* Table Adjustments */
+.ofero-generator-wrap .form-table th {
+    width: 200px;
+}
+
+.ofero-generator-wrap .form-table td {
+    vertical-align: top;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .ofero-settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ofero-field-row {
+        flex-direction: column;
+    }
+
+    .ofero-field,
+    .ofero-field-wide {
+        min-width: 100%;
+    }
+
+    .ofero-repeater-inline {
+        flex-wrap: wrap;
+    }
+
+    .ofero-generator-wrap .form-table th {
+        width: auto;
+    }
+}
+
+/* Header with License Badge */
+.ofero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.ofero-header h1 {
+    margin: 0;
+}
+
+.ofero-license-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* License Badge Styles */
+.ofero-license-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.ofero-license-badge .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.ofero-license-badge .ofero-license-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ofero-license-badge .ofero-license-info strong {
+    font-size: 14px;
+}
+
+.ofero-license-badge .ofero-license-info span {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Valid License Badge */
+.ofero-license-valid {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+.ofero-license-valid .dashicons {
+    color: #059669;
+}
+
+/* Invalid License Badge */
+.ofero-license-invalid {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}
+
+.ofero-license-invalid .dashicons {
+    color: #d97706;
+}
+
+/* Refresh License Button */
+.ofero-refresh-license {
+    padding: 4px 8px !important;
+    min-height: 30px;
+}
+
+.ofero-refresh-license .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.ofero-refresh-license.spinning .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Keywords Tag Input */
+.ofero-tags-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-height: 42px;
+    padding: 6px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #fff;
+    cursor: text;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+.ofero-tags-field:focus-within {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.ofero-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ofero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #2271b1;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px 3px 10px;
+    border-radius: 20px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.ofero-tag-remove {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    transition: background 0.15s, color 0.15s;
+}
+
+.ofero-tag-remove:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.ofero-tags-input {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 2px 4px !important;
+    min-width: 260px;
+    flex: 1;
+    font-size: 13px;
+    background: transparent !important;
+    height: auto !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .ofero-card {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .ofero-card h2 {
+        border-bottom-color: #3c434a;
+    }
+
+    .ofero-tab-content {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    .ofero-repeater-item {
+        background: #3c434a;
+        border-color: #50575e;
+    }
+
+    .ofero-repeater-header {
+        background: #2c3338;
+        border-color: #50575e;
+    }
+
+    .ofero-repeater-inline {
+        background: #3c434a;
+    }
+
+    .ofero-file-info {
+        background: #3c434a;
+    }
+
+    .ofero-submit-wrapper {
+        background: #2c3338;
+        border-color: #3c434a;
+    }
+
+    /* Dark mode license badges */
+    .ofero-license-valid {
+        background: linear-gradient(135deg, #064e3b, #065f46);
+        border-color: #10b981;
+        color: #a7f3d0;
+    }
+
+    .ofero-license-invalid {
+        background: linear-gradient(135deg, #78350f, #92400e);
+        border-color: #f59e0b;
+        color: #fde68a;
+    }
+}

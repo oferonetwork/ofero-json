@@ -1,0 +1,683 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-15",
+  "description": "Legal forms database for ofero.json standard - organized by entity type and country",
+  "forms": [
+    {
+      "value": "Non-Profit Organization",
+      "label": "Non-Profit Organization (NPO)",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "nonprofit",
+      "description": "International non-profit organization"
+    },
+    {
+      "value": "Foundation",
+      "label": "Foundation",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "foundation",
+      "description": "International foundation"
+    },
+    {
+      "value": "NGO",
+      "label": "NGO (Non-Governmental Organization)",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "ngo",
+      "description": "International non-governmental organization"
+    },
+    {
+      "value": "Charitable Organization",
+      "label": "Charitable Organization",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "nonprofit",
+      "description": "International charitable organization"
+    },
+    {
+      "value": "Social Enterprise",
+      "label": "Social Enterprise",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "nonprofit",
+      "description": "International social enterprise"
+    },
+    {
+      "value": "Cooperative",
+      "label": "Cooperative",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "cooperative",
+      "description": "International cooperative"
+    },
+    {
+      "value": "Trust",
+      "label": "Trust",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "foundation",
+      "description": "International trust"
+    },
+    {
+      "value": "Community Interest Company",
+      "label": "Community Interest Company (CIC)",
+      "entityType": "association",
+      "country": "INTL",
+      "category": "social_enterprise",
+      "description": "Community interest company"
+    },
+    {
+      "value": "501(c)(3)",
+      "label": "501(c)(3) - Public Charity",
+      "entityType": "association",
+      "country": "US",
+      "category": "nonprofit",
+      "description": "US public charity (tax-exempt)"
+    },
+    {
+      "value": "501(c)(4)",
+      "label": "501(c)(4) - Social Welfare Organization",
+      "entityType": "association",
+      "country": "US",
+      "category": "nonprofit",
+      "description": "US social welfare organization"
+    },
+    {
+      "value": "501(c)(6)",
+      "label": "501(c)(6) - Trade Association",
+      "entityType": "association",
+      "country": "US",
+      "category": "nonprofit",
+      "description": "US trade association"
+    },
+    {
+      "value": "501(c)(7)",
+      "label": "501(c)(7) - Social Club",
+      "entityType": "association",
+      "country": "US",
+      "category": "nonprofit",
+      "description": "US social club"
+    },
+    {
+      "value": "Public Benefit Corporation",
+      "label": "Public Benefit Corporation (PBC)",
+      "entityType": "association",
+      "country": "US",
+      "category": "social_enterprise",
+      "description": "US public benefit corporation"
+    },
+    {
+      "value": "B Corporation",
+      "label": "B Corporation (Benefit Corporation)",
+      "entityType": "association",
+      "country": "US",
+      "category": "social_enterprise",
+      "description": "US benefit corporation (certified B Corp)"
+    },
+    {
+      "value": "Charity",
+      "label": "Registered Charity",
+      "entityType": "association",
+      "country": "GB",
+      "category": "nonprofit",
+      "description": "UK registered charity"
+    },
+    {
+      "value": "CIO",
+      "label": "CIO (Charitable Incorporated Organisation)",
+      "entityType": "association",
+      "country": "GB",
+      "category": "nonprofit",
+      "description": "UK charitable incorporated organisation"
+    },
+    {
+      "value": "Community Interest Company",
+      "label": "Community Interest Company (CIC)",
+      "entityType": "association",
+      "country": "GB",
+      "category": "social_enterprise",
+      "description": "UK community interest company"
+    },
+    {
+      "value": "Unincorporated Association",
+      "label": "Unincorporated Association",
+      "entityType": "association",
+      "country": "GB",
+      "category": "nonprofit",
+      "description": "UK unincorporated association"
+    },
+    {
+      "value": "Charitable Trust",
+      "label": "Charitable Trust",
+      "entityType": "association",
+      "country": "GB",
+      "category": "foundation",
+      "description": "UK charitable trust"
+    },
+    {
+      "value": "Verein",
+      "label": "Verein (e.V.) - Registered Association",
+      "entityType": "association",
+      "country": "DE",
+      "category": "nonprofit",
+      "description": "German registered association"
+    },
+    {
+      "value": "Stiftung",
+      "label": "Stiftung - Foundation",
+      "entityType": "association",
+      "country": "DE",
+      "category": "foundation",
+      "description": "German foundation"
+    },
+    {
+      "value": "gGmbH",
+      "label": "gGmbH (Gemeinnützige GmbH) - Non-Profit LLC",
+      "entityType": "association",
+      "country": "DE",
+      "category": "nonprofit",
+      "description": "German non-profit limited liability company"
+    },
+    {
+      "value": "Association Loi 1901",
+      "label": "Association Loi 1901",
+      "entityType": "association",
+      "country": "FR",
+      "category": "nonprofit",
+      "description": "French association under the 1901 law"
+    },
+    {
+      "value": "Fondation",
+      "label": "Fondation - Foundation",
+      "entityType": "association",
+      "country": "FR",
+      "category": "foundation",
+      "description": "French foundation"
+    },
+    {
+      "value": "SCOP",
+      "label": "SCOP (Société Coopérative) - Cooperative",
+      "entityType": "association",
+      "country": "FR",
+      "category": "cooperative",
+      "description": "French cooperative society"
+    },
+    {
+      "value": "Stichting",
+      "label": "Stichting - Foundation",
+      "entityType": "association",
+      "country": "NL",
+      "category": "foundation",
+      "description": "Dutch foundation"
+    },
+    {
+      "value": "Vereniging",
+      "label": "Vereniging - Association",
+      "entityType": "association",
+      "country": "NL",
+      "category": "nonprofit",
+      "description": "Dutch association"
+    },
+    {
+      "value": "Registered Charity (CA)",
+      "label": "Registered Charity",
+      "entityType": "association",
+      "country": "CA",
+      "category": "nonprofit",
+      "description": "Canadian registered charity"
+    },
+    {
+      "value": "Non-Profit Corporation (CA)",
+      "label": "Non-Profit Corporation",
+      "entityType": "association",
+      "country": "CA",
+      "category": "nonprofit",
+      "description": "Canadian non-profit corporation"
+    },
+    {
+      "value": "Incorporated Association (AU)",
+      "label": "Incorporated Association",
+      "entityType": "association",
+      "country": "AU",
+      "category": "nonprofit",
+      "description": "Australian incorporated association"
+    },
+    {
+      "value": "Public Ancillary Fund",
+      "label": "Public Ancillary Fund",
+      "entityType": "association",
+      "country": "AU",
+      "category": "foundation",
+      "description": "Australian public ancillary fund"
+    },
+    {
+      "value": "Verein (CH)",
+      "label": "Verein - Association",
+      "entityType": "association",
+      "country": "CH",
+      "category": "nonprofit",
+      "description": "Swiss association"
+    },
+    {
+      "value": "Stiftung (CH)",
+      "label": "Stiftung - Foundation",
+      "entityType": "association",
+      "country": "CH",
+      "category": "foundation",
+      "description": "Swiss foundation"
+    },
+    {
+      "value": "Asociación",
+      "label": "Asociación - Association",
+      "entityType": "association",
+      "country": "ES",
+      "category": "nonprofit",
+      "description": "Spanish association"
+    },
+    {
+      "value": "Fundación (ES)",
+      "label": "Fundación - Foundation",
+      "entityType": "association",
+      "country": "ES",
+      "category": "foundation",
+      "description": "Spanish foundation"
+    },
+    {
+      "value": "Associazione",
+      "label": "Associazione - Association",
+      "entityType": "association",
+      "country": "IT",
+      "category": "nonprofit",
+      "description": "Italian association"
+    },
+    {
+      "value": "Fondazione (IT)",
+      "label": "Fondazione - Foundation",
+      "entityType": "association",
+      "country": "IT",
+      "category": "foundation",
+      "description": "Italian foundation"
+    },
+    {
+      "value": "ONLUS",
+      "label": "ONLUS - Non-Profit Social Organization",
+      "entityType": "association",
+      "country": "IT",
+      "category": "nonprofit",
+      "description": "Italian non-profit social organization"
+    },
+    {
+      "value": "Asociație (RO)",
+      "label": "Asociație - Association",
+      "entityType": "association",
+      "country": "RO",
+      "category": "nonprofit",
+      "description": "Romanian association"
+    },
+    {
+      "value": "Fundație (RO)",
+      "label": "Fundație - Foundation",
+      "entityType": "association",
+      "country": "RO",
+      "category": "foundation",
+      "description": "Romanian foundation"
+    },
+    {
+      "value": "ONG",
+      "label": "ONG - Non-Governmental Organization",
+      "entityType": "association",
+      "country": "RO",
+      "category": "ngo",
+      "description": "Romanian non-governmental organization"
+    },
+    {
+      "value": "Limited Liability Company",
+      "label": "Limited Liability Company",
+      "entityType": "company",
+      "country": "INTL",
+      "category": "limited_liability",
+      "description": "International limited liability company"
+    },
+    {
+      "value": "Corporation (INTL)",
+      "label": "Corporation",
+      "entityType": "company",
+      "country": "INTL",
+      "category": "joint_stock",
+      "description": "International corporation"
+    },
+    {
+      "value": "Partnership",
+      "label": "Partnership",
+      "entityType": "company",
+      "country": "INTL",
+      "category": "partnership",
+      "description": "International partnership"
+    },
+    {
+      "value": "Sole Proprietorship",
+      "label": "Sole Proprietorship",
+      "entityType": "company",
+      "country": "INTL",
+      "category": "sole_proprietor",
+      "description": "International sole proprietorship"
+    },
+    {
+      "value": "LLC",
+      "label": "LLC (Limited Liability Company)",
+      "entityType": "company",
+      "country": "US",
+      "category": "limited_liability",
+      "description": "US limited liability company"
+    },
+    {
+      "value": "C Corporation",
+      "label": "C Corporation",
+      "entityType": "company",
+      "country": "US",
+      "category": "joint_stock",
+      "description": "US C corporation"
+    },
+    {
+      "value": "S Corporation",
+      "label": "S Corporation",
+      "entityType": "company",
+      "country": "US",
+      "category": "joint_stock",
+      "description": "US S corporation"
+    },
+    {
+      "value": "Inc",
+      "label": "Inc (Incorporated)",
+      "entityType": "company",
+      "country": "US",
+      "category": "joint_stock",
+      "description": "US incorporated company"
+    },
+    {
+      "value": "LP",
+      "label": "LP (Limited Partnership)",
+      "entityType": "company",
+      "country": "US",
+      "category": "partnership",
+      "description": "US limited partnership"
+    },
+    {
+      "value": "LLP",
+      "label": "LLP (Limited Liability Partnership)",
+      "entityType": "company",
+      "country": "US",
+      "category": "partnership",
+      "description": "US limited liability partnership"
+    },
+    {
+      "value": "Ltd",
+      "label": "Ltd (Private Limited Company)",
+      "entityType": "company",
+      "country": "GB",
+      "category": "limited_liability",
+      "description": "UK private limited company"
+    },
+    {
+      "value": "PLC",
+      "label": "PLC (Public Limited Company)",
+      "entityType": "company",
+      "country": "GB",
+      "category": "joint_stock",
+      "description": "UK public limited company"
+    },
+    {
+      "value": "LLP (GB)",
+      "label": "LLP (Limited Liability Partnership)",
+      "entityType": "company",
+      "country": "GB",
+      "category": "partnership",
+      "description": "UK limited liability partnership"
+    },
+    {
+      "value": "GmbH",
+      "label": "GmbH (Gesellschaft mit beschränkter Haftung)",
+      "entityType": "company",
+      "country": "DE",
+      "category": "limited_liability",
+      "description": "German limited liability company"
+    },
+    {
+      "value": "AG",
+      "label": "AG (Aktiengesellschaft)",
+      "entityType": "company",
+      "country": "DE",
+      "category": "joint_stock",
+      "description": "German stock corporation"
+    },
+    {
+      "value": "UG",
+      "label": "UG (Unternehmergesellschaft)",
+      "entityType": "company",
+      "country": "DE",
+      "category": "limited_liability",
+      "description": "German entrepreneurial company (mini-GmbH)"
+    },
+    {
+      "value": "SARL",
+      "label": "SARL (Société à Responsabilité Limitée)",
+      "entityType": "company",
+      "country": "FR",
+      "category": "limited_liability",
+      "description": "French limited liability company"
+    },
+    {
+      "value": "SA",
+      "label": "SA (Société Anonyme)",
+      "entityType": "company",
+      "country": "FR",
+      "category": "joint_stock",
+      "description": "French stock corporation"
+    },
+    {
+      "value": "SAS",
+      "label": "SAS (Société par Actions Simplifiée)",
+      "entityType": "company",
+      "country": "FR",
+      "category": "joint_stock",
+      "description": "French simplified joint-stock company"
+    },
+    {
+      "value": "EURL",
+      "label": "EURL (Entreprise Unipersonnelle)",
+      "entityType": "company",
+      "country": "FR",
+      "category": "sole_proprietor",
+      "description": "French single-person limited liability company"
+    },
+    {
+      "value": "BV",
+      "label": "BV (Besloten Vennootschap)",
+      "entityType": "company",
+      "country": "NL",
+      "category": "limited_liability",
+      "description": "Dutch private limited company"
+    },
+    {
+      "value": "NV",
+      "label": "NV (Naamloze Vennootschap)",
+      "entityType": "company",
+      "country": "NL",
+      "category": "joint_stock",
+      "description": "Dutch public limited company"
+    },
+    {
+      "value": "Inc (CA)",
+      "label": "Inc (Incorporated)",
+      "entityType": "company",
+      "country": "CA",
+      "category": "joint_stock",
+      "description": "Canadian incorporated company"
+    },
+    {
+      "value": "Corp (CA)",
+      "label": "Corp (Corporation)",
+      "entityType": "company",
+      "country": "CA",
+      "category": "joint_stock",
+      "description": "Canadian corporation"
+    },
+    {
+      "value": "Ltd (CA)",
+      "label": "Ltd (Limited)",
+      "entityType": "company",
+      "country": "CA",
+      "category": "limited_liability",
+      "description": "Canadian limited company"
+    },
+    {
+      "value": "Pty Ltd",
+      "label": "Pty Ltd (Proprietary Limited)",
+      "entityType": "company",
+      "country": "AU",
+      "category": "limited_liability",
+      "description": "Australian proprietary limited company"
+    },
+    {
+      "value": "Ltd (AU)",
+      "label": "Ltd (Public Limited)",
+      "entityType": "company",
+      "country": "AU",
+      "category": "joint_stock",
+      "description": "Australian public limited company"
+    },
+    {
+      "value": "AB",
+      "label": "AB (Aktiebolag)",
+      "entityType": "company",
+      "country": "SE",
+      "category": "joint_stock",
+      "description": "Swedish stock company"
+    },
+    {
+      "value": "SRL",
+      "label": "SRL (Societate cu Răspundere Limitată)",
+      "entityType": "company",
+      "country": "RO",
+      "category": "limited_liability",
+      "description": "Romanian limited liability company"
+    },
+    {
+      "value": "SA (RO)",
+      "label": "SA (Societate pe Acțiuni)",
+      "entityType": "company",
+      "country": "RO",
+      "category": "joint_stock",
+      "description": "Romanian joint-stock company"
+    },
+    {
+      "value": "PFA",
+      "label": "PFA (Persoană Fizică Autorizată)",
+      "entityType": "company",
+      "country": "RO",
+      "category": "sole_proprietor",
+      "description": "Romanian authorized natural person"
+    },
+    {
+      "value": "II",
+      "label": "II (Întreprindere Individuală)",
+      "entityType": "company",
+      "country": "RO",
+      "category": "sole_proprietor",
+      "description": "Romanian individual enterprise"
+    },
+    {
+      "value": "Other",
+      "label": "Other (Enter custom)",
+      "entityType": "both",
+      "country": "INTL",
+      "category": "custom",
+      "description": "Custom or other legal form not listed"
+    }
+  ],
+  "categories": [
+    {
+      "value": "nonprofit",
+      "label": "Non-Profit",
+      "description": "Non-profit organizations and charities"
+    },
+    {
+      "value": "foundation",
+      "label": "Foundation",
+      "description": "Foundations and trusts"
+    },
+    {
+      "value": "ngo",
+      "label": "NGO",
+      "description": "Non-governmental organizations"
+    },
+    {
+      "value": "cooperative",
+      "label": "Cooperative",
+      "description": "Cooperative societies"
+    },
+    {
+      "value": "social_enterprise",
+      "label": "Social Enterprise",
+      "description": "Social enterprises and community interest companies"
+    },
+    {
+      "value": "limited_liability",
+      "label": "Limited Liability",
+      "description": "Limited liability companies"
+    },
+    {
+      "value": "joint_stock",
+      "label": "Joint Stock",
+      "description": "Stock corporations and public companies"
+    },
+    {
+      "value": "partnership",
+      "label": "Partnership",
+      "description": "Partnerships and limited partnerships"
+    },
+    {
+      "value": "sole_proprietor",
+      "label": "Sole Proprietor",
+      "description": "Sole proprietorships and individual enterprises"
+    },
+    {
+      "value": "custom",
+      "label": "Custom",
+      "description": "Custom or other legal forms"
+    }
+  ],
+  "entityTypes": [
+    {
+      "value": "company",
+      "label": "Company",
+      "description": "For-profit business entities"
+    },
+    {
+      "value": "association",
+      "label": "Association",
+      "description": "Non-profit associations and NGOs"
+    },
+    {
+      "value": "both",
+      "label": "Both",
+      "description": "Applicable to both companies and associations"
+    }
+  ],
+  "countries": {
+    "INTL": "International",
+    "US": "United States",
+    "GB": "United Kingdom",
+    "DE": "Germany",
+    "FR": "France",
+    "NL": "Netherlands",
+    "CA": "Canada",
+    "AU": "Australia",
+    "CH": "Switzerland",
+    "ES": "Spain",
+    "IT": "Italy",
+    "RO": "Romania",
+    "SE": "Sweden"
+  }
+}

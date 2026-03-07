@@ -1,0 +1,934 @@
+{
+	"language": "en",
+	"availableLanguages": [
+		"en",
+		"it",
+		"fr"
+	],
+	"domain": "bella-pizzeria.com",
+	"canonicalUrl": "https://bella-pizzeria.com/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-01-22T10:00:00Z",
+		"createdAt": "2025-01-01T10:00:00Z",
+		"updateFrequency": "weekly"
+	},
+	"organization": {
+		"legalName": "Bella Pizzeria LLC",
+		"brandName": {
+			"default": "Bella Pizzeria",
+			"translations": {
+				"it": "Pizzeria Bella"
+			}
+		},
+		"entityType": "company",
+		"legalForm": "LLC",
+		"industry": "food-service",
+		"description": {
+			"default": "Authentic Italian pizzeria in the heart of San Francisco. Artisan pizza, fresh pasta and traditional desserts.",
+			"translations": {
+				"it": "Pizzeria autentica italiana nel cuore di San Francisco. Pizza artigianale, pasta fresca e dolci tradizionali."
+			}
+		},
+		"tagline": {
+			"default": "Artisan pizza with fresh ingredients from Italy",
+			"translations": {
+				"it": "Pizza artigianale con ingredienti freschi dall'Italia"
+			}
+		},
+		"foundedDate": "2018-03-15",
+		"employees": 12,
+		"website": "https://bella-pizzeria.com",
+		"contactEmail": "contact@bella-pizzeria.com",
+		"contactPhone": "+14155551234",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "US",
+				"registrationNumber": "C1234567",
+				"taxId": "12-3456789",
+				"vatNumber": ""
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": [
+			"food-service",
+			"restaurant",
+			"casual-dining"
+		],
+		"mccCode": "5812",
+		"primaryProducts": [
+			"pizza",
+			"pasta",
+			"italian-food",
+			"desserts"
+		],
+		"targetMarket": [
+			"B2C"
+		],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-1",
+			"type": "headquarters",
+			"name": "Bella Pizzeria - Downtown",
+			"address": {
+				"street": "123 Market Street",
+				"city": "San Francisco",
+				"region": "CA",
+				"postalCode": "94103",
+				"country": "US"
+			},
+			"coordinates": {
+				"latitude": 37.7749,
+				"longitude": -122.4194
+			},
+			"businessHours": {
+				"monday": "11:00-23:00",
+				"tuesday": "11:00-23:00",
+				"wednesday": "11:00-23:00",
+				"thursday": "11:00-23:00",
+				"friday": "11:00-24:00",
+				"saturday": "12:00-24:00",
+				"sunday": "12:00-22:00",
+				"timezone": "America/Los_Angeles"
+			},
+			"specialHours": [
+				{
+					"date": "2025-12-25",
+					"name": "Christmas Day",
+					"hours": "Closed"
+				},
+				{
+					"date": "2025-12-31",
+					"name": "New Year's Eve",
+					"hours": "12:00-02:00"
+				},
+				{
+					"date": "2026-01-01",
+					"name": "New Year's Day",
+					"hours": "14:00-22:00"
+				},
+				{
+					"from": "2025-07-01",
+					"to": "2025-08-31",
+					"name": "Summer Extended Hours",
+					"hours": "11:00-24:00"
+				}
+			]
+		}
+	],
+	"catalog": {
+		"defaultCurrency": "USD",
+		"menu": {
+			"categories": [
+				{
+					"id": "antipasti",
+					"name": {
+						"default": "Appetizers"
+					},
+					"sortOrder": 1,
+					"items": [
+						{
+							"id": "bruschetta",
+							"name": {
+								"default": "Classic Bruschetta",
+								"translations": {
+									"it": "Bruschetta Classica",
+									"fr": "Bruschetta Classique"
+								}
+							},
+							"description": {
+								"default": "Toasted bread with fresh tomatoes, garlic and basil",
+								"translations": {
+									"it": "Pane tostato con pomodori freschi, aglio e basilico",
+									"fr": "Pain grillé avec tomates fraîches, ail et basilic"
+								}
+							},
+							"price": 22,
+							"dietary": [
+								"vegetarian",
+								"vegan"
+							],
+							"allergens": [
+								"gluten"
+							],
+							"available": true,
+							"preparationTime": "10 min",
+							"portionSize": "180g",
+							"ingredients": [
+								"sourdough bread",
+								"cherry tomatoes",
+								"garlic",
+								"fresh basil",
+								"extra virgin olive oil"
+							]
+						},
+						{
+							"id": "caprese",
+							"name": {
+								"default": "Caprese Salad"
+							},
+							"description": {
+								"default": "Buffalo mozzarella, cherry tomatoes, fresh basil and extra virgin olive oil"
+							},
+							"price": 35,
+							"dietary": [
+								"vegetarian",
+								"gluten-free"
+							],
+							"allergens": [
+								"dairy"
+							],
+							"available": true,
+							"popular": true,
+							"portionSize": "220g",
+							"ingredients": [
+								"buffalo mozzarella",
+								"cherry tomatoes",
+								"fresh basil",
+								"extra virgin olive oil"
+							]
+						}
+					],
+					"serviceHours": "11:00-23:00"
+				},
+				{
+					"id": "pizza",
+					"name": {
+						"default": "Pizza"
+					},
+					"sortOrder": 2,
+					"items": [
+						{
+							"id": "margherita",
+							"name": {
+								"default": "Margherita Pizza",
+								"translations": {
+									"it": "Pizza Margherita",
+									"fr": "Pizza Margherita"
+								}
+							},
+							"description": {
+								"default": "San Marzano tomato sauce, fior di latte mozzarella, fresh basil",
+								"translations": {
+									"it": "Salsa di pomodoro San Marzano, mozzarella fior di latte, basilico fresco",
+									"fr": "Sauce tomate San Marzano, mozzarella fior di latte, basilic frais"
+								}
+							},
+							"price": 35,
+							"dietary": [
+								"vegetarian"
+							],
+							"allergens": [
+								"gluten",
+								"dairy"
+							],
+							"available": true,
+							"popular": true,
+							"preparationTime": "15 min",
+							"variants": [
+								{
+									"id": "margherita-small",
+									"name": "Small (26cm)",
+									"price": 35
+								},
+								{
+									"id": "margherita-large",
+									"name": "Large (32cm)",
+									"price": 45
+								}
+							],
+							"addons": [
+								{
+									"id": "addon-extra-mozzarella",
+									"name": "Extra mozzarella",
+									"price": 8
+								},
+								{
+									"id": "addon-prosciutto",
+									"name": "Prosciutto",
+									"price": 12
+								}
+							],
+							"portionSize": "450g",
+							"ingredients": [
+								"San Marzano tomato sauce",
+								"fior di latte mozzarella",
+								"fresh basil",
+								"extra virgin olive oil"
+							]
+						},
+						{
+							"id": "quattro-formaggi",
+							"name": {
+								"default": "Four Cheese Pizza"
+							},
+							"description": {
+								"default": "Mozzarella, gorgonzola, parmesan, fontina"
+							},
+							"price": 48,
+							"dietary": [
+								"vegetarian"
+							],
+							"allergens": [
+								"gluten",
+								"dairy"
+							],
+							"available": true,
+							"preparationTime": "15 min",
+							"portionSize": "450g",
+							"ingredients": [
+								"mozzarella",
+								"gorgonzola",
+								"parmesan",
+								"fontina"
+							]
+						},
+						{
+							"id": "diavola",
+							"name": {
+								"default": "Diavola Pizza"
+							},
+							"description": {
+								"default": "Tomato sauce, mozzarella, spicy salami, hot peppers"
+							},
+							"price": 45,
+							"dietary": [
+								"spicy"
+							],
+							"allergens": [
+								"gluten",
+								"dairy"
+							],
+							"available": true,
+							"preparationTime": "15 min",
+							"portionSize": "450g",
+							"ingredients": [
+								"tomato sauce",
+								"mozzarella",
+								"spicy salami",
+								"hot peppers",
+								"extra virgin olive oil"
+							]
+						}
+					]
+				},
+				{
+					"id": "pasta",
+					"name": {
+						"default": "Pasta"
+					},
+					"sortOrder": 3,
+					"items": [
+						{
+							"id": "carbonara",
+							"name": {
+								"default": "Spaghetti Carbonara",
+								"translations": {
+									"it": "Spaghetti alla Carbonara",
+									"fr": "Spaghetti Carbonara"
+								}
+							},
+							"description": {
+								"default": "Guanciale, egg, pecorino romano, black pepper",
+								"translations": {
+									"it": "Guanciale, uovo, pecorino romano, pepe nero",
+									"fr": "Guanciale, œuf, pecorino romano, poivre noir"
+								}
+							},
+							"price": 42,
+							"allergens": [
+								"gluten",
+								"dairy",
+								"eggs"
+							],
+							"available": true,
+							"popular": true,
+							"preparationTime": "20 min",
+							"portionSize": "320g",
+							"ingredients": [
+								"spaghetti",
+								"guanciale",
+								"egg yolk",
+								"pecorino romano",
+								"black pepper"
+							]
+						}
+					]
+				},
+				{
+					"id": "desserts",
+					"name": {
+						"default": "Desserts"
+					},
+					"sortOrder": 4,
+					"items": [
+						{
+							"id": "tiramisu",
+							"name": {
+								"default": "Tiramisu",
+								"translations": {
+									"it": "Tiramisù",
+									"fr": "Tiramisu"
+								}
+							},
+							"description": {
+								"default": "Traditional recipe with mascarpone and espresso coffee",
+								"translations": {
+									"it": "Ricetta tradizionale con mascarpone e caffè espresso",
+									"fr": "Recette traditionnelle au mascarpone et café espresso"
+								}
+							},
+							"price": 28,
+							"dietary": [
+								"vegetarian",
+								"contains-alcohol"
+							],
+							"allergens": [
+								"dairy",
+								"eggs",
+								"gluten"
+							],
+							"available": true,
+							"popular": true,
+							"portionSize": "180g",
+							"ingredients": [
+								"mascarpone",
+								"espresso",
+								"savoiardi biscuits",
+								"egg yolk",
+								"sugar",
+								"rum"
+							]
+						}
+					]
+				},
+				{
+					"id": "drinks",
+					"name": {
+						"default": "Drinks"
+					},
+					"sortOrder": 5,
+					"items": [
+						{
+							"id": "coca-cola",
+							"name": {
+								"default": "Coca-Cola"
+							},
+							"price": 8,
+							"available": true,
+							"variants": [
+								{
+									"id": "coca-cola-330ml",
+									"name": "330ml",
+									"price": 8
+								},
+								{
+									"id": "coca-cola-500ml",
+									"name": "500ml",
+									"price": 12
+								}
+							],
+							"portionSize": "330ml"
+						},
+						{
+							"id": "house-wine",
+							"name": {
+								"default": "House Wine"
+							},
+							"description": {
+								"default": "Red or white wine from local winery"
+							},
+							"price": 18,
+							"priceUnit": "per glass",
+							"dietary": [
+								"contains-alcohol"
+							],
+							"allergens": [
+								"sulfites"
+							],
+							"available": true,
+							"portionSize": "150ml"
+						}
+					]
+				}
+			],
+			"dietaryOptions": [
+				"vegetarian",
+				"vegan",
+				"gluten-free"
+			],
+			"allergenInfo": "https://bella-pizzeria.com/allergens"
+		},
+		"priceListUrl": "https://bella-pizzeria.com/menu.pdf",
+		"dailyMenu": {
+			"weekOf": "2026-03-09",
+			"note": {
+				"default": "Daily menu changes every Monday. Available while supplies last."
+			},
+			"schedule": {
+				"monday": [
+					{
+						"name": {
+							"default": "Tomato Cream Soup"
+						},
+						"portionSize": "330g",
+						"price": 12,
+						"course": "soup",
+						"ingredients": [
+							"tomatoes",
+							"mascarpone",
+							"basil",
+							"croutons"
+						],
+						"dietary": [
+							"vegetarian"
+						],
+						"allergens": [
+							"dairy",
+							"gluten"
+						]
+					},
+					{
+						"name": {
+							"default": "Spaghetti Carbonara"
+						},
+						"portionSize": "320g",
+						"price": 28,
+						"course": "main",
+						"ingredients": [
+							"spaghetti",
+							"guanciale",
+							"egg yolk",
+							"pecorino romano",
+							"black pepper"
+						],
+						"allergens": [
+							"gluten",
+							"eggs",
+							"dairy"
+						]
+					},
+					{
+						"name": {
+							"default": "Tiramisu"
+						},
+						"portionSize": "150g",
+						"price": 14,
+						"course": "dessert",
+						"ingredients": [
+							"mascarpone",
+							"espresso",
+							"savoiardi biscuits",
+							"egg yolk",
+							"sugar",
+							"rum"
+						],
+						"dietary": [
+							"vegetarian",
+							"contains-alcohol"
+						],
+						"allergens": [
+							"dairy",
+							"eggs",
+							"gluten"
+						]
+					}
+				],
+				"tuesday": [
+					{
+						"name": {
+							"default": "Minestrone"
+						},
+						"portionSize": "350g",
+						"price": 11,
+						"course": "soup",
+						"ingredients": [
+							"seasonal vegetables",
+							"cannellini beans",
+							"pasta",
+							"tomatoes",
+							"parmesan rind"
+						],
+						"dietary": [
+							"vegetarian"
+						],
+						"allergens": [
+							"gluten",
+							"dairy"
+						]
+					},
+					{
+						"name": {
+							"default": "Pizza Diavola"
+						},
+						"portionSize": "430g",
+						"price": 26,
+						"course": "main",
+						"ingredients": [
+							"tomato sauce",
+							"mozzarella",
+							"spicy salami",
+							"hot peppers",
+							"extra virgin olive oil"
+						],
+						"dietary": [
+							"spicy"
+						],
+						"allergens": [
+							"gluten",
+							"dairy"
+						]
+					},
+					{
+						"name": {
+							"default": "Panna Cotta with Berry Coulis"
+						},
+						"portionSize": "160g",
+						"price": 13,
+						"course": "dessert",
+						"ingredients": [
+							"heavy cream",
+							"sugar",
+							"vanilla",
+							"gelatin",
+							"mixed berries"
+						],
+						"dietary": [
+							"vegetarian",
+							"gluten-free"
+						],
+						"allergens": [
+							"dairy"
+						]
+					}
+				],
+				"wednesday": [
+					{
+						"name": {
+							"default": "Ribollita"
+						},
+						"portionSize": "380g",
+						"price": 11,
+						"course": "soup",
+						"ingredients": [
+							"cavolo nero",
+							"cannellini beans",
+							"stale bread",
+							"carrots",
+							"celery",
+							"onion",
+							"tomatoes"
+						],
+						"dietary": [
+							"vegan"
+						],
+						"allergens": [
+							"gluten"
+						]
+					},
+					{
+						"name": {
+							"default": "Tagliatelle al Ragu"
+						},
+						"portionSize": "320g",
+						"price": 27,
+						"course": "main",
+						"ingredients": [
+							"egg tagliatelle",
+							"beef mince",
+							"pork mince",
+							"tomatoes",
+							"onion",
+							"carrot",
+							"celery",
+							"red wine",
+							"parmesan"
+						],
+						"allergens": [
+							"gluten",
+							"eggs",
+							"dairy"
+						]
+					},
+					{
+						"name": {
+							"default": "Cannolo Siciliano"
+						},
+						"portionSize": "140g",
+						"price": 13,
+						"course": "dessert",
+						"ingredients": [
+							"fried pastry shell",
+							"ricotta",
+							"candied orange peel",
+							"dark chocolate chips",
+							"pistachios"
+						],
+						"dietary": [
+							"vegetarian"
+						],
+						"allergens": [
+							"gluten",
+							"dairy",
+							"eggs",
+							"tree-nuts"
+						]
+					}
+				],
+				"thursday": [
+					{
+						"name": {
+							"default": "Pasta e Fagioli"
+						},
+						"portionSize": "360g",
+						"price": 11,
+						"course": "soup",
+						"ingredients": [
+							"borlotti beans",
+							"ditalini pasta",
+							"pancetta",
+							"tomatoes",
+							"rosemary",
+							"garlic"
+						],
+						"allergens": [
+							"gluten"
+						]
+					},
+					{
+						"name": {
+							"default": "Saltimbocca alla Romana"
+						},
+						"portionSize": "280g",
+						"price": 32,
+						"course": "main",
+						"ingredients": [
+							"veal escalope",
+							"prosciutto crudo",
+							"fresh sage",
+							"white wine",
+							"butter"
+						],
+						"allergens": [
+							"dairy"
+						]
+					},
+					{
+						"name": {
+							"default": "Sfogliatella"
+						},
+						"portionSize": "120g",
+						"price": 10,
+						"course": "dessert",
+						"ingredients": [
+							"flaky pastry dough",
+							"ricotta",
+							"semolina",
+							"candied citrus peel",
+							"cinnamon"
+						],
+						"dietary": [
+							"vegetarian"
+						],
+						"allergens": [
+							"gluten",
+							"dairy",
+							"eggs"
+						]
+					}
+				],
+				"friday": [
+					{
+						"name": {
+							"default": "Zuppa di Pesce"
+						},
+						"portionSize": "400g",
+						"price": 18,
+						"course": "soup",
+						"ingredients": [
+							"sea bass",
+							"clams",
+							"shrimp",
+							"squid",
+							"tomatoes",
+							"white wine",
+							"garlic",
+							"parsley"
+						],
+						"allergens": [
+							"fish",
+							"shellfish",
+							"molluscs"
+						]
+					},
+					{
+						"name": {
+							"default": "Risotto ai Frutti di Mare"
+						},
+						"portionSize": "350g",
+						"price": 34,
+						"course": "main",
+						"ingredients": [
+							"arborio rice",
+							"shrimp",
+							"mussels",
+							"clams",
+							"squid",
+							"white wine",
+							"garlic",
+							"parsley"
+						],
+						"allergens": [
+							"shellfish",
+							"molluscs"
+						]
+					},
+					{
+						"name": {
+							"default": "Affogato al Caffe"
+						},
+						"portionSize": "120g",
+						"price": 10,
+						"course": "dessert",
+						"ingredients": [
+							"vanilla gelato",
+							"espresso",
+							"optional amaretto liqueur"
+						],
+						"dietary": [
+							"vegetarian",
+							"gluten-free"
+						],
+						"allergens": [
+							"dairy",
+							"eggs"
+						]
+					}
+				]
+			}
+		}
+	},
+	"restaurantDetails": {
+		"seatingCapacity": 80,
+		"indoorSeats": 60,
+		"outdoorSeats": 20,
+		"privateRooms": [
+			{
+				"name": "Sala VIP",
+				"capacity": 20,
+				"available": true,
+				"bookingUrl": "https://bella-pizzeria.com/book/vip"
+			}
+		],
+		"serviceTypes": {
+			"dineIn": true,
+			"takeaway": true,
+			"delivery": true,
+			"catering": false,
+			"driveThrough": false
+		},
+		"deliveryPlatforms": [
+			{
+				"name": "Uber Eats",
+				"url": "https://ubereats.com/store/bella-pizzeria",
+				"active": true
+			},
+			{
+				"name": "DoorDash",
+				"url": "https://doordash.com/store/bella-pizzeria",
+				"active": true
+			}
+		],
+		"reservations": {
+			"required": false,
+			"recommended": true,
+			"bookingUrl": "https://bella-pizzeria.com/book",
+			"phone": "+14155551234",
+			"advanceNotice": "24h",
+			"maxGroupSize": 20
+		},
+		"parking": {
+			"available": true,
+			"free": true,
+			"spaces": 15,
+			"notes": "Free parking behind the building"
+		},
+		"amenities": [
+			"wifi",
+			"air-conditioning",
+			"terrace",
+			"bar",
+			"non-smoking",
+			"wheelchair-accessible"
+		],
+		"cuisine": [
+			"italian",
+			"pizza",
+			"pasta",
+			"mediterranean"
+		],
+		"priceRange": "$$",
+		"averageCheckPerPerson": 45,
+		"ratingsUrl": "https://g.page/bella-pizzeria"
+	},
+	"apiEndpoints": {
+		"availability": "https://bella-pizzeria.com/api/availability",
+		"reservations": "https://bella-pizzeria.com/api/reservations"
+	},
+	"promotions": [
+		{
+			"code": "BELLA20",
+			"description": "20% discount on first online order",
+			"discountType": "percentage",
+			"discountValue": "20%",
+			"validTo": "2025-12-31",
+			"applicableProducts": "All menu items"
+		}
+	],
+	"communications": {
+		"social": {
+			"facebook": "https://facebook.com/bellapizzeria",
+			"instagram": "https://instagram.com/bellapizzeria",
+			"x": "https://x.com/bellapizzeria"
+		},
+		"support": {
+			"email": "orders@bella-pizzeria.com",
+			"phone": "+14155551234",
+			"languages": [
+				"en",
+				"it",
+				"es"
+			]
+		}
+	},
+	"platformAccounts": {
+		"google": {
+			"businessProfileId": "ChIJxxxxxx"
+		},
+		"facebook": {
+			"pageId": "bellapizzeria"
+		}
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"preferredSources": [
+			"https://bella-pizzeria.com/menu"
+		],
+		"contentNotes": "Italian restaurant with complete menu. Prices in USD. Delivery available through UberEats and DoorDash."
+	},
+	"keywords": {
+		"default": "pizza, pasta, italian, restaurant, San Francisco, delivery, mozzarella, tiramisu, carbonara",
+		"translations": {
+			"it": "pizza, pasta, italiano, ristorante, San Francisco, consegna, mozzarella, tiramisu, carbonara"
+		}
+	}
+}

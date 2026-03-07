@@ -1,0 +1,344 @@
+{
+	"language": "en",
+	"availableLanguages": ["en", "de"],
+	"domain": "speedkarting.de",
+	"canonicalUrl": "https://speedkarting.de/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-01-22T10:00:00Z",
+		"createdAt": "2024-01-15T10:00:00Z",
+		"updateFrequency": "monthly"
+	},
+	"organization": {
+		"legalName": "Speed Karting GmbH",
+		"brandName": {
+			"default": "Speed Karting",
+			"translations": {
+				"de": "Speed Karting"
+			}
+		},
+		"entityType": "company",
+		"legalForm": "GmbH",
+		"industry": "motorsport",
+		"description": {
+			"default": "Germany's premier indoor karting complex. Tracks for adults and kids, group races, corporate events.",
+			"translations": {
+				"de": "Deutschlands führender Indoor-Karting-Komplex. Strecken für Erwachsene und Kinder, Gruppenrennen, Firmenevents."
+			}
+		},
+		"tagline": {
+			"default": "Pure adrenaline on the fastest track in the country",
+			"translations": {
+				"de": "Pure Adrenalin auf der schnellsten Strecke des Landes"
+			}
+		},
+		"foundedDate": "2019-09-01",
+		"employees": 15,
+		"website": "https://speedkarting.de",
+		"contactEmail": "booking@speedkarting.de",
+		"contactPhone": "+4930551234",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "DE",
+				"registrationNumber": "HRB 123456",
+				"taxId": "DE123456789",
+				"vatNumber": "DE123456789"
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": ["motorsport", "karting", "indoor-karting"],
+		"mccCode": "7941",
+		"primaryProducts": ["go-kart-racing", "events", "corporate-events"],
+		"secondaryProducts": ["birthday-parties", "team-building"],
+		"targetMarket": ["B2C", "B2B"],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-1",
+			"type": "headquarters",
+			"name": "Speed Karting Arena",
+			"address": {
+				"street": "Industriestraße 100",
+				"city": "Berlin",
+				"region": "Berlin",
+				"postalCode": "10115",
+				"country": "DE"
+			},
+			"coordinates": {
+				"latitude": 52.5200,
+				"longitude": 13.4050
+			},
+			"businessHours": {
+				"monday": "14:00-22:00",
+				"tuesday": "14:00-22:00",
+				"wednesday": "14:00-22:00",
+				"thursday": "14:00-22:00",
+				"friday": "14:00-24:00",
+				"saturday": "10:00-24:00",
+				"sunday": "10:00-22:00",
+				"timezone": "Europe/Berlin"
+			}
+		}
+	],
+	"catalog": {
+		"defaultCurrency": "EUR",
+		"packages": [
+			{
+				"id": "adult-10min",
+				"name": {
+					"default": "Adult Race - 10 minutes",
+					"translations": {
+						"de": "Erwachsenenrennen - 10 Minuten"
+					}
+				},
+				"description": {
+					"default": "10-minute race on the adult track with 270cc karts",
+					"translations": {
+						"de": "10-minütiges Rennen auf der Erwachsenenstrecke mit 270cc Karts"
+					}
+				},
+				"price": 75,
+				"pricePerPerson": true,
+				"duration": "10 min",
+				"includes": [
+					"Helmet and equipment",
+					"Safety briefing",
+					"Locker room access"
+				],
+				"minParticipants": 1,
+				"maxParticipants": 10,
+				"ageRequirement": "16+ years, min. 150cm",
+				"requirements": [
+					"Minimum age 16 years",
+					"Minimum height 150cm",
+					"Closed-toe shoes required"
+				],
+				"bookingUrl": "https://speedkarting.de/booking",
+				"popular": true,
+				"available": true
+			},
+			{
+				"id": "adult-20min",
+				"name": {
+					"default": "Adult Race - 20 minutes",
+					"translations": {
+						"de": "Erwachsenenrennen - 20 Minuten"
+					}
+				},
+				"description": {
+					"default": "Extended 20-minute race for the complete experience",
+					"translations": {
+						"de": "Verlängertes 20-minütiges Rennen für das komplette Erlebnis"
+					}
+				},
+				"price": 130,
+				"pricePerPerson": true,
+				"duration": "20 min",
+				"includes": [
+					"Helmet and equipment",
+					"Safety briefing",
+					"Locker room access",
+					"Results and lap times"
+				],
+				"minParticipants": 1,
+				"maxParticipants": 10,
+				"ageRequirement": "16+ years",
+				"bookingUrl": "https://speedkarting.de/booking",
+				"popular": true,
+				"available": true
+			},
+			{
+				"id": "kids-8min",
+				"name": {
+					"default": "Kids Race - 8 minutes",
+					"translations": {
+						"de": "Kinderrennen - 8 Minuten"
+					}
+				},
+				"description": {
+					"default": "Kids race on the special track with 120cc karts",
+					"translations": {
+						"de": "Kinderrennen auf der Sonderstrecke mit 120cc Karts"
+					}
+				},
+				"price": 55,
+				"pricePerPerson": true,
+				"duration": "8 min",
+				"includes": [
+					"Adapted helmet and equipment",
+					"Dedicated instructor",
+					"Certificate of participation"
+				],
+				"minParticipants": 1,
+				"maxParticipants": 6,
+				"ageRequirement": "8-15 years, min. 125cm",
+				"requirements": [
+					"Age 8-15 years",
+					"Minimum height 125cm",
+					"Parental consent required"
+				],
+				"bookingUrl": "https://speedkarting.de/kids-booking",
+				"available": true
+			},
+			{
+				"id": "group-race",
+				"name": {
+					"default": "Group Race (min. 6 people)",
+					"translations": {
+						"de": "Gruppenrennen (min. 6 Personen)"
+					}
+				},
+				"description": {
+					"default": "Grand Prix race format with qualifications and final. Ideal for parties and team building.",
+					"translations": {
+						"de": "Grand-Prix-Rennformat mit Qualifikation und Finale. Ideal für Partys und Teambuilding."
+					}
+				},
+				"price": 100,
+				"pricePerPerson": true,
+				"duration": "1.5 hours",
+				"includes": [
+					"3 race sessions",
+					"Qualifications + Semi-final + Final",
+					"Podium and prizes",
+					"Group photos",
+					"Soft drinks"
+				],
+				"minParticipants": 6,
+				"maxParticipants": 20,
+				"ageRequirement": "16+",
+				"bookingUrl": "https://speedkarting.de/group-booking",
+				"popular": true,
+				"available": true
+			},
+			{
+				"id": "corporate-event",
+				"name": {
+					"default": "Corporate Event",
+					"translations": {
+						"de": "Firmenevent"
+					}
+				},
+				"description": {
+					"default": "Complete package for corporate teams: races, catering, private room.",
+					"translations": {
+						"de": "Komplettpaket für Firmenteams: Rennen, Catering, Privatraum."
+					}
+				},
+				"price": 150,
+				"pricePerPerson": true,
+				"duration": "3 hours",
+				"includes": [
+					"Exclusive track access",
+					"Custom championship format",
+					"Catering (pizza, drinks)",
+					"Private room for briefing",
+					"Custom trophies",
+					"Professional photos"
+				],
+				"minParticipants": 10,
+				"maxParticipants": 40,
+				"ageRequirement": "18+",
+				"bookingUrl": "https://speedkarting.de/corporate",
+				"available": true
+			},
+			{
+				"id": "birthday-kids",
+				"name": {
+					"default": "Kids Birthday Party",
+					"translations": {
+						"de": "Kindergeburtstag"
+					}
+				},
+				"description": {
+					"default": "Complete party with races, cake and entertainers",
+					"translations": {
+						"de": "Komplette Party mit Rennen, Torte und Animateuren"
+					}
+				},
+				"price": 1200,
+				"pricePerPerson": false,
+				"duration": "2.5 hours",
+				"includes": [
+					"2 race sessions for max. 10 kids",
+					"Birthday cake",
+					"Drinks and snacks",
+					"Entertainer",
+					"Certificate for each child",
+					"Gift for birthday child"
+				],
+				"minParticipants": 6,
+				"maxParticipants": 10,
+				"ageRequirement": "8-15 years",
+				"bookingUrl": "https://speedkarting.de/parties",
+				"image": "https://speedkarting.de/images/birthday-party.jpg",
+				"available": true
+			}
+		],
+		"priceListUrl": "https://speedkarting.de/pricing"
+	},
+	"promotions": [
+		{
+			"code": "SPEED10",
+			"description": "10% discount for online bookings",
+			"discountType": "percentage",
+			"discountValue": "10%",
+			"validTo": "2025-06-30",
+			"termsUrl": "https://speedkarting.de/terms"
+		},
+		{
+			"code": "GRUP20",
+			"description": "20% discount for groups over 10 people",
+			"discountType": "percentage",
+			"discountValue": "20%",
+			"applicableProducts": "Group and corporate packages"
+		}
+	],
+	"communications": {
+		"social": {
+			"facebook": "https://facebook.com/speedkarting",
+			"instagram": "https://instagram.com/speedkarting",
+			"youtube": "https://youtube.com/speedkarting",
+			"x": "https://x.com/speedkarting"
+		},
+		"messaging": {
+			"whatsapp": {
+				"number": "+4930551234"
+			}
+		},
+		"support": {
+			"email": "info@speedkarting.de",
+			"phone": "+4930551234",
+			"languages": ["en", "de"]
+		}
+	},
+	"platformAccounts": {
+		"google": {
+			"businessProfileId": "ChIJzzzzzz"
+		},
+		"facebook": {
+			"pageId": "speedkarting"
+		},
+		"instagram": {
+			"username": "speedkarting"
+		}
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"contentNotes": "Indoor karting complex in Berlin. Online or phone bookings. Separate tracks for adults (270cc) and kids (120cc). Corporate events and parties."
+	},
+	"keywords": {
+		"default": "karting, go kart, racing, motorsport, Berlin, team building, parties, corporate events, adrenaline",
+		"translations": {
+			"de": "karting, go kart, rennen, motorsport, Berlin, teamevent, parties, firmenevents, adrenalin"
+		}
+	}
+}

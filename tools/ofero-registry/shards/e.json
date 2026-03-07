@@ -1,0 +1,50 @@
+{
+  "shard": "e",
+  "description": "Partners with domains starting with 'e'",
+  "lastUpdated": "2026-01-27T12:00:00Z",
+  "count": 3,
+  "partners": {
+    "example.com": {
+      "verified": true,
+      "verifiedAt": "2025-06-15T10:30:00Z",
+      "license": {
+        "tier": "enterprise",
+        "lifetime": true,
+        "expiresAt": null
+      },
+      "organization": {
+        "name": "Example Corporation",
+        "country": "US"
+      },
+      "oferoJsonUrl": "https://example.com/.well-known/ofero.json"
+    },
+    "empresa.es": {
+      "verified": true,
+      "verifiedAt": "2025-08-20T14:15:00Z",
+      "license": {
+        "tier": "business",
+        "lifetime": false,
+        "expiresAt": "2026-08-20T00:00:00Z"
+      },
+      "organization": {
+        "name": "Empresa Española SL",
+        "country": "ES"
+      },
+      "oferoJsonUrl": "https://empresa.es/.well-known/ofero.json"
+    },
+    "exemplu.ro": {
+      "verified": true,
+      "verifiedAt": "2025-01-10T09:00:00Z",
+      "license": {
+        "tier": "basic",
+        "lifetime": false,
+        "expiresAt": "2026-01-10T00:00:00Z"
+      },
+      "organization": {
+        "name": "Exemplu SRL",
+        "country": "RO"
+      },
+      "oferoJsonUrl": "https://exemplu.ro/.well-known/ofero.json"
+    }
+  }
+}

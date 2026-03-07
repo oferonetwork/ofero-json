@@ -1,0 +1,31 @@
+{
+  "language": "en",
+  "domain": "example.com",
+  "canonicalUrl": "https://example.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "1.0.0",
+    "schemaVersion": "ofero-metadata-1.0",
+    "lastUpdated": "2025-01-15T10:00:00Z",
+    "createdAt": "2025-01-15T10:00:00Z"
+  },
+  "organization": {
+    "legalName": "Example Company LLC",
+    "brandName": "Example",
+    "entityType": "company",
+    "legalForm": "LLC",
+    "description": "A minimal example ofero.json file with only required fields",
+    "website": "https://example.com",
+    "contactEmail": "contact@example.com",
+    "contactPhone": "+1234567890",
+    "identifiers": {
+      "global": {},
+      "primaryIncorporation": {
+        "country": "US",
+        "registrationNumber": "123456",
+        "taxId": "12-3456789",
+        "vatNumber": ""
+      },
+      "perCountry": []
+    }
+  }
+}

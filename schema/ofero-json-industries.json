@@ -1,0 +1,1619 @@
+{
+	"version": "1.0.0",
+	"lastUpdated": "2025-01-15",
+	"description": "Hierarchical industry taxonomy for ofero.json business classification",
+	"industries": [
+		{
+			"id": "food-service",
+			"label": "Food Service",
+			"level": 1,
+			"parent": null,
+			"description": "Food and beverage service providers"
+		},
+		{
+			"id": "restaurant",
+			"label": "Restaurant",
+			"level": 2,
+			"parent": "food-service",
+			"description": "Full-service restaurants"
+		},
+		{
+			"id": "fast-food",
+			"label": "Fast Food",
+			"level": 3,
+			"parent": "restaurant",
+			"description": "Quick service restaurants"
+		},
+		{
+			"id": "fine-dining",
+			"label": "Fine Dining",
+			"level": 3,
+			"parent": "restaurant",
+			"description": "Upscale dining establishments"
+		},
+		{
+			"id": "casual-dining",
+			"label": "Casual Dining",
+			"level": 3,
+			"parent": "restaurant",
+			"description": "Casual sit-down restaurants"
+		},
+		{
+			"id": "burger-chain",
+			"label": "Burger Chain",
+			"level": 4,
+			"parent": "fast-food",
+			"description": "Burger-focused fast food chains"
+		},
+		{
+			"id": "pizza-chain",
+			"label": "Pizza Chain",
+			"level": 4,
+			"parent": "fast-food",
+			"description": "Pizza-focused fast food chains"
+		},
+		{
+			"id": "sushi-restaurant",
+			"label": "Sushi Restaurant",
+			"level": 4,
+			"parent": "fine-dining",
+			"description": "Japanese sushi restaurants"
+		},
+		{
+			"id": "vegan-restaurant",
+			"label": "Vegan Restaurant",
+			"level": 4,
+			"parent": "casual-dining",
+			"description": "Plant-based dining establishments"
+		},
+		{
+			"id": "cafe",
+			"label": "Cafe",
+			"level": 2,
+			"parent": "food-service",
+			"description": "Coffee shops and cafes"
+		},
+		{
+			"id": "coffee-shop",
+			"label": "Coffee Shop",
+			"level": 3,
+			"parent": "cafe",
+			"description": "Coffee-focused establishments"
+		},
+		{
+			"id": "specialty-coffee",
+			"label": "Specialty Coffee",
+			"level": 4,
+			"parent": "coffee-shop",
+			"description": "Artisan specialty coffee shops"
+		},
+		{
+			"id": "third-wave-coffee",
+			"label": "Third Wave Coffee",
+			"level": 4,
+			"parent": "coffee-shop",
+			"description": "Third wave coffee movement shops"
+		},
+		{
+			"id": "bakery",
+			"label": "Bakery",
+			"level": 2,
+			"parent": "food-service",
+			"description": "Bakeries and pastry shops"
+		},
+		{
+			"id": "artisan-bakery",
+			"label": "Artisan Bakery",
+			"level": 3,
+			"parent": "bakery",
+			"description": "Craft bakeries with artisan products"
+		},
+		{
+			"id": "retail",
+			"label": "Retail",
+			"level": 1,
+			"parent": null,
+			"description": "Physical retail stores"
+		},
+		{
+			"id": "grocery",
+			"label": "Grocery",
+			"level": 2,
+			"parent": "retail",
+			"description": "Grocery and food stores"
+		},
+		{
+			"id": "supermarket",
+			"label": "Supermarket",
+			"level": 3,
+			"parent": "grocery",
+			"description": "Large-scale supermarkets"
+		},
+		{
+			"id": "convenience-store",
+			"label": "Convenience Store",
+			"level": 3,
+			"parent": "grocery",
+			"description": "Small convenience stores"
+		},
+		{
+			"id": "organic-grocery",
+			"label": "Organic Grocery",
+			"level": 4,
+			"parent": "supermarket",
+			"description": "Organic and natural food stores"
+		},
+		{
+			"id": "fashion",
+			"label": "Fashion",
+			"level": 2,
+			"parent": "retail",
+			"description": "Clothing and fashion stores"
+		},
+		{
+			"id": "boutique",
+			"label": "Boutique",
+			"level": 3,
+			"parent": "fashion",
+			"description": "Small boutique clothing stores"
+		},
+		{
+			"id": "department-store",
+			"label": "Department Store",
+			"level": 3,
+			"parent": "fashion",
+			"description": "Large department stores"
+		},
+		{
+			"id": "electronics",
+			"label": "Electronics",
+			"level": 2,
+			"parent": "retail",
+			"description": "Electronics retail stores"
+		},
+		{
+			"id": "consumer-electronics",
+			"label": "Consumer Electronics",
+			"level": 3,
+			"parent": "electronics",
+			"description": "Consumer electronics retailers"
+		},
+		{
+			"id": "ecommerce",
+			"label": "E-commerce",
+			"level": 1,
+			"parent": null,
+			"description": "Online retail and marketplaces"
+		},
+		{
+			"id": "marketplace",
+			"label": "Marketplace",
+			"level": 2,
+			"parent": "ecommerce",
+			"description": "Online marketplaces"
+		},
+		{
+			"id": "b2b-marketplace",
+			"label": "B2B Marketplace",
+			"level": 3,
+			"parent": "marketplace",
+			"description": "Business-to-business marketplaces"
+		},
+		{
+			"id": "p2p-marketplace",
+			"label": "P2P Marketplace",
+			"level": 3,
+			"parent": "marketplace",
+			"description": "Peer-to-peer marketplaces"
+		},
+		{
+			"id": "fintech",
+			"label": "Fintech",
+			"level": 1,
+			"parent": null,
+			"description": "Financial technology companies"
+		},
+		{
+			"id": "banking",
+			"label": "Banking",
+			"level": 2,
+			"parent": "fintech",
+			"description": "Banking services"
+		},
+		{
+			"id": "commercial-banking",
+			"label": "Commercial Banking",
+			"level": 3,
+			"parent": "banking",
+			"description": "Commercial banking institutions"
+		},
+		{
+			"id": "investment-banking",
+			"label": "Investment Banking",
+			"level": 3,
+			"parent": "banking",
+			"description": "Investment banking services"
+		},
+		{
+			"id": "payments",
+			"label": "Payments",
+			"level": 2,
+			"parent": "fintech",
+			"description": "Payment processing services"
+		},
+		{
+			"id": "payment-processor",
+			"label": "Payment Processor",
+			"level": 3,
+			"parent": "payments",
+			"description": "Payment gateway providers"
+		},
+		{
+			"id": "lending",
+			"label": "Lending",
+			"level": 2,
+			"parent": "fintech",
+			"description": "Lending and credit services"
+		},
+		{
+			"id": "blockchain",
+			"label": "Blockchain",
+			"level": 1,
+			"parent": null,
+			"description": "Blockchain and cryptocurrency"
+		},
+		{
+			"id": "cryptocurrency",
+			"label": "Cryptocurrency",
+			"level": 1,
+			"parent": null,
+			"description": "Cryptocurrency platforms and services"
+		},
+		{
+			"id": "defi",
+			"label": "DeFi",
+			"level": 2,
+			"parent": "blockchain",
+			"description": "Decentralized finance protocols"
+		},
+		{
+			"id": "yield-farming",
+			"label": "Yield Farming",
+			"level": 3,
+			"parent": "defi",
+			"description": "Yield farming platforms"
+		},
+		{
+			"id": "dex",
+			"label": "DEX",
+			"level": 3,
+			"parent": "defi",
+			"description": "Decentralized exchanges"
+		},
+		{
+			"id": "defi-lending",
+			"label": "DeFi Lending",
+			"level": 4,
+			"parent": "yield-farming",
+			"description": "Decentralized lending protocols"
+		},
+		{
+			"id": "liquidity-pools",
+			"label": "Liquidity Pools",
+			"level": 4,
+			"parent": "dex",
+			"description": "Automated liquidity pool platforms"
+		},
+		{
+			"id": "automated-market-maker",
+			"label": "Automated Market Maker",
+			"level": 4,
+			"parent": "dex",
+			"description": "AMM protocols"
+		},
+		{
+			"id": "cex",
+			"label": "CEX",
+			"level": 3,
+			"parent": "cryptocurrency",
+			"description": "Centralized exchanges"
+		},
+		{
+			"id": "crypto-wallet",
+			"label": "Crypto Wallet",
+			"level": 3,
+			"parent": "cryptocurrency",
+			"description": "Cryptocurrency wallet providers"
+		},
+		{
+			"id": "crypto-payment-gateway",
+			"label": "Crypto Payment Gateway",
+			"level": 4,
+			"parent": "crypto-wallet",
+			"description": "Cryptocurrency payment processors"
+		},
+		{
+			"id": "nft",
+			"label": "NFT",
+			"level": 2,
+			"parent": "blockchain",
+			"description": "Non-fungible token platforms"
+		},
+		{
+			"id": "nft-marketplace",
+			"label": "NFT Marketplace",
+			"level": 3,
+			"parent": "nft",
+			"description": "NFT trading platforms"
+		},
+		{
+			"id": "nft-art",
+			"label": "NFT Art",
+			"level": 4,
+			"parent": "nft-marketplace",
+			"description": "Digital art NFT platforms"
+		},
+		{
+			"id": "nft-collectibles",
+			"label": "NFT Collectibles",
+			"level": 4,
+			"parent": "nft-marketplace",
+			"description": "Collectible NFT platforms"
+		},
+		{
+			"id": "technology",
+			"label": "Technology",
+			"level": 1,
+			"parent": null,
+			"description": "Technology companies and services"
+		},
+		{
+			"id": "software",
+			"label": "Software",
+			"level": 2,
+			"parent": "technology",
+			"description": "Software development and products"
+		},
+		{
+			"id": "saas",
+			"label": "SaaS",
+			"level": 2,
+			"parent": "technology",
+			"description": "Software as a Service"
+		},
+		{
+			"id": "mobile-app",
+			"label": "Mobile App",
+			"level": 3,
+			"parent": "software",
+			"description": "Mobile application development"
+		},
+		{
+			"id": "web-app",
+			"label": "Web App",
+			"level": 3,
+			"parent": "software",
+			"description": "Web application development"
+		},
+		{
+			"id": "cloud-platform",
+			"label": "Cloud Platform",
+			"level": 3,
+			"parent": "software",
+			"description": "Cloud computing platforms"
+		},
+		{
+			"id": "b2b-saas",
+			"label": "B2B SaaS",
+			"level": 3,
+			"parent": "saas",
+			"description": "Business-to-business SaaS"
+		},
+		{
+			"id": "b2c-saas",
+			"label": "B2C SaaS",
+			"level": 3,
+			"parent": "saas",
+			"description": "Business-to-consumer SaaS"
+		},
+		{
+			"id": "enterprise-saas",
+			"label": "Enterprise SaaS",
+			"level": 4,
+			"parent": "b2b-saas",
+			"description": "Enterprise software solutions"
+		},
+		{
+			"id": "smb-saas",
+			"label": "SMB SaaS",
+			"level": 4,
+			"parent": "b2b-saas",
+			"description": "Small-medium business SaaS"
+		},
+		{
+			"id": "hardware",
+			"label": "Hardware",
+			"level": 2,
+			"parent": "technology",
+			"description": "Hardware manufacturing and sales"
+		},
+		{
+			"id": "iot-devices",
+			"label": "IoT Devices",
+			"level": 3,
+			"parent": "hardware",
+			"description": "Internet of Things devices"
+		},
+		{
+			"id": "healthcare",
+			"label": "Healthcare",
+			"level": 1,
+			"parent": null,
+			"description": "Healthcare services and products"
+		},
+		{
+			"id": "telehealth",
+			"label": "Telehealth",
+			"level": 2,
+			"parent": "healthcare",
+			"description": "Remote healthcare services"
+		},
+		{
+			"id": "telemedicine",
+			"label": "Telemedicine",
+			"level": 3,
+			"parent": "telehealth",
+			"description": "Remote medical consultations"
+		},
+		{
+			"id": "telehealth-platform",
+			"label": "Telehealth Platform",
+			"level": 4,
+			"parent": "telemedicine",
+			"description": "Telehealth software platforms"
+		},
+		{
+			"id": "mental-health-app",
+			"label": "Mental Health App",
+			"level": 4,
+			"parent": "telemedicine",
+			"description": "Mental health applications"
+		},
+		{
+			"id": "pharmacy",
+			"label": "Pharmacy",
+			"level": 2,
+			"parent": "healthcare",
+			"description": "Pharmacy services"
+		},
+		{
+			"id": "online-pharmacy",
+			"label": "Online Pharmacy",
+			"level": 3,
+			"parent": "pharmacy",
+			"description": "Online pharmacy services"
+		},
+		{
+			"id": "education",
+			"label": "Education",
+			"level": 1,
+			"parent": null,
+			"description": "Educational services and institutions"
+		},
+		{
+			"id": "edtech",
+			"label": "EdTech",
+			"level": 2,
+			"parent": "education",
+			"description": "Educational technology"
+		},
+		{
+			"id": "online-courses",
+			"label": "Online Courses",
+			"level": 3,
+			"parent": "edtech",
+			"description": "Online learning platforms"
+		},
+		{
+			"id": "training",
+			"label": "Training",
+			"level": 2,
+			"parent": "education",
+			"description": "Professional training services"
+		},
+		{
+			"id": "corporate-training",
+			"label": "Corporate Training",
+			"level": 3,
+			"parent": "training",
+			"description": "Corporate training programs"
+		},
+		{
+			"id": "hospitality",
+			"label": "Hospitality",
+			"level": 1,
+			"parent": null,
+			"description": "Hospitality and accommodation"
+		},
+		{
+			"id": "hotels",
+			"label": "Hotels",
+			"level": 2,
+			"parent": "hospitality",
+			"description": "Hotel accommodations"
+		},
+		{
+			"id": "luxury-hotels",
+			"label": "Luxury Hotels",
+			"level": 3,
+			"parent": "hotels",
+			"description": "Luxury hotel chains"
+		},
+		{
+			"id": "budget-hotels",
+			"label": "Budget Hotels",
+			"level": 3,
+			"parent": "hotels",
+			"description": "Budget accommodation"
+		},
+		{
+			"id": "resorts",
+			"label": "Resorts",
+			"level": 2,
+			"parent": "hospitality",
+			"description": "Resort properties"
+		},
+		{
+			"id": "eco-resorts",
+			"label": "Eco Resorts",
+			"level": 3,
+			"parent": "resorts",
+			"description": "Eco-friendly resorts"
+		},
+		{
+			"id": "travel",
+			"label": "Travel",
+			"level": 1,
+			"parent": null,
+			"description": "Travel and tourism services"
+		},
+		{
+			"id": "tourism",
+			"label": "Tourism",
+			"level": 2,
+			"parent": "travel",
+			"description": "Tourism services"
+		},
+		{
+			"id": "adventure-tourism",
+			"label": "Adventure Tourism",
+			"level": 3,
+			"parent": "tourism",
+			"description": "Adventure travel services"
+		},
+		{
+			"id": "flights",
+			"label": "Flights",
+			"level": 2,
+			"parent": "travel",
+			"description": "Flight booking services"
+		},
+		{
+			"id": "flight-booking",
+			"label": "Flight Booking",
+			"level": 3,
+			"parent": "flights",
+			"description": "Online flight booking platforms"
+		},
+		{
+			"id": "car-rental",
+			"label": "Car Rental",
+			"level": 3,
+			"parent": "travel",
+			"description": "Car rental services"
+		},
+		{
+			"id": "entertainment",
+			"label": "Entertainment",
+			"level": 1,
+			"parent": null,
+			"description": "Entertainment and media"
+		},
+		{
+			"id": "gaming",
+			"label": "Gaming",
+			"level": 2,
+			"parent": "entertainment",
+			"description": "Video games and gaming"
+		},
+		{
+			"id": "video-games",
+			"label": "Video Games",
+			"level": 3,
+			"parent": "gaming",
+			"description": "Video game development"
+		},
+		{
+			"id": "mobile-games",
+			"label": "Mobile Games",
+			"level": 3,
+			"parent": "gaming",
+			"description": "Mobile game development"
+		},
+		{
+			"id": "play-to-earn-games",
+			"label": "Play-to-Earn Games",
+			"level": 4,
+			"parent": "video-games",
+			"description": "Blockchain play-to-earn games"
+		},
+		{
+			"id": "media",
+			"label": "Media",
+			"level": 1,
+			"parent": null,
+			"description": "Media and content creation"
+		},
+		{
+			"id": "music",
+			"label": "Music",
+			"level": 2,
+			"parent": "media",
+			"description": "Music production and distribution"
+		},
+		{
+			"id": "music-streaming",
+			"label": "Music Streaming",
+			"level": 3,
+			"parent": "music",
+			"description": "Music streaming services"
+		},
+		{
+			"id": "video",
+			"label": "Video",
+			"level": 2,
+			"parent": "media",
+			"description": "Video production and distribution"
+		},
+		{
+			"id": "video-streaming",
+			"label": "Video Streaming",
+			"level": 3,
+			"parent": "video",
+			"description": "Video streaming platforms"
+		},
+		{
+			"id": "streaming",
+			"label": "Streaming",
+			"level": 2,
+			"parent": "media",
+			"description": "Live streaming services"
+		},
+		{
+			"id": "podcast",
+			"label": "Podcast",
+			"level": 3,
+			"parent": "streaming",
+			"description": "Podcast platforms"
+		},
+		{
+			"id": "manufacturing",
+			"label": "Manufacturing",
+			"level": 1,
+			"parent": null,
+			"description": "Manufacturing and production"
+		},
+		{
+			"id": "automotive",
+			"label": "Automotive",
+			"level": 2,
+			"parent": "manufacturing",
+			"description": "Automotive manufacturing"
+		},
+		{
+			"id": "electric-vehicles",
+			"label": "Electric Vehicles",
+			"level": 3,
+			"parent": "automotive",
+			"description": "Electric vehicle manufacturers"
+		},
+		{
+			"id": "hybrid-vehicles",
+			"label": "Hybrid Vehicles",
+			"level": 3,
+			"parent": "automotive",
+			"description": "Hybrid vehicle manufacturers"
+		},
+		{
+			"id": "construction",
+			"label": "Construction",
+			"level": 2,
+			"parent": "manufacturing",
+			"description": "Construction services"
+		},
+		{
+			"id": "residential-construction",
+			"label": "Residential Construction",
+			"level": 3,
+			"parent": "construction",
+			"description": "Residential building"
+		},
+		{
+			"id": "commercial-construction",
+			"label": "Commercial Construction",
+			"level": 3,
+			"parent": "construction",
+			"description": "Commercial building"
+		},
+		{
+			"id": "professional-services",
+			"label": "Professional Services",
+			"level": 1,
+			"parent": null,
+			"description": "Professional business services"
+		},
+		{
+			"id": "consulting",
+			"label": "Consulting",
+			"level": 2,
+			"parent": "professional-services",
+			"description": "Business consulting"
+		},
+		{
+			"id": "tax-consulting",
+			"label": "Tax Consulting",
+			"level": 3,
+			"parent": "consulting",
+			"description": "Tax advisory services"
+		},
+		{
+			"id": "legal",
+			"label": "Legal",
+			"level": 2,
+			"parent": "professional-services",
+			"description": "Legal services"
+		},
+		{
+			"id": "legal-services",
+			"label": "Legal Services",
+			"level": 3,
+			"parent": "legal",
+			"description": "General legal services"
+		},
+		{
+			"id": "law-firm",
+			"label": "Law Firm",
+			"level": 3,
+			"parent": "legal",
+			"description": "Law firm practices"
+		},
+		{
+			"id": "accounting",
+			"label": "Accounting",
+			"level": 2,
+			"parent": "professional-services",
+			"description": "Accounting services"
+		},
+		{
+			"id": "accounting-firm",
+			"label": "Accounting Firm",
+			"level": 3,
+			"parent": "accounting",
+			"description": "Accounting firm services"
+		},
+		{
+			"id": "marketing",
+			"label": "Marketing",
+			"level": 2,
+			"parent": "professional-services",
+			"description": "Marketing services"
+		},
+		{
+			"id": "digital-marketing",
+			"label": "Digital Marketing",
+			"level": 3,
+			"parent": "marketing",
+			"description": "Digital marketing agencies"
+		},
+		{
+			"id": "seo-agency",
+			"label": "SEO Agency",
+			"level": 3,
+			"parent": "marketing",
+			"description": "Search engine optimization"
+		},
+		{
+			"id": "real-estate",
+			"label": "Real Estate",
+			"level": 1,
+			"parent": null,
+			"description": "Real estate services"
+		},
+		{
+			"id": "proptech",
+			"label": "PropTech",
+			"level": 2,
+			"parent": "real-estate",
+			"description": "Property technology"
+		},
+		{
+			"id": "residential-real-estate",
+			"label": "Residential Real Estate",
+			"level": 3,
+			"parent": "real-estate",
+			"description": "Residential property"
+		},
+		{
+			"id": "commercial-real-estate",
+			"label": "Commercial Real Estate",
+			"level": 3,
+			"parent": "real-estate",
+			"description": "Commercial property"
+		},
+		{
+			"id": "real-estate-agency",
+			"label": "Real Estate Agency",
+			"level": 4,
+			"parent": "residential-real-estate",
+			"description": "Real estate brokerage"
+		},
+		{
+			"id": "agriculture",
+			"label": "Agriculture",
+			"level": 1,
+			"parent": null,
+			"description": "Agriculture and farming"
+		},
+		{
+			"id": "agtech",
+			"label": "AgTech",
+			"level": 2,
+			"parent": "agriculture",
+			"description": "Agricultural technology"
+		},
+		{
+			"id": "vertical-farming",
+			"label": "Vertical Farming",
+			"level": 3,
+			"parent": "agtech",
+			"description": "Vertical farming operations"
+		},
+		{
+			"id": "organic-farming",
+			"label": "Organic Farming",
+			"level": 3,
+			"parent": "agriculture",
+			"description": "Organic agricultural production"
+		},
+		{
+			"id": "energy",
+			"label": "Energy",
+			"level": 1,
+			"parent": null,
+			"description": "Energy production and distribution"
+		},
+		{
+			"id": "renewable-energy",
+			"label": "Renewable Energy",
+			"level": 2,
+			"parent": "energy",
+			"description": "Renewable energy sources"
+		},
+		{
+			"id": "solar-energy",
+			"label": "Solar Energy",
+			"level": 3,
+			"parent": "renewable-energy",
+			"description": "Solar power generation"
+		},
+		{
+			"id": "wind-energy",
+			"label": "Wind Energy",
+			"level": 3,
+			"parent": "renewable-energy",
+			"description": "Wind power generation"
+		},
+		{
+			"id": "oil-gas",
+			"label": "Oil & Gas",
+			"level": 2,
+			"parent": "energy",
+			"description": "Oil and gas industry"
+		},
+		{
+			"id": "crude-oil",
+			"label": "Crude Oil",
+			"level": 3,
+			"parent": "oil-gas",
+			"description": "Oil extraction and refining"
+		},
+		{
+			"id": "natural-gas",
+			"label": "Natural Gas",
+			"level": 3,
+			"parent": "oil-gas",
+			"description": "Natural gas production"
+		},
+		{
+			"id": "transportation",
+			"label": "Transportation",
+			"level": 1,
+			"parent": null,
+			"description": "Transportation and logistics"
+		},
+		{
+			"id": "logistics",
+			"label": "Logistics",
+			"level": 2,
+			"parent": "transportation",
+			"description": "Logistics services"
+		},
+		{
+			"id": "freight",
+			"label": "Freight",
+			"level": 2,
+			"parent": "transportation",
+			"description": "Freight services"
+		},
+		{
+			"id": "freight-forwarding",
+			"label": "Freight Forwarding",
+			"level": 3,
+			"parent": "freight",
+			"description": "Freight forwarding services"
+		},
+		{
+			"id": "last-mile-delivery",
+			"label": "Last Mile Delivery",
+			"level": 3,
+			"parent": "logistics",
+			"description": "Last mile delivery services"
+		},
+		{
+			"id": "telecommunications",
+			"label": "Telecommunications",
+			"level": 1,
+			"parent": null,
+			"description": "Telecommunications services"
+		},
+		{
+			"id": "telecom-carrier",
+			"label": "Telecom Carrier",
+			"level": 2,
+			"parent": "telecommunications",
+			"description": "Telecommunications carriers"
+		},
+		{
+			"id": "mobile-carrier",
+			"label": "Mobile Carrier",
+			"level": 3,
+			"parent": "telecom-carrier",
+			"description": "Mobile network operators"
+		},
+		{
+			"id": "internet-provider",
+			"label": "Internet Provider",
+			"level": 2,
+			"parent": "telecommunications",
+			"description": "Internet service providers"
+		},
+		{
+			"id": "fiber-internet",
+			"label": "Fiber Internet",
+			"level": 3,
+			"parent": "internet-provider",
+			"description": "Fiber optic internet providers"
+		},
+		{
+			"id": "nonprofit",
+			"label": "Nonprofit",
+			"level": 1,
+			"parent": null,
+			"description": "Nonprofit organizations"
+		},
+		{
+			"id": "charity",
+			"label": "Charity",
+			"level": 2,
+			"parent": "nonprofit",
+			"description": "Charitable organizations"
+		},
+		{
+			"id": "crowdfunding",
+			"label": "Crowdfunding",
+			"level": 3,
+			"parent": "charity",
+			"description": "Crowdfunding platforms"
+		},
+		{
+			"id": "foundation",
+			"label": "Foundation",
+			"level": 2,
+			"parent": "nonprofit",
+			"description": "Foundation organizations"
+		},
+		{
+			"id": "ngo",
+			"label": "NGO",
+			"level": 2,
+			"parent": "nonprofit",
+			"description": "Non-governmental organizations"
+		},
+		{
+			"id": "microfinance",
+			"label": "Microfinance",
+			"level": 3,
+			"parent": "ngo",
+			"description": "Microfinance institutions"
+		},
+		{
+			"id": "government",
+			"label": "Government",
+			"level": 1,
+			"parent": null,
+			"description": "Government organizations"
+		},
+		{
+			"id": "public-services",
+			"label": "Public Services",
+			"level": 2,
+			"parent": "government",
+			"description": "Public service agencies"
+		},
+		{
+			"id": "personal-services",
+			"label": "Personal Services",
+			"level": 1,
+			"parent": null,
+			"description": "Personal care and wellness"
+		},
+		{
+			"id": "beauty",
+			"label": "Beauty",
+			"level": 2,
+			"parent": "personal-services",
+			"description": "Beauty services"
+		},
+		{
+			"id": "hair-salon",
+			"label": "Hair Salon",
+			"level": 3,
+			"parent": "beauty",
+			"description": "Hair styling salons"
+		},
+		{
+			"id": "spa",
+			"label": "Spa",
+			"level": 3,
+			"parent": "beauty",
+			"description": "Spa and wellness centers"
+		},
+		{
+			"id": "fitness",
+			"label": "Fitness",
+			"level": 2,
+			"parent": "personal-services",
+			"description": "Fitness and exercise"
+		},
+		{
+			"id": "gym",
+			"label": "Gym",
+			"level": 3,
+			"parent": "fitness",
+			"description": "Fitness gyms"
+		},
+		{
+			"id": "yoga-studio",
+			"label": "Yoga Studio",
+			"level": 3,
+			"parent": "fitness",
+			"description": "Yoga and meditation studios"
+		},
+		{
+			"id": "fitness-app",
+			"label": "Fitness App",
+			"level": 4,
+			"parent": "gym",
+			"description": "Digital fitness applications"
+		},
+		{
+			"id": "meditation-app",
+			"label": "Meditation App",
+			"level": 4,
+			"parent": "yoga-studio",
+			"description": "Meditation and mindfulness apps"
+		},
+		{
+			"id": "wellness",
+			"label": "Wellness",
+			"level": 2,
+			"parent": "personal-services",
+			"description": "Wellness services"
+		},
+		{
+			"id": "automotive-services",
+			"label": "Automotive Services",
+			"level": 1,
+			"parent": null,
+			"description": "Automotive repair and maintenance services"
+		},
+		{
+			"id": "car-repair",
+			"label": "Car Repair",
+			"level": 2,
+			"parent": "automotive-services",
+			"description": "General car repair shops"
+		},
+		{
+			"id": "mechanic-shop",
+			"label": "Mechanic Shop",
+			"level": 3,
+			"parent": "car-repair",
+			"description": "General mechanical repairs"
+		},
+		{
+			"id": "body-shop",
+			"label": "Body Shop",
+			"level": 3,
+			"parent": "car-repair",
+			"description": "Auto body repair and painting"
+		},
+		{
+			"id": "tire-service",
+			"label": "Tire Service",
+			"level": 3,
+			"parent": "car-repair",
+			"description": "Tire sales and service"
+		},
+		{
+			"id": "oil-change",
+			"label": "Oil Change",
+			"level": 3,
+			"parent": "car-repair",
+			"description": "Quick oil change services"
+		},
+		{
+			"id": "car-wash",
+			"label": "Car Wash",
+			"level": 2,
+			"parent": "automotive-services",
+			"description": "Car washing and detailing"
+		},
+		{
+			"id": "auto-detailing",
+			"label": "Auto Detailing",
+			"level": 3,
+			"parent": "car-wash",
+			"description": "Professional car detailing services"
+		},
+		{
+			"id": "car-dealership",
+			"label": "Car Dealership",
+			"level": 2,
+			"parent": "automotive-services",
+			"description": "New and used car sales"
+		},
+		{
+			"id": "used-car-dealer",
+			"label": "Used Car Dealer",
+			"level": 3,
+			"parent": "car-dealership",
+			"description": "Used vehicle sales"
+		},
+		{
+			"id": "motorsport",
+			"label": "Motorsport",
+			"level": 1,
+			"parent": null,
+			"description": "Motorsport and racing activities"
+		},
+		{
+			"id": "karting",
+			"label": "Karting",
+			"level": 2,
+			"parent": "motorsport",
+			"description": "Go-kart racing facilities"
+		},
+		{
+			"id": "indoor-karting",
+			"label": "Indoor Karting",
+			"level": 3,
+			"parent": "karting",
+			"description": "Indoor go-kart tracks"
+		},
+		{
+			"id": "outdoor-karting",
+			"label": "Outdoor Karting",
+			"level": 3,
+			"parent": "karting",
+			"description": "Outdoor go-kart tracks"
+		},
+		{
+			"id": "racing-track",
+			"label": "Racing Track",
+			"level": 2,
+			"parent": "motorsport",
+			"description": "Professional racing circuits"
+		},
+		{
+			"id": "driving-experience",
+			"label": "Driving Experience",
+			"level": 2,
+			"parent": "motorsport",
+			"description": "Supercar and racing driving experiences"
+		},
+		{
+			"id": "creative-services",
+			"label": "Creative Services",
+			"level": 1,
+			"parent": null,
+			"description": "Creative and design services"
+		},
+		{
+			"id": "photography",
+			"label": "Photography",
+			"level": 2,
+			"parent": "creative-services",
+			"description": "Photography services"
+		},
+		{
+			"id": "portrait-photography",
+			"label": "Portrait Photography",
+			"level": 3,
+			"parent": "photography",
+			"description": "Portrait and headshot photography"
+		},
+		{
+			"id": "wedding-photography",
+			"label": "Wedding Photography",
+			"level": 3,
+			"parent": "photography",
+			"description": "Wedding and event photography"
+		},
+		{
+			"id": "commercial-photography",
+			"label": "Commercial Photography",
+			"level": 3,
+			"parent": "photography",
+			"description": "Commercial and product photography"
+		},
+		{
+			"id": "modeling-agency",
+			"label": "Modeling Agency",
+			"level": 2,
+			"parent": "creative-services",
+			"description": "Model management and talent agencies"
+		},
+		{
+			"id": "fashion-modeling",
+			"label": "Fashion Modeling",
+			"level": 3,
+			"parent": "modeling-agency",
+			"description": "Fashion and runway modeling"
+		},
+		{
+			"id": "commercial-modeling",
+			"label": "Commercial Modeling",
+			"level": 3,
+			"parent": "modeling-agency",
+			"description": "Commercial and advertising modeling"
+		},
+		{
+			"id": "talent-agency",
+			"label": "Talent Agency",
+			"level": 3,
+			"parent": "modeling-agency",
+			"description": "Acting and entertainment talent"
+		},
+		{
+			"id": "graphic-design",
+			"label": "Graphic Design",
+			"level": 2,
+			"parent": "creative-services",
+			"description": "Graphic and visual design services"
+		},
+		{
+			"id": "branding-agency",
+			"label": "Branding Agency",
+			"level": 3,
+			"parent": "graphic-design",
+			"description": "Brand identity and design"
+		},
+		{
+			"id": "web-design",
+			"label": "Web Design",
+			"level": 3,
+			"parent": "graphic-design",
+			"description": "Website design services"
+		},
+		{
+			"id": "video-production",
+			"label": "Video Production",
+			"level": 2,
+			"parent": "creative-services",
+			"description": "Video and film production"
+		},
+		{
+			"id": "commercial-video",
+			"label": "Commercial Video",
+			"level": 3,
+			"parent": "video-production",
+			"description": "Advertising and corporate video"
+		},
+		{
+			"id": "film-production",
+			"label": "Film Production",
+			"level": 3,
+			"parent": "video-production",
+			"description": "Film and documentary production"
+		},
+		{
+			"id": "architecture",
+			"label": "Architecture",
+			"level": 1,
+			"parent": null,
+			"description": "Architectural design and planning"
+		},
+		{
+			"id": "architecture-firm",
+			"label": "Architecture Firm",
+			"level": 2,
+			"parent": "architecture",
+			"description": "Architectural design firms"
+		},
+		{
+			"id": "residential-architecture",
+			"label": "Residential Architecture",
+			"level": 3,
+			"parent": "architecture-firm",
+			"description": "Residential building design"
+		},
+		{
+			"id": "commercial-architecture",
+			"label": "Commercial Architecture",
+			"level": 3,
+			"parent": "architecture-firm",
+			"description": "Commercial building design"
+		},
+		{
+			"id": "landscape-architecture",
+			"label": "Landscape Architecture",
+			"level": 3,
+			"parent": "architecture-firm",
+			"description": "Landscape and outdoor design"
+		},
+		{
+			"id": "interior-design",
+			"label": "Interior Design",
+			"level": 2,
+			"parent": "architecture",
+			"description": "Interior design services"
+		},
+		{
+			"id": "residential-interior",
+			"label": "Residential Interior",
+			"level": 3,
+			"parent": "interior-design",
+			"description": "Home interior design"
+		},
+		{
+			"id": "commercial-interior",
+			"label": "Commercial Interior",
+			"level": 3,
+			"parent": "interior-design",
+			"description": "Office and commercial interior design"
+		},
+		{
+			"id": "urban-planning",
+			"label": "Urban Planning",
+			"level": 2,
+			"parent": "architecture",
+			"description": "Urban and city planning"
+		},
+		{
+			"id": "events",
+			"label": "Events",
+			"level": 1,
+			"parent": null,
+			"description": "Event planning and venues"
+		},
+		{
+			"id": "event-planning",
+			"label": "Event Planning",
+			"level": 2,
+			"parent": "events",
+			"description": "Event planning services"
+		},
+		{
+			"id": "wedding-planning",
+			"label": "Wedding Planning",
+			"level": 3,
+			"parent": "event-planning",
+			"description": "Wedding planning services"
+		},
+		{
+			"id": "corporate-events",
+			"label": "Corporate Events",
+			"level": 3,
+			"parent": "event-planning",
+			"description": "Corporate event management"
+		},
+		{
+			"id": "event-venue",
+			"label": "Event Venue",
+			"level": 2,
+			"parent": "events",
+			"description": "Event and party venues"
+		},
+		{
+			"id": "wedding-venue",
+			"label": "Wedding Venue",
+			"level": 3,
+			"parent": "event-venue",
+			"description": "Wedding reception venues"
+		},
+		{
+			"id": "conference-center",
+			"label": "Conference Center",
+			"level": 3,
+			"parent": "event-venue",
+			"description": "Conference and meeting venues"
+		},
+		{
+			"id": "catering",
+			"label": "Catering",
+			"level": 2,
+			"parent": "events",
+			"description": "Catering services"
+		},
+		{
+			"id": "food-delivery",
+			"label": "Food Delivery",
+			"level": 2,
+			"parent": "food-service",
+			"description": "Food delivery services"
+		},
+		{
+			"id": "meal-kit",
+			"label": "Meal Kit",
+			"level": 3,
+			"parent": "food-delivery",
+			"description": "Meal kit delivery services"
+		},
+		{
+			"id": "ghost-kitchen",
+			"label": "Ghost Kitchen",
+			"level": 3,
+			"parent": "food-delivery",
+			"description": "Delivery-only kitchens"
+		},
+		{
+			"id": "bar",
+			"label": "Bar",
+			"level": 2,
+			"parent": "food-service",
+			"description": "Bars and pubs"
+		},
+		{
+			"id": "cocktail-bar",
+			"label": "Cocktail Bar",
+			"level": 3,
+			"parent": "bar",
+			"description": "Cocktail lounges"
+		},
+		{
+			"id": "wine-bar",
+			"label": "Wine Bar",
+			"level": 3,
+			"parent": "bar",
+			"description": "Wine bars"
+		},
+		{
+			"id": "pub",
+			"label": "Pub",
+			"level": 3,
+			"parent": "bar",
+			"description": "Traditional pubs"
+		},
+		{
+			"id": "nightclub",
+			"label": "Nightclub",
+			"level": 2,
+			"parent": "entertainment",
+			"description": "Nightclubs and dance venues"
+		},
+		{
+			"id": "sports-recreation",
+			"label": "Sports & Recreation",
+			"level": 1,
+			"parent": null,
+			"description": "Sports and recreational facilities"
+		},
+		{
+			"id": "sports-facility",
+			"label": "Sports Facility",
+			"level": 2,
+			"parent": "sports-recreation",
+			"description": "Sports venues and facilities"
+		},
+		{
+			"id": "tennis-court",
+			"label": "Tennis Court",
+			"level": 3,
+			"parent": "sports-facility",
+			"description": "Tennis facilities"
+		},
+		{
+			"id": "swimming-pool",
+			"label": "Swimming Pool",
+			"level": 3,
+			"parent": "sports-facility",
+			"description": "Swimming facilities"
+		},
+		{
+			"id": "golf-course",
+			"label": "Golf Course",
+			"level": 3,
+			"parent": "sports-facility",
+			"description": "Golf courses and clubs"
+		},
+		{
+			"id": "bowling-alley",
+			"label": "Bowling Alley",
+			"level": 3,
+			"parent": "sports-facility",
+			"description": "Bowling centers"
+		},
+		{
+			"id": "escape-room",
+			"label": "Escape Room",
+			"level": 2,
+			"parent": "sports-recreation",
+			"description": "Escape room experiences"
+		},
+		{
+			"id": "amusement-park",
+			"label": "Amusement Park",
+			"level": 2,
+			"parent": "sports-recreation",
+			"description": "Theme and amusement parks"
+		},
+		{
+			"id": "pet-services",
+			"label": "Pet Services",
+			"level": 1,
+			"parent": null,
+			"description": "Pet care and services"
+		},
+		{
+			"id": "veterinary",
+			"label": "Veterinary",
+			"level": 2,
+			"parent": "pet-services",
+			"description": "Veterinary clinics"
+		},
+		{
+			"id": "pet-grooming",
+			"label": "Pet Grooming",
+			"level": 2,
+			"parent": "pet-services",
+			"description": "Pet grooming services"
+		},
+		{
+			"id": "pet-store",
+			"label": "Pet Store",
+			"level": 2,
+			"parent": "pet-services",
+			"description": "Pet supply stores"
+		},
+		{
+			"id": "pet-boarding",
+			"label": "Pet Boarding",
+			"level": 2,
+			"parent": "pet-services",
+			"description": "Pet boarding and daycare"
+		}
+	],
+	"totalIndustries": 232,
+	"levels": [1, 2, 3, 4]
+}

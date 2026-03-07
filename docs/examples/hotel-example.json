@@ -1,0 +1,138 @@
+{
+	"language": "en",
+	"availableLanguages": ["en", "ro", "de"],
+	"domain": "grandhotel.com",
+	"canonicalUrl": "https://grandhotel.com/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-02-01T10:00:00Z",
+		"createdAt": "2024-01-15T10:00:00Z",
+		"updateFrequency": "monthly"
+	},
+	"organization": {
+		"legalName": "Grand Hotel SRL",
+		"brandName": "Grand Hotel",
+		"entityType": "company",
+		"legalForm": "SRL",
+		"description": "A 4-star hotel in the heart of Bucharest with 120 rooms, spa, and conference facilities.",
+		"website": "https://grandhotel.com",
+		"contactEmail": "info@grandhotel.com",
+		"contactPhone": "+40212345678",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "RO",
+				"registrationNumber": "J40/1234/2010",
+				"taxId": "RO12345678",
+				"vatNumber": "RO12345678"
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": ["hospitality", "hotel", "luxury-hotel"],
+		"mccCode": "7011",
+		"primaryProducts": ["accommodation", "conference-rooms", "spa", "restaurant"],
+		"targetMarket": ["B2C", "B2B"],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-main",
+			"type": "headquarters",
+			"name": "Grand Hotel Bucharest",
+			"address": {
+				"street": "Calea Victoriei 100",
+				"city": "Bucharest",
+				"region": "Sector 1",
+				"postalCode": "010095",
+				"country": "RO"
+			},
+			"coordinates": {
+				"latitude": 44.4396,
+				"longitude": 26.0963
+			},
+			"businessHours": {
+				"monday": "00:00-24:00",
+				"tuesday": "00:00-24:00",
+				"wednesday": "00:00-24:00",
+				"thursday": "00:00-24:00",
+				"friday": "00:00-24:00",
+				"saturday": "00:00-24:00",
+				"sunday": "00:00-24:00",
+				"timezone": "Europe/Bucharest"
+			}
+		}
+	],
+	"accommodationDetails": {
+		"propertyType": "hotel",
+		"starRating": 4,
+		"totalRooms": 120,
+		"checkIn": "14:00",
+		"checkOut": "12:00",
+		"amenities": [
+			"pool", "spa", "gym", "sauna",
+			"restaurant", "bar", "room-service", "breakfast-included",
+			"parking", "wifi", "business-center", "conference-rooms",
+			"airport-shuttle", "concierge", "24h-reception",
+			"wheelchair-accessible"
+		],
+		"languages": ["ro", "en", "de", "fr"],
+		"bookingUrl": "https://grandhotel.com/book",
+		"ratingsUrl": "https://booking.com/hotel/ro/grand-hotel-bucharest",
+		"schemaOrgUrl": "https://grandhotel.com/schema.json",
+		"otaFeedUrl": "https://grandhotel.com/ota-feed.xml",
+		"channelManagerId": "PROP-GH-001"
+	},
+	"restaurantDetails": {
+		"seatingCapacity": 120,
+		"indoorSeats": 100,
+		"outdoorSeats": 20,
+		"serviceTypes": {
+			"dineIn": true,
+			"takeaway": false,
+			"delivery": false,
+			"catering": true
+		},
+		"reservations": {
+			"required": false,
+			"recommended": true,
+			"bookingUrl": "https://grandhotel.com/restaurant/book",
+			"phone": "+40212345679"
+		},
+		"amenities": ["wifi", "air-conditioning", "bar", "non-smoking", "wheelchair-accessible", "private-events"],
+		"cuisine": ["international", "romanian", "mediterranean"],
+		"priceRange": "$$$",
+		"averageCheckPerPerson": 80
+	},
+	"communications": {
+		"social": {
+			"facebook": "https://facebook.com/grandhotelbucharest",
+			"instagram": "https://instagram.com/grandhotelbucharest"
+		},
+		"support": {
+			"email": "reservations@grandhotel.com",
+			"phone": "+40212345678",
+			"languages": ["ro", "en", "de"]
+		}
+	},
+	"platformAccounts": {
+		"google": {
+			"businessProfileId": "ChIJxxxxx"
+		},
+		"facebook": {
+			"pageId": "grandhotelbucharest"
+		}
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"contentNotes": "4-star hotel in Bucharest city center. 120 rooms, spa, pool, conference facilities for up to 300 people. Restaurant open daily. Direct booking available."
+	},
+	"keywords": {
+		"default": "hotel bucharest, 4 star hotel, spa hotel, conference hotel, luxury accommodation, city center bucharest"
+	}
+}

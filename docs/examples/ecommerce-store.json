@@ -1,0 +1,153 @@
+{
+  "language": "en",
+  "domain": "fashionboutique.com",
+  "canonicalUrl": "https://fashionboutique.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "1.1.0",
+    "schemaVersion": "ofero-metadata-1.0",
+    "lastUpdated": "2025-01-15T10:30:00Z",
+    "createdAt": "2025-01-05T12:00:00Z",
+    "updateFrequency": "daily"
+  },
+  "organization": {
+    "legalName": "Fashion Boutique Ltd.",
+    "brandName": "FashionBoutique",
+    "entityType": "store",
+    "legalForm": "LLC",
+    "description": "Premium online fashion retailer specializing in sustainable clothing and accessories",
+    "tagline": "Sustainable fashion for the conscious consumer",
+    "website": "https://fashionboutique.com",
+    "contactEmail": "hello@fashionboutique.com",
+    "contactPhone": "+442071234567",
+    "foundedDate": "2020-06-01",
+    "employees": 35,
+    "identifiers": {
+      "global": {},
+      "primaryIncorporation": {
+        "country": "GB",
+        "registrationNumber": "12345678",
+        "taxId": "GB123456789",
+        "vatNumber": "GB123456789"
+      },
+      "perCountry": []
+    }
+  },
+  "businessClassification": {
+    "industry": ["retail", "ecommerce", "fashion"],
+    "mccCode": "5691",
+    "naicsCode": "454110",
+    "sicCode": "5961",
+    "primaryProducts": ["clothing", "accessories", "shoes"],
+    "secondaryProducts": ["gift-cards", "styling-services"],
+    "targetMarket": ["B2C"],
+    "operationalStatus": "active"
+  },
+  "platformAccounts": {
+    "facebook": {
+      "pageId": "fashionboutique",
+      "businessId": "456789123"
+    },
+    "google": {
+      "merchantCenterId": "987654",
+      "analyticsId": "G-XYZ789ABC"
+    },
+    "instagram": {
+      "username": "fashionboutique",
+      "businessAccountId": "789456123"
+    },
+    "tiktok": {
+      "username": "fashionboutique"
+    },
+    "pinterest": {
+      "username": "fashionboutique"
+    }
+  },
+  "locations": [
+    {
+      "id": "store-london",
+      "type": "retail",
+      "name": "Fashion Boutique London Flagship",
+      "address": {
+        "street": "45 King's Road",
+        "city": "London",
+        "postalCode": "SW3 4UD",
+        "country": "GB"
+      },
+      "coordinates": {
+        "latitude": 51.4878,
+        "longitude": -0.1659
+      },
+      "businessHours": {
+        "monday": "10:00-19:00",
+        "tuesday": "10:00-19:00",
+        "wednesday": "10:00-19:00",
+        "thursday": "10:00-20:00",
+        "friday": "10:00-20:00",
+        "saturday": "10:00-18:00",
+        "sunday": "12:00-17:00"
+      }
+    }
+  ],
+  "catalog": {
+    "feedUrl": "https://fashionboutique.com/feeds/products.json",
+    "feedType": "json",
+    "updateFrequency": "hourly",
+    "productCount": 1250
+  },
+  "featured": {
+    "products": [
+      {
+        "id": "prod-12345",
+        "name": "Organic Cotton Summer Dress",
+        "url": "https://fashionboutique.com/products/organic-cotton-summer-dress",
+        "imageUrl": "https://fashionboutique.com/images/summer-dress.jpg",
+        "price": {
+          "amount": 89.99,
+          "currency": "GBP"
+        }
+      },
+      {
+        "id": "prod-67890",
+        "name": "Recycled Leather Handbag",
+        "url": "https://fashionboutique.com/products/recycled-leather-handbag",
+        "imageUrl": "https://fashionboutique.com/images/handbag.jpg",
+        "price": {
+          "amount": 129.99,
+          "currency": "GBP"
+        }
+      }
+    ]
+  },
+  "brandAssets": {
+    "logos": {
+      "primary": {
+        "svg": "https://fashionboutique.com/assets/logo.svg",
+        "png": "https://fashionboutique.com/assets/logo-1200x1200.png"
+      }
+    },
+    "guidelines": {
+      "colorPalette": {
+        "primary": "#2C3E50",
+        "secondary": "#E8D5C4",
+        "accent": "#8B7355"
+      }
+    }
+  },
+  "communications": {
+    "social": {
+      "instagram": "https://instagram.com/fashionboutique",
+      "facebook": "https://facebook.com/fashionboutique",
+      "tiktok": "https://tiktok.com/@fashionboutique",
+      "pinterest": "https://pinterest.com/fashionboutique"
+    },
+    "support": {
+      "email": "support@fashionboutique.com",
+      "phone": "+442071234567",
+      "url": "https://fashionboutique.com/help"
+    }
+  },
+  "ai": {
+    "allowIndexing": true,
+    "preferredSummary": "FashionBoutique is a sustainable online fashion retailer offering premium eco-friendly clothing and accessories."
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "version": "1.0.0",
+  "name": "Ofero Partner Registry",
+  "description": "Public registry of verified Ofero Network partners with valid ofero.json implementations",
+  "lastUpdated": "2026-01-27T12:00:00Z",
+  "totalPartners": 0,
+  "shardStrategy": "first-letter",
+  "baseUrl": "https://ofero.network/.well-known/ofero-registry",
+  "shards": {
+    "0-9": {
+      "file": "shards/0-9.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "a": {
+      "file": "shards/a.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "b": {
+      "file": "shards/b.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "c": {
+      "file": "shards/c.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "d": {
+      "file": "shards/d.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "e": {
+      "file": "shards/e.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "f": {
+      "file": "shards/f.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "g": {
+      "file": "shards/g.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "h": {
+      "file": "shards/h.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "i": {
+      "file": "shards/i.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "j": {
+      "file": "shards/j.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "k": {
+      "file": "shards/k.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "l": {
+      "file": "shards/l.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "m": {
+      "file": "shards/m.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "n": {
+      "file": "shards/n.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "o": {
+      "file": "shards/o.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "p": {
+      "file": "shards/p.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "q": {
+      "file": "shards/q.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "r": {
+      "file": "shards/r.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "s": {
+      "file": "shards/s.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "t": {
+      "file": "shards/t.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "u": {
+      "file": "shards/u.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "v": {
+      "file": "shards/v.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "w": {
+      "file": "shards/w.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "x": {
+      "file": "shards/x.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "y": {
+      "file": "shards/y.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "z": {
+      "file": "shards/z.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    },
+    "other": {
+      "file": "shards/other.json",
+      "count": 0,
+      "lastUpdated": "2026-01-27T12:00:00Z"
+    }
+  },
+  "licenseTiers": {
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Multi-domain support, priority support, API access, custom integrations",
+      "features": ["multi_domain", "priority_support", "api_access", "custom_integrations", "white_label"]
+    },
+    "business": {
+      "name": "Business",
+      "description": "Single domain, standard support, full features",
+      "features": ["single_domain", "standard_support", "full_features"]
+    },
+    "basic": {
+      "name": "Basic",
+      "description": "Single domain, community support, core features",
+      "features": ["single_domain", "community_support", "core_features"]
+    }
+  },
+  "api": {
+    "verify": "https://api.ofero.network/v1/registry/verify/{domain}",
+    "documentation": "https://ofero.network/docs/registry-api"
+  },
+  "legal": {
+    "terms": "https://ofero.network/terms",
+    "privacy": "https://ofero.network/privacy"
+  }
+}

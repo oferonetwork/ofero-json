@@ -1,0 +1,26 @@
+{
+  "theme": {
+    "textColor": "#ffffff",
+    "backgroundColor": "#1a1a2e",
+    "backgroundSecondary": "#16213e",
+    "borderColor": "#4a4a6a",
+    "accentColor": "#7971ff",
+    "successColor": "#10b981",
+    "errorColor": "#ef4444",
+    "warningColor": "#f59e0b"
+  },
+  "auth": {
+    "passwordHash": null,
+    "createdAt": null,
+    "lastLogin": null,
+    "loginAttempts": 0,
+    "lockedUntil": null
+  },
+  "settings": {
+    "outputPath": ".well-known/ofero.json",
+    "backupEnabled": true,
+    "autoSaveInterval": 60,
+    "sessionTimeout": 1800,
+    "language": "en"
+  }
+}

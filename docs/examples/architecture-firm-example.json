@@ -1,0 +1,436 @@
+{
+	"language": "en",
+	"availableLanguages": ["en", "es"],
+	"domain": "modernarchstudio.com",
+	"canonicalUrl": "https://modernarchstudio.com/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-01-22T10:00:00Z",
+		"createdAt": "2022-01-10T10:00:00Z",
+		"updateFrequency": "monthly"
+	},
+	"organization": {
+		"legalName": "Modern Architecture Studio LLC",
+		"brandName": {
+			"default": "Modern Arch Studio",
+			"translations": {
+				"es": "Modern Arch Studio"
+			}
+		},
+		"entityType": "company",
+		"legalForm": "LLC",
+		"industry": "architecture",
+		"description": {
+			"default": "Award-winning architecture and interior design studio specializing in sustainable residential and commercial projects. We blend modern aesthetics with functional design.",
+			"translations": {
+				"es": "Estudio de arquitectura y diseño interior galardonado, especializado en proyectos residenciales y comerciales sostenibles. Combinamos estética moderna con diseño funcional."
+			}
+		},
+		"tagline": {
+			"default": "Designing spaces that inspire life",
+			"translations": {
+				"es": "Diseñando espacios que inspiran vida"
+			}
+		},
+		"foundedDate": "2012-04-01",
+		"employees": 12,
+		"website": "https://modernarchstudio.com",
+		"contactEmail": "office@modernarchstudio.com",
+		"contactPhone": "+13105551234",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "US",
+				"registrationNumber": "C4567890",
+				"taxId": "56-7890123",
+				"vatNumber": ""
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": ["architecture", "architecture-firm", "residential-architecture"],
+		"mccCode": "8911",
+		"naicsCode": "541310",
+		"primaryProducts": ["architectural-design", "interior-design", "project-management"],
+		"secondaryProducts": ["3d-visualization", "urban-planning", "consulting"],
+		"targetMarket": ["B2C", "B2B"],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-1",
+			"type": "headquarters",
+			"name": "Modern Arch Studio",
+			"address": {
+				"street": "123 Wilshire Boulevard",
+				"city": "Los Angeles",
+				"region": "CA",
+				"postalCode": "90017",
+				"country": "US"
+			},
+			"coordinates": {
+				"latitude": 34.0522,
+				"longitude": -118.2437
+			},
+			"businessHours": {
+				"monday": "09:00-18:00",
+				"tuesday": "09:00-18:00",
+				"wednesday": "09:00-18:00",
+				"thursday": "09:00-18:00",
+				"friday": "09:00-17:00",
+				"saturday": "By appointment",
+				"sunday": "Closed",
+				"timezone": "America/Los_Angeles"
+			},
+			"contacts": [
+				{
+					"name": "Michael Chen",
+					"role": "Principal Architect",
+					"email": "michael@modernarchstudio.com",
+					"phone": "+13105551234",
+					"languages": ["en", "es", "zh"],
+					"public": true
+				}
+			]
+		}
+	],
+	"catalog": {
+		"defaultCurrency": "EUR",
+		"services": [
+			{
+				"id": "residential-design",
+				"name": {
+					"default": "Residential Architecture",
+					"translations": {
+						"es": "Arquitectura Residencial"
+					}
+				},
+				"description": {
+					"default": "Complete architectural design for single-family homes, villas, and residential complexes. From concept to construction documentation.",
+					"translations": {
+						"es": "Diseño arquitectónico completo para casas unifamiliares, villas y complejos residenciales. Desde el concepto hasta la documentación de construcción."
+					}
+				},
+				"category": "residential-architecture",
+				"priceFrom": 25,
+				"priceTo": 50,
+				"priceUnit": "per-item",
+				"duration": "3-6 months",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "commercial-design",
+				"name": {
+					"default": "Commercial Architecture",
+					"translations": {
+						"es": "Arquitectura Comercial"
+					}
+				},
+				"description": {
+					"default": "Office buildings, retail spaces, hospitality projects. Focus on functionality, brand identity, and sustainability.",
+					"translations": {
+						"es": "Edificios de oficinas, espacios comerciales, proyectos de hospitalidad. Enfoque en funcionalidad, identidad de marca y sostenibilidad."
+					}
+				},
+				"category": "commercial-architecture",
+				"priceFrom": 20,
+				"priceTo": 40,
+				"priceUnit": "per-item",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "interior-design",
+				"name": {
+					"default": "Interior Design",
+					"translations": {
+						"es": "Diseño Interior"
+					}
+				},
+				"description": {
+					"default": "Comprehensive interior design services including space planning, material selection, furniture design, and decoration.",
+					"translations": {
+						"es": "Servicios completos de diseño interior que incluyen planificación espacial, selección de materiales, diseño de muebles y decoración."
+					}
+				},
+				"category": "interior-design",
+				"priceFrom": 50,
+				"priceTo": 150,
+				"priceUnit": "per-item",
+				"duration": "1-3 months",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "3d-visualization",
+				"name": {
+					"default": "3D Visualization & Rendering",
+					"translations": {
+						"es": "Visualización 3D y Renderizado"
+					}
+				},
+				"description": {
+					"default": "Photorealistic 3D renders and virtual tours for architectural projects. Ideal for presentations and marketing.",
+					"translations": {
+						"es": "Renderizados 3D fotorrealistas y tours virtuales para proyectos arquitectónicos. Ideal para presentaciones y marketing."
+					}
+				},
+				"category": "visualization",
+				"priceFrom": 200,
+				"priceTo": 800,
+				"priceUnit": "per-item",
+				"duration": "1-2 weeks",
+				"bookingRequired": false,
+				"available": true
+			},
+			{
+				"id": "consulting",
+				"name": {
+					"default": "Architecture Consulting",
+					"translations": {
+						"es": "Consultoría de Arquitectura"
+					}
+				},
+				"description": {
+					"default": "Expert advice on feasibility studies, building regulations, sustainable design, and project optimization.",
+					"translations": {
+						"es": "Asesoramiento experto en estudios de viabilidad, regulaciones de construcción, diseño sostenible y optimización de proyectos."
+					}
+				},
+				"category": "consulting",
+				"price": 150,
+				"priceUnit": "hourly",
+				"bookingRequired": true,
+				"available": true
+			}
+		],
+		"portfolio": [
+			{
+				"id": "villa-minimalist",
+				"title": {
+					"default": "Villa M - Minimalist Lake House",
+					"translations": {
+						"es": "Villa M - Casa Minimalista en el Lago"
+					}
+				},
+				"description": {
+					"default": "A 450 sqm minimalist villa overlooking Lake Tahoe. The design maximizes natural light and lake views while maintaining privacy. Features include floor-to-ceiling windows, green roof, and geothermal heating.",
+					"translations": {
+						"es": "Una villa minimalista de 450 m² con vistas al lago Tahoe. El diseño maximiza la luz natural y las vistas al lago manteniendo la privacidad. Incluye ventanas de piso a techo, techo verde y calefacción geotérmica."
+					}
+				},
+				"category": "residential",
+				"client": "Private Client",
+				"date": "2024-08-15",
+				"images": [
+					{
+						"url": "https://modernarchstudio.com/portfolio/villa-m/exterior-1.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/villa-m/exterior-1-thumb.jpg",
+						"caption": "Lake-facing facade"
+					},
+					{
+						"url": "https://modernarchstudio.com/portfolio/villa-m/interior-1.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/villa-m/interior-1-thumb.jpg",
+						"caption": "Open-plan living area"
+					},
+					{
+						"url": "https://modernarchstudio.com/portfolio/villa-m/aerial.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/villa-m/aerial-thumb.jpg",
+						"caption": "Aerial view showing green roof"
+					}
+				],
+				"url": "https://modernarchstudio.com/projects/villa-m",
+				"awards": [
+					"Romanian Architecture Award 2024 - Residential Category",
+					"Green Building Certificate - BREEAM Excellent"
+				],
+				"tags": ["minimalist", "lakehouse", "sustainable", "green-roof", "residential"],
+				"featured": true
+			},
+			{
+				"id": "office-tech-hub",
+				"title": {
+					"default": "TechHub Offices - Creative Workspace",
+					"translations": {
+						"es": "Oficinas TechHub - Espacio de Trabajo Creativo"
+					}
+				},
+				"description": {
+					"default": "Complete redesign of a 2000 sqm industrial building into a modern tech startup hub. The project preserved the industrial character while adding contemporary elements and sustainable features.",
+					"translations": {
+						"es": "Rediseño completo de un edificio industrial de 2000 m² en un hub moderno para startups tecnológicas. El proyecto preservó el carácter industrial añadiendo elementos contemporáneos y sostenibles."
+					}
+				},
+				"category": "commercial",
+				"client": "TechHub USA",
+				"date": "2023-12-01",
+				"images": [
+					{
+						"url": "https://modernarchstudio.com/portfolio/techhub/atrium.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/techhub/atrium-thumb.jpg",
+						"caption": "Central atrium with skylights"
+					},
+					{
+						"url": "https://modernarchstudio.com/portfolio/techhub/workspace.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/techhub/workspace-thumb.jpg",
+						"caption": "Open workspace area"
+					}
+				],
+				"url": "https://modernarchstudio.com/projects/techhub",
+				"awards": [
+					"Best Office Interior 2024 - Interior Design Awards"
+				],
+				"tags": ["office", "industrial", "startup", "adaptive-reuse", "commercial"],
+				"featured": true
+			},
+			{
+				"id": "boutique-hotel",
+				"title": {
+					"default": "Hotel Artisan - Boutique Heritage Hotel",
+					"translations": {
+						"es": "Hotel Artisan - Hotel Boutique Patrimonial"
+					}
+				},
+				"description": {
+					"default": "Restoration and extension of a 19th-century building into a 24-room boutique hotel in downtown LA's historic district. Careful balance between heritage preservation and modern hospitality standards.",
+					"translations": {
+						"es": "Restauración y ampliación de un edificio del siglo XIX en un hotel boutique de 24 habitaciones en el distrito histórico del centro de LA. Equilibrio cuidadoso entre preservación del patrimonio y estándares modernos de hospitalidad."
+					}
+				},
+				"category": "hospitality",
+				"client": "Artisan Hotels Group",
+				"date": "2024-05-20",
+				"images": [
+					{
+						"url": "https://modernarchstudio.com/portfolio/artisan-hotel/facade.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/artisan-hotel/facade-thumb.jpg",
+						"caption": "Restored historic facade"
+					},
+					{
+						"url": "https://modernarchstudio.com/portfolio/artisan-hotel/lobby.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/artisan-hotel/lobby-thumb.jpg",
+						"caption": "Hotel lobby"
+					}
+				],
+				"url": "https://modernarchstudio.com/projects/hotel-artisan",
+				"tags": ["hospitality", "heritage", "restoration", "boutique-hotel"],
+				"featured": true
+			},
+			{
+				"id": "penthouse-design",
+				"title": {
+					"default": "Sky Penthouse - Luxury Interior",
+					"translations": {
+						"es": "Sky Penthouse - Interior de Lujo"
+					}
+				},
+				"description": {
+					"default": "Complete interior design of a 350 sqm penthouse with panoramic city views. Custom furniture, premium materials, and smart home integration.",
+					"translations": {
+						"es": "Diseño interior completo de un penthouse de 350 m² con vistas panorámicas de la ciudad. Muebles personalizados, materiales premium e integración domótica."
+					}
+				},
+				"category": "interior",
+				"client": "Private Client",
+				"date": "2024-02-10",
+				"images": [
+					{
+						"url": "https://modernarchstudio.com/portfolio/sky-penthouse/living.jpg",
+						"thumbnail": "https://modernarch.ro/portfolio/sky-penthouse/living-thumb.jpg",
+						"caption": "Living room with city view"
+					}
+				],
+				"url": "https://modernarchstudio.com/projects/sky-penthouse",
+				"tags": ["interior", "luxury", "penthouse", "smart-home"],
+				"featured": false
+			}
+		],
+		"priceListUrl": "https://modernarchstudio.com/services/pricing"
+	},
+	"team": {
+		"leadership": [
+			{
+				"name": "Michael Chen",
+				"role": "Founder & Principal Architect",
+				"bio": "Licensed architect with over 20 years of experience. Graduate of USC School of Architecture. Former partner at international architecture firm in London.",
+				"photo": "https://modernarchstudio.com/team/michael-chen.jpg",
+				"social": {
+					"linkedin": "https://linkedin.com/in/mihai-popa-architect"
+				},
+				"expertise": ["sustainable-design", "residential", "heritage-restoration"]
+			},
+			{
+				"name": "Emma Rodriguez",
+				"role": "Design Director",
+				"bio": "Specialist in interior architecture and 3D visualization. MA from Politecnico di Milano. 12 years of experience in luxury residential and hospitality projects.",
+				"photo": "https://modernarchstudio.com/team/emma-rodriguez.jpg",
+				"expertise": ["interior-design", "hospitality", "visualization"]
+			}
+		]
+	},
+	"certificates": [
+		{
+			"type": "AIA",
+			"name": "Member of American Institute of Architects",
+			"issuer": "American Institute of Architects",
+			"certificateNumber": "AIA-12345",
+			"validFrom": "2012-01-01",
+			"description": "Licensed architecture practice"
+		},
+		{
+			"type": "ISO-9001",
+			"name": "ISO 9001:2015 Quality Management",
+			"issuer": "TÜV Rheinland",
+			"certificateNumber": "ISO-9001-2023-5678",
+			"validFrom": "2023-06-01",
+			"validTo": "2026-05-31"
+		}
+	],
+	"communications": {
+		"social": {
+			"instagram": "https://instagram.com/modernarchstudio",
+			"linkedin": "https://linkedin.com/company/modern-arch-studio",
+			"facebook": "https://facebook.com/modernarchstudio"
+		},
+		"support": {
+			"email": "office@modernarchstudio.com",
+			"phone": "+13105551234",
+			"languages": ["en", "es", "zh"]
+		}
+	},
+	"platformAccounts": {
+		"google": {
+			"businessProfileId": "ChIJwwwwww"
+		},
+		"linkedin": {
+			"companyId": "modern-arch-studio"
+		}
+	},
+	"resources": {
+		"documentation": [
+			{
+				"type": "guide",
+				"url": "https://modernarchstudio.com/resources/client-guide.pdf",
+				"description": {
+					"default": "Client guide: What to expect when working with an architect"
+				}
+			}
+		]
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"contentNotes": "Award-winning architecture and interior design studio in Los Angeles, California. Specializes in sustainable residential and commercial projects. Portfolio includes villas, offices, and hospitality projects. Pricing typically $25-50/sqft for architecture, $50-150/sqft for interiors."
+	},
+	"keywords": {
+		"default": "architecture, architect, interior design, residential, commercial, sustainable, Los Angeles, California, modern, minimalist, villa, office",
+		"translations": {
+			"es": "arquitectura, arquitecto, diseño interior, residencial, comercial, sostenible, Los Angeles, California, moderno, minimalista, villa, oficina"
+		}
+	}
+}

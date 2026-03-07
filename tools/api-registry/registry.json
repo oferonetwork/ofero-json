@@ -1,0 +1,44 @@
+{
+  "irigarden.ro": {
+    "domain": "irigarden.ro",
+    "license": {
+      "tier": "enterprise",
+      "lifetime": true,
+      "expires_at": null
+    },
+    "organization": {
+      "name": "Iri Garden",
+      "email": "contact@irigarden.ro"
+    },
+    "registered_at": "2025-01-28T12:00:00+02:00",
+    "updated_at": "2025-01-28T12:00:00+02:00"
+  },
+  "ofero.me": {
+    "domain": "ofero.me",
+    "license": {
+      "tier": "enterprise",
+      "lifetime": true,
+      "expires_at": null
+    },
+    "organization": {
+      "name": "Ofero",
+      "email": "contact@ofero.me"
+    },
+    "registered_at": "2025-01-28T12:00:00+02:00",
+    "updated_at": "2025-01-28T12:00:00+02:00"
+  },
+  "ofero.network": {
+    "domain": "ofero.network",
+    "license": {
+      "tier": "enterprise",
+      "lifetime": true,
+      "expires_at": null
+    },
+    "organization": {
+      "name": "Ofero Network",
+      "email": "contact@ofero.network"
+    },
+    "registered_at": "2025-01-28T12:00:00+02:00",
+    "updated_at": "2025-01-28T12:00:00+02:00"
+  }
+}

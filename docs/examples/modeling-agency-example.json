@@ -1,0 +1,345 @@
+{
+	"language": "en",
+	"availableLanguages": ["en", "fr"],
+	"domain": "elitemodels.com",
+	"canonicalUrl": "https://elitemodels.com/.well-known/ofero.json",
+	"metadata": {
+		"version": "1.0.0",
+		"schemaVersion": "ofero-metadata-1.0",
+		"lastUpdated": "2025-01-22T10:00:00Z",
+		"createdAt": "2023-03-01T10:00:00Z",
+		"updateFrequency": "weekly"
+	},
+	"organization": {
+		"legalName": "Elite Models Agency LLC",
+		"brandName": {
+			"default": "Elite Models",
+			"translations": {
+				"fr": "Elite Models"
+			}
+		},
+		"entityType": "company",
+		"legalForm": "LLC",
+		"industry": "creative-services",
+		"description": {
+			"default": "Premier modeling and talent agency in New York. We represent fashion models, commercial talents, and influencers for international campaigns.",
+			"translations": {
+				"fr": "Agence de mannequins et de talents de premier plan à New York. Nous représentons des mannequins, des talents commerciaux et des influenceurs pour des campagnes internationales."
+			}
+		},
+		"tagline": {
+			"default": "Discovering tomorrow's icons today",
+			"translations": {
+				"fr": "Découvrir les icônes de demain aujourd'hui"
+			}
+		},
+		"foundedDate": "2015-06-15",
+		"employees": 8,
+		"website": "https://elitemodels.com",
+		"contactEmail": "booking@elitemodels.com",
+		"contactPhone": "+12125551234",
+		"identifiers": {
+			"global": {},
+			"primaryIncorporation": {
+				"country": "US",
+				"registrationNumber": "C3456789",
+				"taxId": "45-6789012",
+				"vatNumber": ""
+			},
+			"perCountry": []
+		}
+	},
+	"businessClassification": {
+		"industry": ["creative-services", "modeling-agency", "fashion-modeling"],
+		"mccCode": "7941",
+		"primaryProducts": ["fashion-modeling", "commercial-modeling", "talent-management"],
+		"secondaryProducts": ["influencer-marketing", "brand-ambassadors", "event-staffing"],
+		"targetMarket": ["B2B"],
+		"operationalStatus": "active"
+	},
+	"locations": [
+		{
+			"id": "loc-1",
+			"type": "headquarters",
+			"name": "Elite Models HQ",
+			"address": {
+				"street": "304 Park Avenue South",
+				"city": "New York",
+				"region": "NY",
+				"postalCode": "10010",
+				"country": "US"
+			},
+			"businessHours": {
+				"monday": "10:00-18:00",
+				"tuesday": "10:00-18:00",
+				"wednesday": "10:00-18:00",
+				"thursday": "10:00-18:00",
+				"friday": "10:00-17:00",
+				"saturday": "Closed",
+				"sunday": "Closed",
+				"timezone": "America/New_York"
+			},
+			"contacts": [
+				{
+					"name": "Sarah Johnson",
+					"role": "Booking Director",
+					"email": "sarah@elitemodels.com",
+					"phone": "+12125551234",
+					"languages": ["en", "fr", "it"],
+					"public": true
+				}
+			]
+		}
+	],
+	"catalog": {
+		"defaultCurrency": "EUR",
+		"services": [
+			{
+				"id": "fashion-booking",
+				"name": {
+					"default": "Fashion Model Booking",
+					"translations": {
+						"fr": "Réservation Mannequin Mode"
+					}
+				},
+				"description": {
+					"default": "Professional fashion models for runway shows, editorials, and campaigns",
+					"translations": {
+						"fr": "Mannequins professionnels pour défilés, éditoriaux et campagnes"
+					}
+				},
+				"category": "fashion-modeling",
+				"priceUnit": "quote",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "commercial-booking",
+				"name": {
+					"default": "Commercial Talent Booking",
+					"translations": {
+						"fr": "Réservation Talent Commercial"
+					}
+				},
+				"description": {
+					"default": "Talents for TV commercials, print ads, and digital campaigns",
+					"translations": {
+						"fr": "Talents pour publicités TV, presse et campagnes digitales"
+					}
+				},
+				"category": "commercial-modeling",
+				"priceUnit": "quote",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "influencer",
+				"name": {
+					"default": "Influencer Partnerships",
+					"translations": {
+						"fr": "Partenariats Influenceurs"
+					}
+				},
+				"description": {
+					"default": "Social media influencers for brand collaborations and sponsored content",
+					"translations": {
+						"fr": "Influenceurs pour collaborations de marque et contenu sponsorisé"
+					}
+				},
+				"category": "influencer-marketing",
+				"priceUnit": "quote",
+				"bookingRequired": true,
+				"available": true
+			},
+			{
+				"id": "event-staffing",
+				"name": {
+					"default": "Event Staffing",
+					"translations": {
+						"fr": "Personnel Événementiel"
+					}
+				},
+				"description": {
+					"default": "Professional hostesses and promotional staff for events",
+					"translations": {
+						"fr": "Hôtesses et personnel promotionnel professionnel pour événements"
+					}
+				},
+				"category": "event-staffing",
+				"priceFrom": 150,
+				"priceTo": 300,
+				"priceUnit": "per-person",
+				"duration": "per day",
+				"bookingRequired": true,
+				"available": true
+			}
+		],
+		"portfolio": [
+			{
+				"id": "vogue-italia-2024",
+				"title": {
+					"default": "Vogue Italia - Summer Editorial",
+					"translations": {
+						"fr": "Vogue Italia - Éditorial d'été"
+					}
+				},
+				"description": {
+					"default": "Summer 2024 editorial featuring our top models Alexandra and Diana",
+					"translations": {
+						"fr": "Éditorial d'été 2024 avec nos top models Alexandra et Diana"
+					}
+				},
+				"category": "fashion",
+				"client": "Vogue Italia",
+				"date": "2024-06-15",
+				"images": [
+					{
+						"url": "https://elitemodels.com/portfolio/vogue-italia-1.jpg",
+						"thumbnail": "https://elitemodels.com/portfolio/vogue-italia-1-thumb.jpg",
+						"caption": "Alexandra in Valentino gown"
+					},
+					{
+						"url": "https://elitemodels.com/portfolio/vogue-italia-2.jpg",
+						"thumbnail": "https://elitemodels.com/portfolio/vogue-italia-2-thumb.jpg",
+						"caption": "Diana in Gucci ensemble"
+					}
+				],
+				"url": "https://elitemodels.com/portfolio/vogue-italia-summer-2024",
+				"tags": ["fashion", "editorial", "luxury", "vogue"],
+				"featured": true
+			},
+			{
+				"id": "bmw-campaign-2024",
+				"title": {
+					"default": "BMW USA - Electric Future Campaign",
+					"translations": {
+						"fr": "BMW USA - Campagne Avenir Électrique"
+					}
+				},
+				"description": {
+					"default": "National TV and digital campaign for BMW iX series launch",
+					"translations": {
+						"fr": "Campagne TV et digitale nationale pour le lancement de la série BMW iX"
+					}
+				},
+				"category": "commercial",
+				"client": "BMW USA",
+				"date": "2024-03-01",
+				"images": [
+					{
+						"url": "https://elitemodels.com/portfolio/bmw-campaign-1.jpg",
+						"thumbnail": "https://elitemodels.com/portfolio/bmw-campaign-1-thumb.jpg"
+					}
+				],
+				"url": "https://elitemodels.com/portfolio/bmw-electric-future",
+				"tags": ["commercial", "automotive", "tv", "digital"],
+				"featured": true
+			},
+			{
+				"id": "bucharest-fashion-week",
+				"title": {
+					"default": "New York Fashion Week 2024",
+					"translations": {
+						"fr": "New York Fashion Week 2024"
+					}
+				},
+				"description": {
+					"default": "Our models walked for 12 designers at New York's premier fashion event",
+					"translations": {
+						"fr": "Nos mannequins ont défilé pour 12 créateurs lors de l'événement mode phare de New York"
+					}
+				},
+				"category": "runway",
+				"client": "New York Fashion Week",
+				"date": "2024-10-20",
+				"images": [
+					{
+						"url": "https://elitemodels.com/portfolio/nyfw-2024-1.jpg",
+						"thumbnail": "https://elitemodels.com/portfolio/nyfw-2024-1-thumb.jpg"
+					}
+				],
+				"url": "https://elitemodels.com/portfolio/new-york-fashion-week-2024",
+				"tags": ["runway", "fashion-week", "new-york"],
+				"featured": true
+			},
+			{
+				"id": "dior-beauty",
+				"title": {
+					"default": "Dior Beauty - Eastern Europe Campaign"
+				},
+				"description": {
+					"default": "Regional beauty campaign featuring our model Ioana for Dior Skincare"
+				},
+				"category": "beauty",
+				"client": "Dior Beauty",
+				"date": "2024-09-01",
+				"images": [
+					{
+						"url": "https://elitemodels.com/portfolio/dior-beauty-1.jpg",
+						"thumbnail": "https://elitemodels.com/portfolio/dior-beauty-1-thumb.jpg"
+					}
+				],
+				"tags": ["beauty", "skincare", "luxury", "dior"],
+				"featured": false
+			}
+		]
+	},
+	"team": {
+		"leadership": [
+			{
+				"name": "Alexandra Williams",
+				"role": "Founder & CEO",
+				"bio": "Former international model with 15 years of industry experience. Founded Elite Models to bring world-class talent management to New York.",
+				"photo": "https://elitemodels.com/team/alexandra-ceo.jpg",
+				"social": {
+					"linkedin": "https://linkedin.com/in/alexandra-dumitrescu",
+					"instagram": "https://instagram.com/alexandra.elite"
+				}
+			},
+			{
+				"name": "Sarah Johnson",
+				"role": "Booking Director",
+				"bio": "10+ years in fashion industry. Previously worked with major international agencies in Milan and Paris.",
+				"photo": "https://elitemodels.com/team/sarah-booking.jpg"
+			}
+		]
+	},
+	"communications": {
+		"social": {
+			"instagram": "https://instagram.com/elitemodels",
+			"facebook": "https://facebook.com/elitemodels",
+			"linkedin": "https://linkedin.com/company/elite-models",
+			"x": "https://x.com/elitemodels"
+		},
+		"support": {
+			"email": "info@elitemodels.com",
+			"phone": "+12125551234",
+			"languages": ["en", "ro", "fr", "it"]
+		}
+	},
+	"platformAccounts": {
+		"instagram": {
+			"username": "elitemodels",
+			"businessAccountId": "123456789"
+		},
+		"facebook": {
+			"pageId": "elitemodels"
+		},
+		"linkedin": {
+			"companyId": "elite-models"
+		}
+	},
+	"ai": {
+		"indexing": {
+			"allow": true,
+			"allowTraining": false
+		},
+		"contentNotes": "Professional modeling and talent agency in New York. Represents fashion models, commercial talents, and influencers. B2B only - contact for booking inquiries."
+	},
+	"keywords": {
+		"default": "modeling agency, fashion models, talent agency, commercial models, influencers, USA, New York, runway, editorial, campaigns",
+		"translations": {
+			"fr": "agence mannequins, mannequins mode, agence talents, mannequins commerciaux, influenceurs, USA, New York, défilé, éditorial, campagnes"
+		}
+	}
+}

@@ -1,0 +1,3768 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ofero.network/schemas/ofero-json-schema.json",
+	"title": "Ofero.json Metadata Standard",
+	"description": "Universal metadata format for organizations, businesses, and protocols. Provides structured information for AI/LLM consumption, partner integrations, merchant verification, and web3 entity metadata.",
+	"$comment": "SECURITY REQUIREMENT: All URLs in this schema MUST use HTTPS protocol. HTTP URLs are explicitly disallowed for security, trust verification, and partnership integrity.",
+	"type": "object",
+	"required": ["language", "domain", "canonicalUrl", "metadata", "organization"],
+	"properties": {
+		"language": {
+			"type": "string",
+			"description": "ISO 639-1 language code (e.g., 'en', 'ro', 'de', 'fr')",
+			"pattern": "^[a-z]{2}$"
+		},
+		"availableLanguages": {
+			"type": "array",
+			"description": "List of available language codes for this organization. Each language SHOULD have a corresponding ofero-{lang}.json overlay file accessible at the same base URL (e.g., if ofero.json is at https://example.com/.well-known/ofero.json, then ofero-ro.json should be at https://example.com/.well-known/ofero-ro.json). Overlay files contain only translatable fields in the target language.",
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z]{2}$",
+				"description": "ISO 639-1 language code"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		},
+		"domain": {
+			"type": "string",
+			"description": "Base domain without protocol. Used for domain ownership verification. Must match the domain extracted from canonicalUrl.",
+			"pattern": "^([a-z0-9]+([\\.-]{1}[a-z0-9]+)*\\.[a-z]{2,}|localhost)(:[0-9]{1,5})?$",
+			"examples": ["example.com", "api.example.co.uk", "localhost:3000"]
+		},
+		"canonicalUrl": {
+			"type": "string",
+			"format": "uri",
+			"pattern": "^https://.+/ofero\\.json$",
+			"description": "Exact canonical URL where this ofero.json file is located. MUST be HTTPS and MUST end with '/ofero.json'. This URL must match exactly in all partnerships.oferoJson references for partnership verification.",
+			"examples": ["https://yourdomain.com/.well-known/ofero.json", "https://example.com/metadata/ofero.json"]
+		},
+		"metadata": {
+			"$ref": "#/$defs/Metadata"
+		},
+		"businessClassification": {
+			"$ref": "#/$defs/BusinessClassification"
+		},
+		"platformAccounts": {
+			"$ref": "#/$defs/PlatformAccounts"
+		},
+		"organization": {
+			"$ref": "#/$defs/Organization"
+		},
+		"locations": {
+			"type": "array",
+			"description": "Physical locations, offices, branches",
+			"items": {
+				"$ref": "#/$defs/Location"
+			}
+		},
+		"banking": {
+			"$ref": "#/$defs/Banking"
+		},
+		"wallets": {
+			"type": "array",
+			"description": "Blockchain wallet addresses",
+			"items": {
+				"$ref": "#/$defs/Wallet"
+			}
+		},
+		"branding": {
+			"$ref": "#/$defs/Branding"
+		},
+		"catalog": {
+			"$ref": "#/$defs/Catalog"
+		},
+		"featured": {
+			"$ref": "#/$defs/Featured"
+		},
+		"recommendations": {
+			"type": "array",
+			"description": "Recommended websites, tools, or resources",
+			"items": {
+				"$ref": "#/$defs/RecommendedWebsite"
+			}
+		},
+		"certificates": {
+			"type": "array",
+			"description": "Certifications, compliance certificates, accreditations",
+			"items": {
+				"$ref": "#/$defs/Certificate"
+			}
+		},
+		"promotions": {
+			"type": "array",
+			"description": "Promotional codes and special offers",
+			"items": {
+				"$ref": "#/$defs/Promotion"
+			}
+		},
+		"websiteManager": {
+			"$ref": "#/$defs/WebsiteManager"
+		},
+		"defaultAccount": {
+			"$ref": "#/$defs/DefaultAccount"
+		},
+		"team": {
+			"$ref": "#/$defs/Team"
+		},
+		"tokenomics": {
+			"$ref": "#/$defs/Tokenomics"
+		},
+		"governance": {
+			"$ref": "#/$defs/Governance"
+		},
+		"resources": {
+			"$ref": "#/$defs/Resources"
+		},
+		"loyalty": {
+			"$ref": "#/$defs/Loyalty"
+		},
+		"apiEndpoints": {
+			"$ref": "#/$defs/ApiEndpoints"
+		},
+		"integrations": {
+			"$ref": "#/$defs/Integrations"
+		},
+		"partnerships": {
+			"type": "array",
+			"description": "Verified partnerships with other organizations that also have ofero.json files",
+			"items": {
+				"$ref": "#/$defs/Partnership"
+			}
+		},
+		"custom": {
+			"type": "object",
+			"description": "Custom organization-specific fields not covered by the standard",
+			"$comment": "EXTENSIBILITY: Add any custom fields here. Popular custom fields may be promoted to the standard in future versions.",
+			"additionalProperties": true
+		},
+		"analytics": {
+			"$ref": "#/$defs/Analytics"
+		},
+		"roadmap": {
+			"$ref": "#/$defs/Roadmap"
+		},
+		"press": {
+			"$ref": "#/$defs/Press"
+		},
+		"careers": {
+			"$ref": "#/$defs/Careers"
+		},
+		"verification": {
+			"$ref": "#/$defs/Verification"
+		},
+		"security": {
+			"$ref": "#/$defs/Security"
+		},
+		"communications": {
+			"$ref": "#/$defs/Communications"
+		},
+		"ai": {
+			"$ref": "#/$defs/AiSettings"
+		},
+		"compliance": {
+			"$ref": "#/$defs/Compliance"
+		},
+		"keywords": {
+			"$ref": "#/$defs/TranslatableString",
+			"description": "Keywords for AI search indexing and discovery. Use relevant terms that describe your organization, products, services, and industry (e.g., blockchain, fintech, web3, DeFi, NFT, etc.). Translatable per language."
+		},
+		"openSource": {
+			"$ref": "#/$defs/OpenSource"
+		},
+		"privacy": {
+			"$ref": "#/$defs/Privacy"
+		},
+		"nftCollections": {
+			"type": "array",
+			"description": "NFT collections owned or operated by the organization",
+			"items": {
+				"type": "object",
+				"required": ["name", "contractAddress", "blockchain"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "Collection name (e.g., 'Bored Ape Yacht Club', 'CryptoPunks')"
+					},
+					"contractAddress": {
+						"type": "string",
+						"description": "Smart contract address for the NFT collection"
+					},
+					"blockchain": {
+						"type": "string",
+						"description": "Blockchain where the collection is deployed (e.g., 'ethereum', 'polygon', 'solana', 'multiversx')"
+					},
+					"network": {
+						"type": "string",
+						"enum": ["mainnet", "testnet", "devnet"],
+						"description": "Network type"
+					},
+					"standard": {
+						"type": "string",
+						"enum": ["ERC-721", "ERC-1155", "ESDT-NFT", "SPL", "other"],
+						"description": "NFT standard: ERC-721 (Ethereum NFT), ERC-1155 (Multi-token), ESDT-NFT (MultiversX), SPL (Solana), other"
+					},
+					"totalSupply": {
+						"type": "integer",
+						"minimum": 0,
+						"description": "Total supply of NFTs in the collection"
+					},
+					"marketplaceUrl": {
+						"type": "string",
+						"format": "uri",
+						"pattern": "^https://",
+						"description": "URL to the collection on marketplace (OpenSea, Magic Eden, etc.)"
+					},
+					"explorerUrl": {
+						"type": "string",
+						"format": "uri",
+						"pattern": "^https://",
+						"description": "URL to view the collection on blockchain explorer"
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"extensions": {
+			"$ref": "#/$defs/Extensions"
+		},
+		"restaurantDetails": {
+			"$ref": "#/$defs/RestaurantDetails"
+		},
+		"accommodationDetails": {
+			"$ref": "#/$defs/AccommodationDetails"
+		}
+	},
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"organization": {
+						"properties": {
+							"hqLocationId": { "type": "string" }
+						},
+						"required": ["hqLocationId"]
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"locations": {
+						"type": "array",
+						"minItems": 1,
+						"description": "Must contain at least one location when hqLocationId is specified in organization"
+					}
+				},
+				"required": ["locations"]
+			}
+		}
+	],
+	"$defs": {
+		"TranslatableString": {
+			"type": "object",
+			"description": "Multi-language translations object with default value and language-specific translations",
+			"required": ["default"],
+			"properties": {
+				"default": {
+					"type": "string",
+					"description": "Default language version (typically matches the root 'language' field)"
+				},
+				"translations": {
+					"type": "object",
+					"description": "Language-specific translations",
+					"patternProperties": {
+						"^[a-z]{2}(-[A-Z]{2})?$": {
+							"type": "string",
+							"description": "Translation for specific language/locale (e.g., 'en', 'en-US', 'ro', 'ro-RO')"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"Organization": {
+			"type": "object",
+			"required": [
+				"legalName",
+				"brandName",
+				"entityType",
+				"legalForm",
+				"description",
+				"website",
+				"contactEmail",
+				"contactPhone",
+				"identifiers"
+			],
+			"properties": {
+				"legalName": {
+					"type": "string",
+					"description": "Official legal name of the organization",
+					"minLength": 1
+				},
+				"brandName": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Brand or trading name"
+				},
+				"foundedDate": {
+					"type": "string",
+					"format": "date",
+					"description": "Date when the organization was founded (ISO 8601 format)"
+				},
+				"employees": {
+					"type": "integer",
+					"description": "Number of employees",
+					"minimum": 0
+				},
+				"hqLocationId": {
+					"type": "string",
+					"description": "Reference to the headquarters location ID in the locations array. MUST match an existing location id."
+				},
+				"entityType": {
+					"type": "string",
+					"description": "Type of entity",
+					"enum": ["company", "foundation", "association", "ngo", "protocol", "store", "individual", "project", "other"]
+				},
+				"legalForm": {
+					"type": "string",
+					"description": "Legal form (e.g., LLC, SA, GmbH, Ltd, 501(c)(3)) - see ofero-json-legal-forms.json for standard values",
+					"minLength": 1
+				},
+				"legalFormCategory": {
+					"type": "string",
+					"description": "Category of legal form",
+					"enum": [
+						"nonprofit",
+						"foundation",
+						"ngo",
+						"cooperative",
+						"social_enterprise",
+						"limited_liability",
+						"joint_stock",
+						"partnership",
+						"sole_proprietor",
+						"custom"
+					]
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Description of the organization's activities and purpose"
+				},
+				"tagline": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "One-sentence elevator pitch/tagline (max 160 characters). This is the #1 most important field for AI summaries, search results, and partnership tables."
+				},
+				"industry": {
+					"type": "string",
+					"description": "Industry sector (for companies only)"
+				},
+				"socialActivityDomain": {
+					"type": "string",
+					"description": "Domain of social activity (for associations/NGOs only)"
+				},
+				"nonProfitStatus": {
+					"type": "boolean",
+					"description": "Whether the organization has non-profit status (for associations/NGOs)"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Primary website URL",
+					"pattern": "^https://"
+				},
+				"additionalWebsites": {
+					"type": "array",
+					"description": "Additional websites (subdomains, regional sites, etc.)",
+					"items": {
+						"$ref": "#/$defs/AdditionalWebsite"
+					}
+				},
+				"contactEmail": {
+					"type": "string",
+					"format": "email",
+					"description": "Primary contact email address"
+				},
+				"contactPhone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Primary contact phone number in E.164 format (e.g., +1234567890, +40722333444). Pattern: + followed by 1-15 digits, first digit cannot be 0."
+				},
+				"identifiers": {
+					"$ref": "#/$defs/Identifiers"
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"entityType": {
+								"const": "company"
+							}
+						}
+					},
+					"then": {
+						"required": ["industry"]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"entityType": {
+								"enum": ["association", "ngo", "foundation"]
+							}
+						}
+					},
+					"then": {
+						"required": ["socialActivityDomain", "nonProfitStatus"]
+					}
+				}
+			]
+		},
+		"AdditionalWebsite": {
+			"type": "object",
+			"required": ["url", "type", "purpose"],
+			"properties": {
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "Website URL",
+					"pattern": "^https://"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["subdomain", "alternative-tld", "regional", "specialized"],
+					"description": "Type of additional website"
+				},
+				"purpose": {
+					"type": "string",
+					"enum": ["shop", "blog", "docs", "support", "app", "other"],
+					"description": "Purpose of the website"
+				},
+				"description": {
+					"type": "string",
+					"description": "Description of the website's purpose"
+				},
+				"primary": {
+					"type": "boolean",
+					"description": "Whether this is a primary additional website"
+				}
+			}
+		},
+		"Identifiers": {
+			"type": "object",
+			"required": ["global", "primaryIncorporation", "perCountry"],
+			"properties": {
+				"global": {
+					"$ref": "#/$defs/GlobalIdentifiers"
+				},
+				"primaryIncorporation": {
+					"$ref": "#/$defs/PrimaryIncorporation"
+				},
+				"perCountry": {
+					"type": "array",
+					"description": "Country-specific identifiers",
+					"items": {
+						"$ref": "#/$defs/CountryIdentifier"
+					}
+				}
+			}
+		},
+		"GlobalIdentifiers": {
+			"type": "object",
+			"properties": {
+				"lei": {
+					"type": "string",
+					"description": "Legal Entity Identifier (LEI) - ISO 17442",
+					"pattern": "^[A-Z0-9]{20}$"
+				},
+				"duns": {
+					"type": "string",
+					"description": "Dun & Bradstreet D-U-N-S Number",
+					"pattern": "^[0-9]{9}$"
+				}
+			}
+		},
+		"PrimaryIncorporation": {
+			"type": "object",
+			"required": ["country", "registrationNumber", "taxId", "vatNumber"],
+			"properties": {
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code",
+					"pattern": "^[A-Z]{2}$"
+				},
+				"registrationNumber": {
+					"type": "string",
+					"description": "Official company registration number"
+				},
+				"taxId": {
+					"type": "string",
+					"description": "Tax identification number"
+				},
+				"vatNumber": {
+					"type": "string",
+					"description": "VAT number (if applicable)"
+				},
+				"eori": {
+					"type": "string",
+					"description": "Economic Operators Registration and Identification (EORI) number (EU)"
+				}
+			}
+		},
+		"CountryIdentifier": {
+			"type": "object",
+			"required": ["country"],
+			"properties": {
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code",
+					"pattern": "^[A-Z]{2}$"
+				}
+			},
+			"additionalProperties": {
+				"type": "string",
+				"description": "Country-specific identifier fields (flexible)"
+			}
+		},
+		"Location": {
+			"type": "object",
+			"required": ["id", "type", "name", "address"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Unique identifier for this location"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["headquarters", "branch", "international-branch", "representative-office"],
+					"description": "Type of location"
+				},
+				"name": {
+					"type": "string",
+					"description": "Name of the location"
+				},
+				"address": {
+					"$ref": "#/$defs/Address"
+				},
+				"coordinates": {
+					"$ref": "#/$defs/Coordinates"
+				},
+				"businessHours": {
+					"$ref": "#/$defs/BusinessHours"
+				},
+				"specialHours": {
+					"type": "array",
+					"description": "Special or holiday hours that override the regular businessHours schedule. Each entry applies to a specific date or date range.",
+					"items": {
+						"$ref": "#/$defs/SpecialHoursEntry"
+					}
+				},
+				"contacts": {
+					"type": "array",
+					"description": "Contact persons at this location",
+					"items": {
+						"$ref": "#/$defs/Contact"
+					}
+				},
+				"photos": {
+					"type": "array",
+					"description": "Photos of this location (storefronts, interiors, etc.)",
+					"items": {
+						"type": "string",
+						"format": "uri",
+						"pattern": "^https://",
+						"description": "HTTPS URL of a location photo"
+					}
+				}
+			}
+		},
+		"Address": {
+			"type": "object",
+			"required": ["street", "city", "region", "postalCode", "country"],
+			"properties": {
+				"street": {
+					"type": "string",
+					"description": "Street address"
+				},
+				"city": {
+					"type": "string",
+					"description": "City name"
+				},
+				"region": {
+					"type": "string",
+					"description": "State, province, or region"
+				},
+				"postalCode": {
+					"type": "string",
+					"description": "Postal or ZIP code"
+				},
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code",
+					"pattern": "^[A-Z]{2}$"
+				}
+			}
+		},
+		"Coordinates": {
+			"type": "object",
+			"required": ["latitude", "longitude"],
+			"properties": {
+				"latitude": {
+					"type": "number",
+					"description": "Latitude coordinate",
+					"minimum": -90,
+					"maximum": 90
+				},
+				"longitude": {
+					"type": "number",
+					"description": "Longitude coordinate",
+					"minimum": -180,
+					"maximum": 180
+				}
+			}
+		},
+		"SpecialHoursEntry": {
+			"type": "object",
+			"description": "A single special/holiday hours entry that overrides regular business hours for a specific date or date range. Use 'date' for a single day (e.g., a public holiday), or 'from'+'to' for a period (e.g., summer schedule, holiday season).",
+			"oneOf": [
+				{
+					"required": ["date", "name", "hours"],
+					"properties": {
+						"date": {
+							"type": "string",
+							"format": "date",
+							"description": "Specific date in ISO 8601 format (YYYY-MM-DD). Mutually exclusive with 'from'/'to'."
+						},
+						"name": {
+							"type": "string",
+							"description": "Human-readable label for this special period (e.g., 'Christmas Day', 'New Year', 'Summer Schedule')."
+						},
+						"hours": {
+							"type": "string",
+							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
+							"examples": ["Closed", "10:00-14:00", "08:00-20:00"]
+						}
+					},
+					"additionalProperties": false
+				},
+				{
+					"required": ["from", "to", "name", "hours"],
+					"properties": {
+						"from": {
+							"type": "string",
+							"format": "date",
+							"description": "Start date of the special period in ISO 8601 format (YYYY-MM-DD). Mutually exclusive with 'date'."
+						},
+						"to": {
+							"type": "string",
+							"format": "date",
+							"description": "End date of the special period in ISO 8601 format (YYYY-MM-DD). Mutually exclusive with 'date'."
+						},
+						"name": {
+							"type": "string",
+							"description": "Human-readable label for this special period (e.g., 'Christmas Day', 'New Year', 'Summer Schedule')."
+						},
+						"hours": {
+							"type": "string",
+							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
+							"examples": ["Closed", "10:00-14:00", "08:00-20:00"]
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		},
+		"BusinessHours": {
+			"type": "object",
+			"description": "Business hours for each day of the week (format: HH:MM-HH:MM or 'Closed')",
+			"properties": {
+				"monday": {
+					"type": "string"
+				},
+				"tuesday": {
+					"type": "string"
+				},
+				"wednesday": {
+					"type": "string"
+				},
+				"thursday": {
+					"type": "string"
+				},
+				"friday": {
+					"type": "string"
+				},
+				"saturday": {
+					"type": "string"
+				},
+				"sunday": {
+					"type": "string"
+				},
+				"timezone": {
+					"type": "string",
+					"description": "IANA timezone (e.g., 'Europe/Bucharest', 'America/New_York')"
+				}
+			}
+		},
+		"Contact": {
+			"type": "object",
+			"required": ["name", "role", "email", "public"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Contact person name"
+				},
+				"role": {
+					"type": "string",
+					"description": "Role or job title"
+				},
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Contact email address"
+				},
+				"phone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Contact phone number in E.164 format"
+				},
+				"languages": {
+					"type": "array",
+					"description": "Languages spoken (ISO 639-1 codes)",
+					"items": {
+						"type": "string",
+						"pattern": "^[a-z]{2}$"
+					}
+				},
+				"public": {
+					"type": "boolean",
+					"description": "Whether this contact information is publicly accessible"
+				},
+				"photo": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Profile photo URL of the contact person (HTTPS, recommended aspect ratio 3:4)"
+				}
+			}
+		},
+		"Banking": {
+			"type": "object",
+			"required": ["accounts"],
+			"properties": {
+				"accounts": {
+					"type": "array",
+					"description": "Bank accounts",
+					"items": {
+						"$ref": "#/$defs/BankAccount"
+					}
+				}
+			}
+		},
+		"BankAccount": {
+			"type": "object",
+			"required": ["currency", "bankName", "type", "country"],
+			"properties": {
+				"label": {
+					"type": "string",
+					"description": "Human-readable label for this account (e.g., 'main-eur-account', 'usd-payouts')"
+				},
+				"currency": {
+					"type": "string",
+					"description": "ISO 4217 currency code (e.g., EUR, USD, GBP)",
+					"pattern": "^[A-Z]{3}$"
+				},
+				"iban": {
+					"type": "string",
+					"description": "International Bank Account Number (IBAN)"
+				},
+				"accountNumber": {
+					"type": "string",
+					"description": "Bank account number (if IBAN not applicable)"
+				},
+				"routingNumber": {
+					"type": "string",
+					"description": "Routing number (US) or sort code (UK)"
+				},
+				"bankName": {
+					"type": "string",
+					"description": "Name of the bank"
+				},
+				"swiftCode": {
+					"type": "string",
+					"description": "SWIFT/BIC code (Bank Identifier Code)"
+				},
+				"type": {
+					"type": "string",
+					"enum": ["corporate", "business", "savings"],
+					"description": "Type of bank account"
+				},
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code where the account is held",
+					"pattern": "^[A-Z]{2}$"
+				}
+			}
+		},
+		"Wallet": {
+			"type": "object",
+			"required": ["blockchain", "network", "address", "label"],
+			"properties": {
+				"label": {
+					"type": "string",
+					"description": "Human-readable label for this wallet (e.g., 'Ofero Treasury 1', 'Staking Rewards')"
+				},
+				"blockchain": {
+					"type": "string",
+					"description": "Blockchain name (e.g., multiversx, ethereum, bitcoin, solana)"
+				},
+				"network": {
+					"type": "string",
+					"description": "Network name (e.g., mainnet, testnet, devnet)"
+				},
+				"address": {
+					"type": "string",
+					"description": "Wallet address"
+				},
+				"purpose": {
+					"type": "string",
+					"description": "Purpose of this wallet (e.g., treasury, staking-rewards, operations, donations)"
+				},
+				"extensions": {
+					"$ref": "#/$defs/WalletExtensions"
+				}
+			}
+		},
+		"WalletExtensions": {
+			"type": "object",
+			"description": "Blockchain-specific extensions",
+			"properties": {
+				"evm": {
+					"type": "object",
+					"description": "EVM-compatible blockchain extensions",
+					"properties": {
+						"chainId": {
+							"type": "integer",
+							"description": "Chain ID for EVM networks"
+						},
+						"explorerUrl": {
+							"type": "string",
+							"format": "uri",
+							"description": "Block explorer URL",
+							"pattern": "^https://"
+						}
+					}
+				},
+				"dex": {
+					"type": "string",
+					"description": "Decentralized exchange where liquidity is provided"
+				},
+				"liquidityPools": {
+					"type": "array",
+					"description": "Liquidity pool information",
+					"items": {
+						"type": "object",
+						"properties": {
+							"pair": {
+								"type": "string",
+								"description": "Trading pair (e.g., OFE/USDC)"
+							},
+							"poolAddress": {
+								"type": "string",
+								"description": "Liquidity pool contract address"
+							},
+							"lpToken": {
+								"type": "string",
+								"description": "LP token identifier"
+							}
+						}
+					}
+				},
+				"chainlink": {
+					"type": "object",
+					"description": "Chainlink oracle feed information",
+					"properties": {
+						"feeds": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"pair": {
+										"type": "string",
+										"description": "Price feed pair (e.g., OFE/USD)"
+									},
+									"feedAddress": {
+										"type": "string",
+										"description": "Chainlink feed contract address"
+									},
+									"network": {
+										"type": "string",
+										"description": "Network where the feed is available"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"additionalProperties": true
+		},
+		"Branding": {
+			"type": "object",
+			"required": ["logos", "icons", "brandingKeywords"],
+			"properties": {
+				"logos": {
+					"$ref": "#/$defs/Logos"
+				},
+				"icons": {
+					"$ref": "#/$defs/Icons"
+				},
+				"brandingKeywords": {
+					"type": "array",
+					"description": "Brand keywords for search and AI indexing",
+					"items": {
+						"type": "string"
+					}
+				},
+				"guidelines": {
+					"$ref": "#/$defs/Guidelines"
+				}
+			}
+		},
+		"Logos": {
+			"type": "object",
+			"description": "Organization logos in multiple formats and variants. Recommended: Provide both square (1:1) and horizontal (wide) logo variants for maximum portal compatibility. Mark one logo as 'primary' to indicate the preferred/default logo.",
+			"required": ["vector", "raster"],
+			"properties": {
+				"vector": {
+					"type": "array",
+					"description": "Vector logo files (SVG, PDF). Recommended formats: square (512x512) and horizontal (600x60). File size: max 512KB.",
+					"items": {
+						"$ref": "#/$defs/LogoAsset"
+					}
+				},
+				"raster": {
+					"type": "array",
+					"description": "Raster logo files (PNG, JPEG, JPG). Recommended formats: square (512x512 to 1024x1024) and horizontal (600x60 to 1200x628). File size: max 512KB.",
+					"items": {
+						"$ref": "#/$defs/LogoAsset"
+					}
+				}
+			}
+		},
+		"LogoAsset": {
+			"type": "object",
+			"required": ["type", "url"],
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": ["svg", "pdf", "png", "jpeg", "jpg"],
+					"description": "File type"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to the logo file",
+					"pattern": "^https://"
+				},
+				"primary": {
+					"type": "boolean",
+					"default": false,
+					"description": "Mark this logo as the primary/default logo. Only one logo should be marked as primary. Portals will prefer this logo when displaying the organization."
+				},
+				"aspectRatio": {
+					"type": "string",
+					"enum": ["square", "horizontal", "vertical"],
+					"description": "Logo aspect ratio: 'square' (1:1) for dashboards/avatars, 'horizontal' (wide) for headers/banners, 'vertical' (tall) for specialized layouts"
+				},
+				"logoType": {
+					"type": "string",
+					"enum": ["full", "icon-only", "text-only", "symbol", "wordmark"],
+					"description": "Logo composition: 'full' (icon+text), 'icon-only' (symbol/mark without text), 'text-only' (text/wordmark only), 'symbol' (abstract symbol), 'wordmark' (stylized text)"
+				},
+				"colorVariant": {
+					"type": "string",
+					"enum": ["color", "light", "dark", "monochrome", "grayscale", "white", "black"],
+					"description": "Color variant: 'color' (full color), 'light' (for dark backgrounds), 'dark' (for light backgrounds), 'monochrome' (single color), 'grayscale', 'white', 'black'"
+				},
+				"width": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Logo width in pixels"
+				},
+				"height": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Logo height in pixels"
+				},
+				"density": {
+					"type": "string",
+					"enum": ["1x", "2x", "3x"],
+					"description": "Pixel density for retina/HiDPI displays"
+				},
+				"alt": {
+					"type": "string",
+					"description": "Alternative text description for accessibility (e.g., 'Oferome logo', 'Acme Corp symbol')"
+				},
+				"license": {
+					"type": "string",
+					"description": "License or usage terms for this logo"
+				},
+				"keywords": {
+					"type": "array",
+					"description": "Keywords for this logo asset",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"Icons": {
+			"type": "object",
+			"required": ["favicon", "appIcons"],
+			"properties": {
+				"favicon": {
+					"$ref": "#/$defs/FaviconSet"
+				},
+				"appIcons": {
+					"type": "array",
+					"description": "App icons for various platforms",
+					"items": {
+						"$ref": "#/$defs/AppIcon"
+					}
+				}
+			}
+		},
+		"FaviconSet": {
+			"type": "object",
+			"properties": {
+				"ico": {
+					"type": "string",
+					"format": "uri",
+					"description": "Classic .ico favicon file",
+					"pattern": "^https://"
+				},
+				"png32x32": {
+					"type": "string",
+					"format": "uri",
+					"description": "32x32 PNG favicon",
+					"pattern": "^https://"
+				},
+				"png192x192": {
+					"type": "string",
+					"format": "uri",
+					"description": "192x192 PNG favicon",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"AppIcon": {
+			"type": "object",
+			"required": ["url", "resolution", "purpose"],
+			"properties": {
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to the icon file",
+					"pattern": "^https://"
+				},
+				"resolution": {
+					"type": "string",
+					"description": "Icon resolution (e.g., 512x512)"
+				},
+				"purpose": {
+					"type": "string",
+					"description": "Purpose (e.g., webapp, ios, android)"
+				}
+			}
+		},
+		"Guidelines": {
+			"type": "object",
+			"properties": {
+				"brandBook": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to brand guidelines or brand book PDF",
+					"pattern": "^https://"
+				},
+				"colorPalette": {
+					"$ref": "#/$defs/ColorPalette"
+				}
+			}
+		},
+		"ColorPalette": {
+			"type": "object",
+			"required": ["primary", "secondary", "accent"],
+			"properties": {
+				"primary": {
+					"type": "string",
+					"description": "Primary brand color (hex format)",
+					"pattern": "^#[0-9A-Fa-f]{6}$"
+				},
+				"secondary": {
+					"type": "string",
+					"description": "Secondary brand color (hex format)",
+					"pattern": "^#[0-9A-Fa-f]{6}$"
+				},
+				"accent": {
+					"type": "string",
+					"description": "Accent brand color (hex format)",
+					"pattern": "^#[0-9A-Fa-f]{6}$"
+				}
+			}
+		},
+		"Catalog": {
+			"type": "object",
+			"description": "Product and service catalog. For large catalogs, use productFeeds/serviceFeeds to link external feeds. For small businesses (restaurants, service providers), use inline items/menu/services arrays directly.",
+			"required": ["defaultCurrency"],
+			"properties": {
+				"defaultCurrency": {
+					"type": "string",
+					"description": "Default currency for catalog (ISO 4217 code)",
+					"pattern": "^[A-Z]{3}$"
+				},
+				"productFeeds": {
+					"type": "array",
+					"description": "Product feed URLs for large catalogs",
+					"items": {
+						"$ref": "#/$defs/Feed"
+					}
+				},
+				"serviceFeeds": {
+					"type": "array",
+					"description": "Service feed URLs for large catalogs",
+					"items": {
+						"$ref": "#/$defs/Feed"
+					}
+				},
+				"menu": {
+					"type": "object",
+					"description": "Restaurant/food service menu with categories. Ideal for restaurants, cafes, bars.",
+					"properties": {
+						"categories": {
+							"type": "array",
+							"description": "Menu categories (e.g., Appetizers, Main Course, Desserts, Drinks)",
+							"items": {
+								"$ref": "#/$defs/MenuCategory"
+							}
+						},
+						"allergenInfo": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "URL to allergen information page"
+						},
+						"dietaryOptions": {
+							"type": "array",
+							"description": "Available dietary options",
+							"items": {
+								"type": "string",
+								"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "keto", "paleo"]
+							}
+						}
+					}
+				},
+
+				"dailyMenu": {
+					"type": "object",
+					"description": "Daily specials or weekly rotating menu. Items may differ in portion size, price, or composition from the regular menu.",
+					"properties": {
+						"weekOf": {
+							"type": "string",
+							"format": "date",
+							"description": "The Monday date of the week this daily menu applies to (YYYY-MM-DD)"
+						},
+						"note": {
+							"$ref": "#/$defs/TranslatableString",
+							"description": "Optional note about the daily menu (e.g., 'Menu changes every Monday')"
+						},
+						"schedule": {
+							"type": "object",
+							"description": "Daily specials indexed by day of the week",
+							"properties": {
+								"monday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"tuesday":   { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"wednesday": { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"thursday":  { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"friday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"saturday":  { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
+								"sunday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } }
+							},
+							"additionalProperties": false
+						}
+					}
+				},
+				"services": {
+					"type": "array",
+					"description": "Service offerings with pricing. Ideal for service businesses (auto repair, salons, professional services).",
+					"items": {
+						"$ref": "#/$defs/ServiceItem"
+					}
+				},
+				"packages": {
+					"type": "array",
+					"description": "Service packages or bundles with pricing. Ideal for karting, experiences, memberships.",
+					"items": {
+						"$ref": "#/$defs/ServicePackage"
+					}
+				},
+				"portfolio": {
+					"type": "array",
+					"description": "Portfolio items for creative businesses (architecture, photography, modeling).",
+					"items": {
+						"$ref": "#/$defs/PortfolioItem"
+					}
+				},
+				"priceListUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "URL to full price list PDF or page"
+				}
+			}
+		},
+		"MenuCategory": {
+			"type": "object",
+			"required": ["id", "name", "items"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Category identifier"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Category name (e.g., 'Appetizers', 'Main Course')"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Category description"
+				},
+				"image": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Category image URL"
+				},
+				"sortOrder": {
+					"type": "integer",
+					"description": "Display order (lower numbers first)"
+				},
+				"serviceHours": {
+					"type": "string",
+					"description": "Hours when this category is served (e.g., '08:00-12:00'). Omit if available all day."
+				},
+				"items": {
+					"type": "array",
+					"description": "Menu items in this category",
+					"items": {
+						"$ref": "#/$defs/MenuItem"
+					}
+				}
+			}
+		},
+		"MenuItem": {
+			"type": "object",
+			"required": ["id", "name", "price"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Item identifier"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Item name"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Item description"
+				},
+				"price": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Price in default currency"
+				},
+				"priceFormatted": {
+					"type": "string",
+					"description": "Formatted price with currency symbol (e.g., '35 RON', '$12.99')"
+				},
+				"image": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Item image URL"
+				},
+				"calories": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Calorie count"
+				},
+				"preparationTime": {
+					"type": "string",
+					"description": "Preparation time (e.g., '15 min', '20-30 min')"
+				},
+				"dietary": {
+					"type": "array",
+					"description": "Dietary labels",
+					"items": {
+						"type": "string",
+						"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "spicy", "contains-alcohol"]
+					}
+				},
+				"allergens": {
+					"type": "array",
+					"description": "Allergen warnings",
+					"items": {
+						"type": "string",
+						"enum": ["gluten", "dairy", "eggs", "fish", "shellfish", "tree-nuts", "peanuts", "soy", "sesame", "sulfites", "celery", "mustard", "lupin", "molluscs"]
+					}
+				},
+				"portionSize": {
+					"type": "string",
+					"description": "Portion size or weight (e.g., '220g', '300g', '1.3kg', '2-3 persons')"
+				},
+				"ingredients": {
+					"type": "array",
+					"description": "List of ingredients",
+					"items": { "type": "string" }
+				},
+				"available": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether item is currently available"
+				},
+				"popular": {
+					"type": "boolean",
+					"default": false,
+					"description": "Mark as popular/featured item"
+				},
+				"variants": {
+					"type": "array",
+					"description": "Size or variant options (e.g., Small/Medium/Large)",
+					"items": {
+						"type": "object",
+						"required": ["name", "price"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Variant name (e.g., 'Small', 'Large', '500ml')"
+							},
+							"price": {
+								"type": "number",
+								"minimum": 0,
+								"description": "Variant price"
+							}
+						}
+					}
+				},
+				"addons": {
+					"type": "array",
+					"description": "Optional add-ons (e.g., extra cheese, toppings)",
+					"items": {
+						"type": "object",
+						"required": ["name", "price"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Add-on name"
+							},
+							"price": {
+								"type": "number",
+								"minimum": 0,
+								"description": "Add-on price"
+							}
+						}
+					}
+				}
+			}
+		},
+		"DailyMenuItem": {
+			"type": "object",
+			"required": ["name", "price"],
+			"description": "A single item in the daily menu. Standalone definition — may differ from regular menu items in portion size, price, or composition.",
+			"properties": {
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Item name"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Item description"
+				},
+				"portionSize": {
+					"type": "string",
+					"description": "Portion size or weight (e.g., '220g', '300g', '2-3 persons')"
+				},
+				"price": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Price in default currency"
+				},
+				"priceFormatted": {
+					"type": "string",
+					"description": "Formatted price with currency symbol (e.g., '35 RON', '$12.99')"
+				},
+				"ingredients": {
+					"type": "array",
+					"description": "List of ingredients",
+					"items": { "type": "string" }
+				},
+				"course": {
+					"type": "string",
+					"enum": ["starter", "soup", "main", "dessert", "drink", "side", "other"],
+					"description": "Course type for set menus"
+				},
+				"dietary": {
+					"type": "array",
+					"description": "Dietary labels",
+					"items": {
+						"type": "string",
+						"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "spicy", "contains-alcohol"]
+					}
+				},
+				"allergens": {
+					"type": "array",
+					"description": "Allergen warnings",
+					"items": {
+						"type": "string",
+						"enum": ["gluten", "dairy", "eggs", "fish", "shellfish", "tree-nuts", "peanuts", "soy", "sesame", "sulfites", "celery", "mustard", "lupin", "molluscs"]
+					}
+				},
+				"available": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether this item is available today"
+				}
+			}
+		},
+		"RestaurantDetails": {
+			"type": "object",
+			"description": "Restaurant-specific details: seating capacity, service types, reservation and ordering information. Use alongside catalog.menu for full restaurant metadata.",
+			"properties": {
+				"seatingCapacity": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Total seating capacity (all areas combined)"
+				},
+				"indoorSeats": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Number of indoor seats"
+				},
+				"outdoorSeats": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Number of outdoor/terrace seats"
+				},
+				"privateRooms": {
+					"type": "array",
+					"description": "Private dining rooms or event spaces",
+					"items": {
+						"type": "object",
+						"required": ["name", "capacity"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Room name (e.g., 'Sala VIP', 'Private Dining Room')"
+							},
+							"capacity": {
+								"type": "integer",
+								"minimum": 1,
+								"description": "Maximum seating capacity of this room"
+							},
+							"available": {
+								"type": "boolean",
+								"default": true,
+								"description": "Whether this room can be booked"
+							},
+							"bookingUrl": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "Direct booking URL for this room"
+							}
+						}
+					}
+				},
+				"serviceTypes": {
+					"type": "object",
+					"description": "Available service types",
+					"properties": {
+						"dineIn": {
+							"type": "boolean",
+							"default": true,
+							"description": "Dine-in service available"
+						},
+						"takeaway": {
+							"type": "boolean",
+							"default": false,
+							"description": "Takeaway/to-go service available"
+						},
+						"delivery": {
+							"type": "boolean",
+							"default": false,
+							"description": "Home delivery available"
+						},
+						"catering": {
+							"type": "boolean",
+							"default": false,
+							"description": "Catering service available"
+						},
+						"driveThrough": {
+							"type": "boolean",
+							"default": false,
+							"description": "Drive-through service available"
+						}
+					}
+				},
+				"deliveryPlatforms": {
+					"type": "array",
+					"description": "Third-party delivery platforms (Glovo, Bolt Food, Tazz, Uber Eats etc.)",
+					"items": {
+						"type": "object",
+						"required": ["name"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Platform name (e.g., 'Glovo', 'Tazz', 'Bolt Food', 'Uber Eats', 'DoorDash')"
+							},
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "Restaurant page URL on this platform"
+							},
+							"active": {
+								"type": "boolean",
+								"default": true,
+								"description": "Whether currently active on this platform"
+							}
+						}
+					}
+				},
+				"reservations": {
+					"type": "object",
+					"description": "Reservation information",
+					"properties": {
+						"required": {
+							"type": "boolean",
+							"default": false,
+							"description": "Whether reservations are required (vs. walk-in accepted)"
+						},
+						"recommended": {
+							"type": "boolean",
+							"default": false,
+							"description": "Whether reservations are recommended"
+						},
+						"bookingUrl": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "Online reservation/booking URL"
+						},
+						"phone": {
+							"type": "string",
+							"description": "Phone number for reservations"
+						},
+						"advanceNotice": {
+							"type": "string",
+							"description": "How far in advance reservations should be made (e.g., '24h', '48h', '1 week')"
+						},
+						"maxGroupSize": {
+							"type": "integer",
+							"minimum": 1,
+							"description": "Maximum group size for a single reservation"
+						}
+					}
+				},
+				"parking": {
+					"type": "object",
+					"description": "Parking information",
+					"properties": {
+						"available": {
+							"type": "boolean",
+							"description": "Whether parking is available nearby"
+						},
+						"free": {
+							"type": "boolean",
+							"description": "Whether parking is free"
+						},
+						"spaces": {
+							"type": "integer",
+							"minimum": 0,
+							"description": "Number of dedicated parking spaces"
+						},
+						"notes": {
+							"type": "string",
+							"description": "Additional parking info (e.g., 'Parking in the mall, first 2h free')"
+						}
+					}
+				},
+				"amenities": {
+					"type": "array",
+					"description": "Available amenities and features",
+					"items": {
+						"type": "string",
+						"enum": [
+							"wifi", "air-conditioning", "heating", "terrace", "garden",
+							"live-music", "tv", "projector", "bar", "kids-menu",
+							"kids-play-area", "wheelchair-accessible", "pet-friendly",
+							"smoking-area", "non-smoking", "valet-parking", "coat-check",
+							"private-events", "birthday-packages", "gift-cards"
+						]
+					}
+				},
+				"cuisine": {
+					"type": "array",
+					"description": "Cuisine types (e.g., ['italian', 'mediterranean', 'pizza'])",
+					"items": {
+						"type": "string"
+					}
+				},
+				"priceRange": {
+					"type": "string",
+					"enum": ["$", "$$", "$$$", "$$$$"],
+					"description": "Price range indicator: $ = budget, $$ = moderate, $$$ = upscale, $$$$ = fine dining"
+				},
+				"averageCheckPerPerson": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Average check per person in default currency"
+				},
+				"michelinStars": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 3,
+					"description": "Number of Michelin stars (0 if none)"
+				},
+				"ratingsUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "URL to your Google Business Profile, TripAdvisor page, or other primary ratings page. Do not embed rating scores here — they change frequently and would become stale."
+				}
+			}
+		},
+		"AccommodationDetails": {
+			"type": "object",
+			"description": "Hotel and accommodation metadata. Contains static property-level information only. For room types, rates, and availability use industry standards: OTA (OpenTravel Alliance) XML, Schema.org HotelRoom JSON-LD, or your channel manager feed — link to those via the reference fields below.",
+			"properties": {
+				"propertyType": {
+					"type": "string",
+					"enum": ["hotel", "motel", "hostel", "apartment", "resort", "villa", "guesthouse", "bnb", "campsite", "other"],
+					"description": "Type of accommodation property"
+				},
+				"starRating": {
+					"type": "number",
+					"minimum": 1,
+					"maximum": 5,
+					"description": "Official star rating (1-5)"
+				},
+				"totalRooms": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Total number of rooms/units"
+				},
+				"checkIn": {
+					"type": "string",
+					"pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+					"description": "Standard check-in time (HH:MM, 24h format)",
+					"examples": ["14:00", "15:00"]
+				},
+				"checkOut": {
+					"type": "string",
+					"pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+					"description": "Standard check-out time (HH:MM, 24h format)",
+					"examples": ["11:00", "12:00"]
+				},
+				"amenities": {
+					"type": "array",
+					"description": "Property-level amenities",
+					"items": {
+						"type": "string",
+						"enum": [
+							"pool", "indoor-pool", "spa", "gym", "sauna", "jacuzzi",
+							"restaurant", "bar", "room-service", "breakfast-included",
+							"parking", "valet-parking", "ev-charging",
+							"wifi", "business-center", "conference-rooms",
+							"airport-shuttle", "concierge", "24h-reception",
+							"pet-friendly", "wheelchair-accessible", "kids-club",
+							"beach-access", "ski-in-ski-out", "garden", "terrace"
+						]
+					}
+				},
+				"languages": {
+					"type": "array",
+					"description": "Languages spoken by staff",
+					"items": {
+						"type": "string",
+						"pattern": "^[a-z]{2}$"
+					}
+				},
+				"bookingUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Direct booking URL on your website"
+				},
+				"ratingsUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Link to your Booking.com, TripAdvisor, or Google ratings page. Do not embed scores — they change frequently."
+				},
+				"schemaOrgUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "URL to your Schema.org JSON-LD file (LodgingBusiness / HotelRoom markup). Used by Google Hotels and search engines for rich results."
+				},
+				"otaFeedUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "OTA (OpenTravel Alliance) XML feed URL for room types, rates and availability. This is the standard used by Booking.com, Expedia and channel managers. See opentravel.org for specification."
+				},
+				"channelManagerId": {
+					"type": "string",
+					"description": "Your property ID in the channel manager system (SiteMinder, Myallocator, etc.)"
+				}
+			}
+		},
+		"ServiceItem": {
+			"type": "object",
+			"description": "A service offering with pricing",
+			"required": ["id", "name"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Service identifier"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Service name"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Service description"
+				},
+				"category": {
+					"type": "string",
+					"description": "Service category (e.g., 'oil-change', 'brakes', 'diagnostics')"
+				},
+				"price": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Fixed price (if applicable)"
+				},
+				"priceFrom": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Starting price for variable pricing"
+				},
+				"priceTo": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Maximum price for variable pricing"
+				},
+				"priceUnit": {
+					"type": "string",
+					"enum": ["fixed", "hourly", "per-item", "per-session", "per-person", "quote"],
+					"description": "Pricing unit type"
+				},
+				"duration": {
+					"type": "string",
+					"description": "Estimated duration (e.g., '30 min', '1-2 hours')"
+				},
+				"bookingRequired": {
+					"type": "boolean",
+					"default": false,
+					"description": "Whether booking/appointment is required"
+				},
+				"bookingUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Online booking URL"
+				},
+				"warranty": {
+					"type": "string",
+					"description": "Warranty information (e.g., '1 year', '6 months or 10,000km')"
+				},
+				"available": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether service is currently available"
+				}
+			}
+		},
+		"ServicePackage": {
+			"type": "object",
+			"description": "A service package or bundle (ideal for karting, experiences, subscriptions)",
+			"required": ["id", "name", "price"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Package identifier"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Package name (e.g., '10-Minute Race', 'Full Day Experience')"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Package description"
+				},
+				"price": {
+					"type": "number",
+					"minimum": 0,
+					"description": "Package price"
+				},
+				"pricePerPerson": {
+					"type": "boolean",
+					"default": false,
+					"description": "Whether price is per person"
+				},
+				"duration": {
+					"type": "string",
+					"description": "Package duration (e.g., '10 min', '2 hours', 'full day')"
+				},
+				"includes": {
+					"type": "array",
+					"description": "What's included in the package",
+					"items": {
+						"type": "string"
+					}
+				},
+				"minParticipants": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Minimum number of participants"
+				},
+				"maxParticipants": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Maximum number of participants"
+				},
+				"ageRequirement": {
+					"type": "string",
+					"description": "Age requirement (e.g., '16+', '18+ for adults, 8+ for kids')"
+				},
+				"requirements": {
+					"type": "array",
+					"description": "Requirements or prerequisites",
+					"items": {
+						"type": "string"
+					}
+				},
+				"bookingUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Online booking URL"
+				},
+				"image": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Package image URL"
+				},
+				"popular": {
+					"type": "boolean",
+					"default": false,
+					"description": "Mark as popular/featured package"
+				},
+				"available": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether package is currently available"
+				}
+			}
+		},
+		"PortfolioItem": {
+			"type": "object",
+			"description": "A portfolio item for creative businesses",
+			"required": ["id", "title"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Portfolio item identifier"
+				},
+				"title": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Project/work title"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Project description"
+				},
+				"category": {
+					"type": "string",
+					"description": "Portfolio category (e.g., 'residential', 'commercial', 'fashion', 'editorial')"
+				},
+				"client": {
+					"type": "string",
+					"description": "Client name (if public)"
+				},
+				"date": {
+					"type": "string",
+					"format": "date",
+					"description": "Project completion date"
+				},
+				"images": {
+					"type": "array",
+					"description": "Project images",
+					"items": {
+						"type": "object",
+						"required": ["url"],
+						"properties": {
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "Image URL"
+							},
+							"thumbnail": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "Thumbnail URL"
+							},
+							"caption": {
+								"type": "string",
+								"description": "Image caption"
+							}
+						}
+					}
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "URL to full project page"
+				},
+				"awards": {
+					"type": "array",
+					"description": "Awards received for this project",
+					"items": {
+						"type": "string"
+					}
+				},
+				"tags": {
+					"type": "array",
+					"description": "Tags for categorization and search",
+					"items": {
+						"type": "string"
+					}
+				},
+				"featured": {
+					"type": "boolean",
+					"default": false,
+					"description": "Mark as featured project"
+				}
+			}
+		},
+		"Feed": {
+			"type": "object",
+			"required": ["type", "format", "url", "description"],
+			"properties": {
+				"type": {
+					"type": "string",
+					"description": "Feed type identifier"
+				},
+				"format": {
+					"type": "string",
+					"enum": ["json", "jsonl", "xml", "csv"],
+					"description": "Feed format"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "Feed URL",
+					"pattern": "^https://"
+				},
+				"description": {
+					"type": "string",
+					"description": "Feed description"
+				}
+			}
+		},
+		"Featured": {
+			"type": "object",
+			"properties": {
+				"products": {
+					"type": "array",
+					"description": "Featured products",
+					"items": {
+						"$ref": "#/$defs/FeaturedItem"
+					}
+				},
+				"services": {
+					"type": "array",
+					"description": "Featured services",
+					"items": {
+						"$ref": "#/$defs/FeaturedItem"
+					}
+				}
+			}
+		},
+		"FeaturedItem": {
+			"type": "object",
+			"required": ["id", "name", "url"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Product or service ID"
+				},
+				"name": {
+					"type": "string",
+					"description": "Product or service name"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to product or service page",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"RecommendedWebsite": {
+			"type": "object",
+			"required": ["url", "category", "description", "relevance"],
+			"properties": {
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "Website URL",
+					"pattern": "^https://"
+				},
+				"category": {
+					"type": "string",
+					"enum": ["tool", "resource", "educational", "community", "other"],
+					"description": "Category of recommendation"
+				},
+				"description": {
+					"type": "string",
+					"description": "Description of the website"
+				},
+				"relevance": {
+					"type": "string",
+					"description": "Why this website is recommended"
+				}
+			}
+		},
+		"Certificate": {
+			"type": "object",
+			"required": ["type", "name", "issuer"],
+			"properties": {
+				"type": {
+					"type": "string",
+					"description": "Type of certificate (e.g., ISO-9001, GDPR-Compliance, SOC2)"
+				},
+				"name": {
+					"type": "string",
+					"description": "Certificate name"
+				},
+				"issuer": {
+					"type": "string",
+					"description": "Issuing authority or organization"
+				},
+				"certificateUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to certificate document or verification page",
+					"pattern": "^https://"
+				},
+				"certificateNumber": {
+					"type": "string",
+					"description": "Certificate number or ID"
+				},
+				"validFrom": {
+					"type": "string",
+					"format": "date",
+					"description": "Certificate valid from date (ISO 8601)"
+				},
+				"validTo": {
+					"type": "string",
+					"format": "date",
+					"description": "Certificate expiration date (ISO 8601)"
+				},
+				"description": {
+					"type": "string",
+					"description": "Additional certificate details"
+				}
+			}
+		},
+		"Promotion": {
+			"type": "object",
+			"required": ["code", "description", "discountType"],
+			"properties": {
+				"code": {
+					"type": "string",
+					"description": "Promotional code"
+				},
+				"description": {
+					"type": "string",
+					"description": "Description of the promotion"
+				},
+				"discountType": {
+					"type": "string",
+					"enum": ["percentage", "fixed-amount", "free-shipping", "other"],
+					"description": "Type of discount"
+				},
+				"discountValue": {
+					"type": "string",
+					"description": "Discount value (e.g., '20%', '10 EUR')"
+				},
+				"validFrom": {
+					"type": "string",
+					"format": "date",
+					"description": "Promotion valid from date (ISO 8601)"
+				},
+				"validTo": {
+					"type": "string",
+					"format": "date",
+					"description": "Promotion expiration date (ISO 8601)"
+				},
+				"termsUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to terms and conditions",
+					"pattern": "^https://"
+				},
+				"applicableProducts": {
+					"type": "string",
+					"description": "Description of applicable products"
+				}
+			}
+		},
+		"WebsiteManager": {
+			"type": "object",
+			"description": "Information about the website manager, owner, or operator. This can be a company, agency, or individual freelancer responsible for managing the website or ofero.json file. All fields are optional.",
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": ["company", "freelancer", "agency", "individual"],
+					"description": "Type of website manager"
+				},
+				"name": {
+					"type": "string",
+					"description": "Company name or individual's full name"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Website URL of the manager/company",
+					"pattern": "^https://"
+				},
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Contact email address"
+				},
+				"phone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Contact phone number in E.164 format"
+				},
+				"address": {
+					"type": "string",
+					"description": "One-line address (e.g., '123 Main St, City, Country')"
+				}
+			}
+		},
+		"DefaultAccount": {
+			"type": "object",
+			"description": "Default account information for the organization. This can be used to pre-fill forms on partner websites, provide default contact details, or represent the primary business account. Useful for B2B integrations, merchant onboarding, and automated form filling. All fields are optional.",
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Default contact email address for business communications"
+				},
+				"firstName": {
+					"type": "string",
+					"description": "First name of the default contact person"
+				},
+				"lastName": {
+					"type": "string",
+					"description": "Last name of the default contact person"
+				},
+				"companyName": {
+					"type": "string",
+					"description": "Company or organization name (can differ from legalName, e.g., DBA name)"
+				},
+				"address": {
+					"$ref": "#/$defs/Address",
+					"description": "Default business address (structured format)"
+				},
+				"addressOneLine": {
+					"type": "string",
+					"description": "One-line address format (e.g., '123 Main St, City, State, ZIP, Country')"
+				},
+				"phone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Default contact phone number in E.164 format"
+				},
+				"mobile": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Mobile phone number in E.164 format (optional)"
+				},
+				"fax": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Fax number in E.164 format (if applicable)"
+				},
+				"logoUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to the company logo (recommended: square, PNG format, 512x512px or higher)",
+					"pattern": "^https://"
+				},
+				"logoThumbUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to thumbnail version of the logo (recommended: 128x128px)",
+					"pattern": "^https://"
+				},
+				"vatNumber": {
+					"type": "string",
+					"description": "VAT number for invoicing purposes"
+				},
+				"taxId": {
+					"type": "string",
+					"description": "Tax ID for invoicing purposes"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Primary website URL",
+					"pattern": "^https://"
+				},
+				"timezone": {
+					"type": "string",
+					"description": "IANA timezone (e.g., 'Europe/Bucharest', 'America/New_York')"
+				},
+				"language": {
+					"type": "string",
+					"pattern": "^[a-z]{2}$",
+					"description": "Preferred language (ISO 639-1 code)"
+				},
+				"currency": {
+					"type": "string",
+					"pattern": "^[A-Z]{3}$",
+					"description": "Preferred currency (ISO 4217 code, e.g., EUR, USD, RON)"
+				}
+			}
+		},
+		"Team": {
+			"type": "object",
+			"properties": {
+				"leadership": {
+					"type": "array",
+					"description": "Leadership team members",
+					"items": {
+						"$ref": "#/$defs/TeamMember"
+					}
+				},
+				"advisors": {
+					"type": "array",
+					"description": "Advisors",
+					"items": {
+						"$ref": "#/$defs/TeamMember"
+					}
+				},
+				"investors": {
+					"type": "array",
+					"description": "Investors",
+					"items": {
+						"$ref": "#/$defs/Investor"
+					}
+				}
+			}
+		},
+		"TeamMember": {
+			"type": "object",
+			"required": ["name", "role"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Team member name"
+				},
+				"role": {
+					"type": "string",
+					"description": "Role or job title"
+				},
+				"photo": {
+					"type": "string",
+					"format": "uri",
+					"description": "Profile photo URL (recommended 3:4 aspect ratio)",
+					"pattern": "^https://"
+				},
+				"photoThumb": {
+					"type": "string",
+					"format": "uri",
+					"description": "Thumbnail photo URL",
+					"pattern": "^https://"
+				},
+				"bio": {
+					"type": "string",
+					"description": "Biography"
+				},
+				"department": {
+					"type": "string",
+					"description": "Department or division"
+				},
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Email address"
+				},
+				"phone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Phone number in E.164 format"
+				},
+				"social": {
+					"type": "object",
+					"description": "Social media links",
+					"properties": {
+						"linkedin": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://"
+						},
+						"x": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "X (formerly Twitter) profile URL"
+						},
+						"github": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://"
+						},
+						"website": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://"
+						}
+					},
+					"additionalProperties": {
+						"type": "string"
+					}
+				},
+				"expertise": {
+					"type": "array",
+					"description": "Areas of expertise",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"Investor": {
+			"type": "object",
+			"required": ["name", "type"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Investor name or organization"
+				},
+				"type": {
+					"type": "string",
+					"description": "Investor type (e.g., VC, Angel, Strategic)"
+				},
+				"photo": {
+					"type": "string",
+					"format": "uri",
+					"description": "Investor photo or logo URL",
+					"pattern": "^https://"
+				},
+				"photoThumb": {
+					"type": "string",
+					"format": "uri",
+					"description": "Thumbnail photo URL",
+					"pattern": "^https://"
+				},
+				"bio": {
+					"type": "string",
+					"description": "Investor biography or description"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Investor website",
+					"pattern": "^https://"
+				},
+				"social": {
+					"type": "object",
+					"description": "Social media links",
+					"properties": {
+						"linkedin": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://"
+						},
+						"x": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "X (formerly Twitter) profile URL"
+						}
+					},
+					"additionalProperties": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"Tokenomics": {
+			"type": "object",
+			"properties": {
+				"token": {
+					"$ref": "#/$defs/Token"
+				},
+				"distribution": {
+					"type": "array",
+					"description": "Token distribution breakdown",
+					"items": {
+						"$ref": "#/$defs/TokenDistribution"
+					}
+				}
+			}
+		},
+		"TokenDistribution": {
+			"type": "object",
+			"required": ["category", "allocation"],
+			"properties": {
+				"category": {
+					"type": "string",
+					"description": "Distribution category (e.g., team, community, liquidity, seed, private, public)"
+				},
+				"allocation": {
+					"type": "number",
+					"description": "Percentage of total supply allocated to this category (0-100)",
+					"minimum": 0,
+					"maximum": 100
+				},
+				"vesting": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Vesting schedule description (e.g., '12m cliff + 36m linear')"
+				}
+			}
+		},
+		"Token": {
+			"type": "object",
+			"required": ["symbol", "name", "type", "blockchain", "network", "identifier", "decimals", "totalSupply"],
+			"properties": {
+				"symbol": {
+					"type": "string",
+					"description": "Token symbol (e.g., OFE, BTC, ETH)"
+				},
+				"name": {
+					"type": "string",
+					"description": "Token name"
+				},
+				"type": {
+					"type": "string",
+					"description": "Token standard (e.g., ESDT, ERC-20, BEP-20, SPL)"
+				},
+				"blockchain": {
+					"type": "string",
+					"description": "Blockchain name (e.g., multiversx, ethereum, solana)"
+				},
+				"network": {
+					"type": "string",
+					"description": "Network (e.g., mainnet, testnet)"
+				},
+				"identifier": {
+					"type": "string",
+					"description": "Token identifier or contract address"
+				},
+				"decimals": {
+					"type": "integer",
+					"description": "Number of decimals",
+					"minimum": 0,
+					"maximum": 18
+				},
+				"totalSupply": {
+					"type": "string",
+					"description": "Total token supply (as string to handle large numbers)"
+				},
+				"circulatingSupply": {
+					"type": "string",
+					"description": "Circulating supply (as string)"
+				},
+				"contractAddresses": {
+					"type": "object",
+					"description": "Contract addresses by purpose (e.g., main, staking, rewards)",
+					"additionalProperties": {
+						"type": "string"
+					}
+				},
+				"explorerUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Block explorer URL for this token",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"ApiEndpoints": {
+			"type": "object",
+			"properties": {
+				"public": {
+					"type": "array",
+					"description": "Public API endpoints",
+					"items": {
+						"$ref": "#/$defs/ApiEndpoint"
+					}
+				},
+				"statusPage": {
+					"type": "string",
+					"format": "uri",
+					"description": "API status page URL",
+					"pattern": "^https://"
+				},
+				"availability": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Real-time availability API endpoint. For restaurants: current occupancy, table availability, wait time. For hotels: room availability. For any venue: live capacity data. Expected to return JSON with current status."
+				},
+				"reservations": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Reservations/booking API endpoint. Used for programmatic booking integrations."
+				},
+				"publicDataFeeds": {
+					"type": "array",
+					"description": "Public data feeds in standard formats. Use this to point to operational/live data (timetables, course catalogs, open datasets) in established standards rather than embedding them inline. Ideal for public transport operators (GTFS), universities (iCal, JSON-LD), government entities (open-data portals), and any organization publishing structured public data.",
+					"items": {
+						"$ref": "#/$defs/PublicDataFeed"
+					}
+				}
+			}
+		},
+		"PublicDataFeed": {
+			"type": "object",
+			"required": ["name", "format", "url"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Human-readable name for this feed (e.g., 'Bus Timetables', 'Course Catalog 2025-2026', 'Open Spending Data')"
+				},
+				"format": {
+					"type": "string",
+					"enum": ["gtfs", "gtfs-realtime", "ical", "json-ld", "csv", "xml", "geojson", "atom", "rss", "open-data", "sparql", "wfs", "wms", "other"],
+					"description": "Data format: gtfs (General Transit Feed Specification), gtfs-realtime (live transit updates), ical (calendar events/courses - RFC 5545), json-ld (structured linked data), csv, xml, geojson (geographic data), atom/rss (news/updates), open-data (generic open data portal), sparql (semantic web endpoint), wfs/wms (geospatial web services), other"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "URL to the data feed or endpoint"
+				},
+				"description": {
+					"type": "string",
+					"description": "Optional description of what this feed contains"
+				},
+				"updateFrequency": {
+					"type": "string",
+					"description": "How often the feed is updated (e.g., 'realtime', 'daily', 'weekly', 'per-semester')"
+				},
+				"license": {
+					"type": "string",
+					"description": "Data license (e.g., 'CC BY 4.0', 'ODbL', 'public-domain')"
+				},
+				"language": {
+					"type": "string",
+					"description": "Primary language of the data content (ISO 639-1 code)",
+					"pattern": "^[a-z]{2}$"
+				},
+				"validFrom": {
+					"type": "string",
+					"format": "date",
+					"description": "Date from which this feed is valid (ISO 8601)"
+				},
+				"validTo": {
+					"type": "string",
+					"format": "date",
+					"description": "Date until which this feed is valid (ISO 8601)"
+				}
+			}
+		},
+		"ApiEndpoint": {
+			"type": "object",
+			"required": ["name", "version", "baseUrl"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "API name"
+				},
+				"version": {
+					"type": "string",
+					"description": "API version (e.g., v1, v2)"
+				},
+				"baseUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Base URL for API endpoints",
+					"pattern": "^https://"
+				},
+				"docsUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "API documentation URL",
+					"pattern": "^https://"
+				},
+				"authentication": {
+					"type": "string",
+					"description": "Authentication method (e.g., bearer, apikey, oauth2)"
+				},
+				"rateLimit": {
+					"type": "string",
+					"description": "Rate limit description (e.g., 1000/hour, 100/minute)"
+				}
+			}
+		},
+		"Integrations": {
+			"type": "object",
+			"properties": {
+				"partners": {
+					"type": "array",
+					"description": "Integration partners",
+					"items": {
+						"$ref": "#/$defs/Partner"
+					}
+				},
+				"webhooks": {
+					"$ref": "#/$defs/Webhooks"
+				}
+			}
+		},
+		"Partner": {
+			"type": "object",
+			"required": ["name", "type", "status"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Partner name"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Partner website",
+					"pattern": "^https://"
+				},
+				"type": {
+					"type": "string",
+					"description": "Partnership type (e.g., cashback, payment, data)"
+				},
+				"status": {
+					"type": "string",
+					"description": "Partnership status (e.g., active, pending, inactive)"
+				},
+				"description": {
+					"type": "string",
+					"description": "Partnership description"
+				},
+				"apiEndpoint": {
+					"type": "string",
+					"format": "uri",
+					"description": "Partner API endpoint",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Webhooks": {
+			"type": "object",
+			"properties": {
+				"available": {
+					"type": "array",
+					"description": "Available webhook events",
+					"items": {
+						"type": "string"
+					}
+				},
+				"docsUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Webhook documentation URL",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Partnership": {
+			"type": "object",
+			"description": "Partnership with another organization. IMPORTANT: For a partnership to be considered 'verified', both organizations must list each other in their respective ofero.json files. One-sided partnership declarations will be marked as 'pending-verification' or 'unreciprocated-invalid'. The oferoJson URL must EXACTLY match the partner's canonicalUrl field.",
+			"$comment": "VALIDATION: Automated validators should check reciprocity by fetching the partner's ofero.json, verifying mutual listing, and ensuring the oferoJson URL matches the partner's canonicalUrl field exactly.",
+			"required": ["name", "website", "oferoJson", "description", "status"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Partner organization name"
+				},
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"description": "Partner website URL",
+					"pattern": "^https://"
+				},
+				"oferoJson": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to partner's ofero.json file. IMPORTANT: This URL must exactly match the value in the partner's canonicalUrl field for the partnership to be considered valid.",
+					"pattern": "^https://"
+				},
+				"description": {
+					"type": "string",
+					"description": "Partnership description"
+				},
+				"status": {
+					"type": "string",
+					"enum": ["pending-verification", "verified", "unreciprocated-invalid"],
+					"default": "pending-verification",
+					"description": "'pending-verification' = not yet checked (default), 'verified' = reciprocal partnership confirmed (validators should auto-upgrade when both parties list each other), 'unreciprocated-invalid' = partner does not list you back or URLs don't match"
+				}
+			}
+		},
+		"Analytics": {
+			"type": "object",
+			"properties": {
+				"stats": {
+					"$ref": "#/$defs/Stats"
+				},
+				"dashboardUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Public analytics dashboard URL",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Stats": {
+			"type": "object",
+			"description": "Key statistics",
+			"properties": {
+				"users": {
+					"oneOf": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "string"
+						}
+					],
+					"description": "Number of users"
+				},
+				"transactions": {
+					"oneOf": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "string"
+						}
+					],
+					"description": "Number of transactions"
+				},
+				"tvl": {
+					"oneOf": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "string"
+						}
+					],
+					"description": "Total Value Locked"
+				},
+				"updatedAt": {
+					"type": "string",
+					"format": "date",
+					"description": "Last update date"
+				}
+			},
+			"additionalProperties": {
+				"oneOf": [
+					{
+						"type": "number"
+					},
+					{
+						"type": "string"
+					}
+				]
+			}
+		},
+		"Roadmap": {
+			"type": "object",
+			"properties": {
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "Public roadmap URL",
+					"pattern": "^https://"
+				},
+				"milestones": {
+					"type": "array",
+					"description": "Roadmap milestones",
+					"items": {
+						"$ref": "#/$defs/Milestone"
+					}
+				}
+			}
+		},
+		"Milestone": {
+			"type": "object",
+			"required": ["quarter", "title", "status"],
+			"properties": {
+				"quarter": {
+					"type": "string",
+					"description": "Quarter identifier (e.g., Q1 2025, Q3 2024)"
+				},
+				"title": {
+					"type": "string",
+					"description": "Milestone title"
+				},
+				"status": {
+					"type": "string",
+					"enum": ["planned", "in-progress", "completed"],
+					"description": "Milestone status"
+				},
+				"description": {
+					"type": "string",
+					"description": "Milestone description"
+				}
+			}
+		},
+		"Press": {
+			"type": "object",
+			"properties": {
+				"kit": {
+					"type": "string",
+					"format": "uri",
+					"description": "Press kit URL",
+					"pattern": "^https://"
+				},
+				"latestNews": {
+					"type": "array",
+					"description": "Latest news items",
+					"items": {
+						"$ref": "#/$defs/NewsItem"
+					}
+				}
+			}
+		},
+		"NewsItem": {
+			"type": "object",
+			"required": ["title", "url", "date", "source"],
+			"properties": {
+				"title": {
+					"type": "string",
+					"description": "News article title"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "Article URL",
+					"pattern": "^https://"
+				},
+				"date": {
+					"type": "string",
+					"format": "date",
+					"description": "Publication date (ISO 8601)"
+				},
+				"source": {
+					"type": "string",
+					"description": "News source or publication name"
+				}
+			}
+		},
+		"Careers": {
+			"type": "object",
+			"properties": {
+				"jobsUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Careers page or job board URL",
+					"pattern": "^https://"
+				},
+				"openPositions": {
+					"type": "integer",
+					"description": "Number of open positions",
+					"minimum": 0
+				},
+				"culture": {
+					"type": "string",
+					"description": "Company culture description"
+				}
+			}
+		},
+		"Verification": {
+			"type": "object",
+			"required": ["domain"],
+			"properties": {
+				"domain": {
+					"type": "string",
+					"description": "Primary domain name (without protocol)"
+				},
+				"walletProof": {
+					"$ref": "#/$defs/WalletProof"
+				},
+				"dns": {
+					"type": "array",
+					"description": "DNS verification records",
+					"items": {
+						"$ref": "#/$defs/DnsRecord"
+					}
+				},
+				"lastVerified": {
+					"type": "string",
+					"format": "date-time",
+					"description": "Last verification timestamp (ISO 8601)"
+				}
+			}
+		},
+		"WalletProof": {
+			"type": "object",
+			"required": ["message", "signature", "algorithm"],
+			"properties": {
+				"message": {
+					"type": "string",
+					"description": "Signed message proving wallet ownership"
+				},
+				"signature": {
+					"type": "string",
+					"description": "Cryptographic signature"
+				},
+				"algorithm": {
+					"type": "string",
+					"description": "Signing algorithm (e.g., eip-191, ed25519)"
+				}
+			}
+		},
+		"DnsRecord": {
+			"type": "object",
+			"required": ["record", "value"],
+			"properties": {
+				"record": {
+					"type": "string",
+					"description": "DNS record name or subdomain"
+				},
+				"value": {
+					"type": "string",
+					"description": "DNS record value"
+				}
+			}
+		},
+		"Security": {
+			"type": "object",
+			"required": ["securityEmail"],
+			"properties": {
+				"pgp": {
+					"$ref": "#/$defs/PgpInfo"
+				},
+				"securityEmail": {
+					"type": "string",
+					"format": "email",
+					"description": "Security contact email address"
+				},
+				"responsibleDisclosureUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Responsible disclosure policy URL",
+					"pattern": "^https://"
+				},
+				"securityAudits": {
+					"type": "array",
+					"description": "Security audits conducted by third-party auditors",
+					"items": {
+						"type": "object",
+						"required": ["auditor", "date", "reportUrl", "scope"],
+						"properties": {
+							"auditor": {
+								"type": "string",
+								"description": "Auditor name or organization",
+								"examples": ["CertiK", "Hacken", "Quantstamp", "Trail of Bits", "OpenZeppelin"]
+							},
+							"date": {
+								"type": "string",
+								"format": "date",
+								"description": "Audit completion date (ISO 8601 format)"
+							},
+							"reportUrl": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "URL to the public audit report"
+							},
+							"scope": {
+								"type": "string",
+								"enum": ["smart-contracts", "full", "economic", "infrastructure", "api", "web-app"],
+								"description": "Audit scope: 'smart-contracts' (blockchain contracts), 'full' (comprehensive), 'economic' (tokenomics), 'infrastructure' (servers/deployment), 'api' (API security), 'web-app' (frontend/backend)"
+							},
+							"findings": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "Total number of findings/issues discovered"
+							},
+							"criticalFindingsResolved": {
+								"type": "boolean",
+								"description": "Whether all critical findings have been resolved"
+							}
+						}
+					}
+				},
+				"bugBounty": {
+					"type": "object",
+					"description": "Bug bounty program information for responsible disclosure and security researcher rewards",
+					"properties": {
+						"platform": {
+							"type": "string",
+							"enum": ["immunefi", "hackenproof", "cantina", "bugcrowd", "hackerone", "custom", "none"],
+							"default": "none",
+							"description": "Bug bounty platform: 'immunefi' (web3), 'hackenproof', 'cantina', 'bugcrowd', 'hackerone' (traditional), 'custom' (self-hosted), 'none' (no program)"
+						},
+						"url": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "Direct link to active bug bounty page or program details"
+						},
+						"maxRewardUsd": {
+							"type": "integer",
+							"minimum": 0,
+							"description": "Highest reward in USD (e.g., 1000000 for $1M max bounty)"
+						},
+						"inScope": {
+							"type": "array",
+							"items": { "type": "string" },
+							"description": "Short list of in-scope assets (e.g., 'smart contracts', 'web app', 'mobile app', 'API')"
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		},
+		"PgpInfo": {
+			"type": "object",
+			"required": ["publicKey"],
+			"properties": {
+				"publicKey": {
+					"type": "string",
+					"description": "PGP public key (ASCII armored format)"
+				}
+			}
+		},
+		"Communications": {
+			"type": "object",
+			"properties": {
+				"social": {
+					"$ref": "#/$defs/SocialMedia"
+				},
+				"messaging": {
+					"$ref": "#/$defs/Messaging"
+				},
+				"support": {
+					"$ref": "#/$defs/Support"
+				}
+			}
+		},
+		"SocialMedia": {
+			"type": "object",
+			"description": "Public social media profile URLs for user navigation and community engagement. Contains full clickable URLs. For platform-specific account IDs used in B2B integrations, use 'platformAccounts' instead.",
+			"properties": {
+				"website": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"email": {
+					"type": "string",
+					"format": "email"
+				},
+				"x": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "X (formerly Twitter) profile URL"
+				},
+				"whitepaper": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"coinmarketcap": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"coingecko": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"telegram": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"youtube": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"facebook": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"instagram": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"linkedin": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"linktree": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"discord": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"blog": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				},
+				"reddit": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://"
+				}
+			},
+			"additionalProperties": {
+				"type": "string"
+			}
+		},
+		"Messaging": {
+			"type": "object",
+			"description": "Messaging platform information",
+			"properties": {
+				"whatsapp": {
+					"$ref": "#/$defs/MessagingPlatform"
+				},
+				"telegram": {
+					"$ref": "#/$defs/MessagingPlatform"
+				},
+				"wechat": {
+					"$ref": "#/$defs/MessagingPlatform"
+				},
+				"discord": {
+					"$ref": "#/$defs/MessagingPlatform"
+				},
+				"facebookMessenger": {
+					"$ref": "#/$defs/MessagingPlatform"
+				}
+			},
+			"additionalProperties": {
+				"$ref": "#/$defs/MessagingPlatform"
+			}
+		},
+		"MessagingPlatform": {
+			"type": "object",
+			"description": "Messaging platform details (flexible structure)",
+			"additionalProperties": true
+		},
+		"Support": {
+			"type": "object",
+			"required": ["email"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Support email address"
+				},
+				"portal": {
+					"type": "string",
+					"format": "uri",
+					"description": "Support portal or help center URL",
+					"pattern": "^https://"
+				},
+				"phone": {
+					"type": "string",
+					"pattern": "^\\+?[1-9]\\d{1,14}$",
+					"description": "Support phone number in E.164 format"
+				},
+				"languages": {
+					"type": "array",
+					"description": "Supported languages (ISO 639-1 codes)",
+					"items": {
+						"type": "string",
+						"pattern": "^[a-z]{2}$"
+					}
+				}
+			}
+		},
+		"AiSettings": {
+			"type": "object",
+			"required": ["indexing"],
+			"properties": {
+				"indexing": {
+					"$ref": "#/$defs/AiIndexing"
+				},
+				"preferredSources": {
+					"type": "array",
+					"description": "Preferred source URLs for AI to prioritize",
+					"items": {
+						"type": "string",
+						"format": "uri",
+						"pattern": "^https://"
+					}
+				},
+				"contentNotes": {
+					"type": "string",
+					"description": "Notes for AI systems about content interpretation"
+				}
+			}
+		},
+		"AiIndexing": {
+			"type": "object",
+			"required": ["allow", "allowTraining"],
+			"properties": {
+				"allow": {
+					"type": "boolean",
+					"description": "Allow AI indexing of this metadata"
+				},
+				"allowTraining": {
+					"type": "boolean",
+					"description": "Allow using this data for AI model training"
+				}
+			}
+		},
+		"Compliance": {
+			"type": "object",
+			"properties": {
+				"jurisdictions": {
+					"type": "array",
+					"description": "Regulatory jurisdictions",
+					"items": {
+						"$ref": "#/$defs/Jurisdiction"
+					}
+				},
+				"dataProtection": {
+					"$ref": "#/$defs/DataProtection"
+				},
+				"policies": {
+					"$ref": "#/$defs/Policies"
+				}
+			}
+		},
+		"Jurisdiction": {
+			"type": "object",
+			"required": ["country", "regulator", "licenseType", "licenseId"],
+			"properties": {
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code",
+					"pattern": "^[A-Z]{2}$"
+				},
+				"regulator": {
+					"type": "string",
+					"description": "Regulatory authority name"
+				},
+				"licenseType": {
+					"type": "string",
+					"description": "Type of license or registration"
+				},
+				"licenseId": {
+					"type": "string",
+					"description": "License or registration number"
+				}
+			}
+		},
+		"DataProtection": {
+			"type": "object",
+			"properties": {
+				"gdprRepresentative": {
+					"type": "string",
+					"description": "GDPR representative contact information"
+				},
+				"dpoEmail": {
+					"type": "string",
+					"format": "email",
+					"description": "Data Protection Officer email address"
+				}
+			}
+		},
+		"Policies": {
+			"type": "object",
+			"properties": {
+				"privacyPolicyUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Privacy policy URL",
+					"pattern": "^https://"
+				},
+				"termsOfServiceUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Terms of service URL",
+					"pattern": "^https://"
+				},
+				"cookiePolicyUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Cookie policy URL",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Governance": {
+			"type": "object",
+			"description": "Governance structure and decision-making mechanisms",
+			"properties": {
+				"model": {
+					"type": "string",
+					"enum": ["company", "dao", "foundation-controlled", "multisig", "hybrid", "other"],
+					"description": "Governance model type"
+				},
+				"daoContracts": {
+					"type": "array",
+					"description": "DAO smart contracts for governance",
+					"items": {
+						"type": "object",
+						"required": ["network", "address", "role"],
+						"properties": {
+							"network": {
+								"type": "string",
+								"description": "Blockchain network (e.g., ethereum-mainnet, multiversx-mainnet)"
+							},
+							"address": {
+								"type": "string",
+								"description": "Smart contract address"
+							},
+							"role": {
+								"type": "string",
+								"description": "Contract role (e.g., treasury, governance-voting, timelock)"
+							}
+						}
+					}
+				},
+				"multisigSigners": {
+					"type": "array",
+					"description": "Multisig signers information",
+					"items": {
+						"type": "object",
+						"required": ["role", "wallet"],
+						"properties": {
+							"role": {
+								"type": "string",
+								"description": "Signer role or identity"
+							},
+							"wallet": {
+								"type": "string",
+								"description": "Wallet address of the signer"
+							}
+						}
+					}
+				},
+				"votingUrl": {
+					"type": "string",
+					"format": "uri",
+					"description": "Governance voting interface URL (e.g., Snapshot, custom governance app)",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Resources": {
+			"type": "object",
+			"description": "Documentation and content resources for LLMs and developers",
+			"properties": {
+				"documentation": {
+					"type": "array",
+					"description": "Documentation resources",
+					"items": {
+						"type": "object",
+						"required": ["type", "url"],
+						"properties": {
+							"type": {
+								"type": "string",
+								"enum": ["api-docs", "user-docs", "sdk", "faq", "guide", "whitepaper"],
+								"description": "Documentation type"
+							},
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"description": "Documentation URL",
+								"pattern": "^https://"
+							},
+							"description": {
+								"$ref": "#/$defs/TranslatableString",
+								"description": "Documentation description"
+							}
+						}
+					}
+				},
+				"knowledgeBase": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to primary knowledge base or help center",
+					"pattern": "^https://"
+				}
+			}
+		},
+		"Loyalty": {
+			"type": "object",
+			"description": "Loyalty and rewards programs",
+			"properties": {
+				"cashbackPrograms": {
+					"type": "array",
+					"description": "Cashback and rewards programs",
+					"items": {
+						"type": "object",
+						"required": ["name", "type"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Program name"
+							},
+							"type": {
+								"type": "string",
+								"enum": ["cashback", "points", "token-rewards", "mixed"],
+								"description": "Reward program type"
+							},
+							"maxRate": {
+								"type": "number",
+								"description": "Maximum reward rate (in percentage, if applicable)",
+								"minimum": 0,
+								"maximum": 100
+							},
+							"description": {
+								"$ref": "#/$defs/TranslatableString",
+								"description": "Program description"
+							},
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"description": "Program details URL",
+								"pattern": "^https://"
+							}
+						}
+					}
+				},
+				"stakingPrograms": {
+					"type": "array",
+					"description": "Staking programs",
+					"items": {
+						"type": "object",
+						"required": ["name"],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Staking program name"
+							},
+							"apy": {
+								"type": "number",
+								"description": "Annual Percentage Yield (APY)",
+								"minimum": 0
+							},
+							"lockup": {
+								"$ref": "#/$defs/TranslatableString",
+								"description": "Lockup period description (e.g., '30 days', 'flexible')"
+							},
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"description": "Staking program URL",
+								"pattern": "^https://"
+							}
+						}
+					}
+				}
+			}
+		},
+		"Extensions": {
+			"type": "object",
+			"properties": {
+				"notes": {
+					"type": "string",
+					"description": "Additional notes about this file"
+				}
+			}
+		},
+		"Metadata": {
+			"type": "object",
+			"description": "File metadata including versioning, timestamps, and update information",
+			"required": ["version", "schemaVersion", "lastUpdated"],
+			"properties": {
+				"version": {
+					"type": "string",
+					"description": "Semantic version of this ofero.json file (MAJOR.MINOR.PATCH). Increment when content changes.",
+					"pattern": "^\\d+\\.\\d+\\.\\d+$",
+					"examples": ["1.0.0", "2.1.3"]
+				},
+				"schemaVersion": {
+					"type": "string",
+					"description": "ofero.json schema version identifier - always 'ofero-metadata-1.0' for this schema version",
+					"const": "ofero-metadata-1.0"
+				},
+				"createdAt": {
+					"type": "string",
+					"format": "date-time",
+					"description": "Timestamp when this file was created (ISO 8601 format)"
+				},
+				"createdBy": {
+					"type": "string",
+					"description": "Tool, author or system that created this file (e.g., 'ofero-cli/1.2.0', 'manual/1.0', 'api-v2/2.1.3')"
+				},
+				"lastUpdated": {
+					"type": "string",
+					"format": "date-time",
+					"description": "Timestamp when this file was last updated (ISO 8601 format)"
+				},
+				"updatedBy": {
+					"type": "string",
+					"description": "Tool, author or system that last updated this file"
+				},
+				"updateFrequency": {
+					"type": "string",
+					"enum": ["hourly", "daily", "weekly", "monthly", "quarterly", "rarely"],
+					"description": "Expected update frequency for this file - helps platforms know how often to re-crawl"
+				},
+				"changelogUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Link to changelog file documenting version history"
+				}
+			},
+			"additionalProperties": false
+		},
+		"BusinessClassification": {
+			"type": "object",
+			"description": "Business classification and industry categorization for merchant verification and partnership discovery",
+			"required": ["industry", "targetMarket", "operationalStatus"],
+			"properties": {
+				"industry": {
+					"type": "array",
+					"description": "Hierarchical industry taxonomy using values from ofero-json-industries.json. Order from general to specific (e.g., ['food-service', 'restaurant', 'fast-food'])",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				},
+				"mccCode": {
+					"type": "string",
+					"description": "Merchant Category Code - 4 digits used by payment processors (Visa, Mastercard, etc.)",
+					"pattern": "^\\d{4}$",
+					"examples": ["5814", "5411", "5999"]
+				},
+				"naicsCode": {
+					"type": "string",
+					"description": "North American Industry Classification System code - 6 digits (US/Canada/Mexico standard)",
+					"pattern": "^\\d{6}$",
+					"examples": ["722513", "445110", "541511"]
+				},
+				"sicCode": {
+					"type": "string",
+					"description": "Standard Industrial Classification code - 4 digits (legacy US standard)",
+					"pattern": "^\\d{4}$",
+					"examples": ["5812", "5411", "7372"]
+				},
+				"primaryProducts": {
+					"type": "array",
+					"description": "Main products or services offered (free-form descriptions)",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1,
+					"examples": [["food", "beverages"], ["software", "consulting"]]
+				},
+				"secondaryProducts": {
+					"type": "array",
+					"description": "Additional products or services offered",
+					"items": {
+						"type": "string"
+					},
+					"examples": [["merchandise", "gift cards"]]
+				},
+				"targetMarket": {
+					"type": "array",
+					"description": "Target market segments - at least one required",
+					"items": {
+						"type": "string",
+						"enum": ["B2C", "B2B", "B2G", "C2C"]
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				},
+				"operationalStatus": {
+					"type": "string",
+					"enum": ["active", "suspended", "closed", "pending"],
+					"description": "Current operational status: active (operating), suspended (temporarily not operating), closed (permanently closed), pending (pending approval/launch)"
+				}
+			},
+			"additionalProperties": false
+		},
+		"PlatformAccounts": {
+			"type": "object",
+			"description": "Platform-specific business accounts and identifiers for B2B integrations and merchant onboarding. Contains structured IDs (pageId, businessId, etc.) rather than URLs. For public social media URLs, use 'communications.social' instead. Self-reported only, no verification required. Use lowercase platform names as keys.",
+			"$comment": "Extensible object - supports any platform. Common platforms: facebook, google, x, linkedin, instagram, tiktok, youtube",
+			"properties": {
+				"facebook": {
+					"type": "object",
+					"description": "Facebook business accounts",
+					"properties": {
+						"pageId": {
+							"type": "string",
+							"description": "Facebook Page ID or username"
+						},
+						"businessId": {
+							"type": "string",
+							"description": "Facebook Business Manager ID"
+						}
+					},
+					"additionalProperties": true
+				},
+				"google": {
+					"type": "object",
+					"description": "Google business accounts",
+					"properties": {
+						"businessProfileId": {
+							"type": "string",
+							"description": "Google Business Profile ID (formerly Google My Business)"
+						},
+						"merchantCenterId": {
+							"type": "string",
+							"description": "Google Merchant Center account ID"
+						},
+						"analyticsId": {
+							"type": "string",
+							"description": "Google Analytics property ID"
+						}
+					},
+					"additionalProperties": true
+				},
+				"x": {
+					"type": "object",
+					"description": "X (formerly Twitter) accounts",
+					"properties": {
+						"handle": {
+							"type": "string",
+							"description": "X username handle (with or without @)"
+						},
+						"userId": {
+							"type": "string",
+							"description": "X numeric user ID"
+						}
+					},
+					"additionalProperties": true
+				},
+				"linkedin": {
+					"type": "object",
+					"description": "LinkedIn business accounts",
+					"properties": {
+						"companyId": {
+							"type": "string",
+							"description": "LinkedIn company/organization ID"
+						},
+						"pageUrl": {
+							"type": "string",
+							"format": "uri",
+							"pattern": "^https://",
+							"description": "LinkedIn company page URL"
+						}
+					},
+					"additionalProperties": true
+				},
+				"instagram": {
+					"type": "object",
+					"description": "Instagram business accounts",
+					"properties": {
+						"username": {
+							"type": "string",
+							"description": "Instagram username (without @)"
+						},
+						"businessAccountId": {
+							"type": "string",
+							"description": "Instagram Business Account ID"
+						}
+					},
+					"additionalProperties": true
+				}
+			},
+			"additionalProperties": {
+				"type": "object",
+				"description": "Other platform-specific accounts (flexible schema)",
+				"additionalProperties": true
+			}
+		},
+		"Privacy": {
+			"type": "object",
+			"description": "Privacy and data handling policies",
+			"properties": {
+				"dataClassification": {
+					"type": "string",
+					"enum": ["public", "internal", "confidential", "restricted"],
+					"description": "Data classification level: 'public' (freely shareable), 'internal' (organization only), 'confidential' (need-to-know), 'restricted' (highest security)"
+				},
+				"gdprCompliance": {
+					"type": "boolean",
+					"description": "Whether the organization is GDPR compliant"
+				},
+				"dataRetentionPeriod": {
+					"type": "string",
+					"pattern": "^P(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(\\d+H)?(\\d+M)?(\\d+S)?)?$",
+					"description": "Data retention period in ISO 8601 duration format (e.g., 'P1Y' for 1 year, 'P30D' for 30 days, 'P6M' for 6 months)"
+				}
+			}
+		},
+		"OpenSource": {
+			"type": "object",
+			"description": "Open source projects and repositories",
+			"properties": {
+				"repositories": {
+					"type": "array",
+					"description": "List of open source repositories",
+					"items": {
+						"type": "object",
+						"required": ["url", "license"],
+						"properties": {
+							"url": {
+								"type": "string",
+								"format": "uri",
+								"pattern": "^https://",
+								"description": "Repository URL (GitHub, GitLab, etc.)"
+							},
+							"license": {
+								"type": "string",
+								"description": "Open source license (e.g., 'MIT', 'Apache-2.0', 'GPL-3.0', 'BSD-3-Clause')"
+							},
+							"description": {
+								"$ref": "#/$defs/TranslatableString",
+								"description": "Repository description"
+							},
+							"stars": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "Number of stars/likes (optional, for popularity indication)"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

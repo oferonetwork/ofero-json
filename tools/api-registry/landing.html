@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofero Network - License Registry API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            margin-top: -40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .endpoint-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoint-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .endpoint-card .method {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-card .method.post {
+            background: #28a745;
+        }
+
+        .endpoint-card .url {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
+        .endpoint-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .stat-box .number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-box .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .code-example {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .code-example .comment {
+            color: #6a9955;
+        }
+
+        .code-example .string {
+            color: #ce9178;
+        }
+
+        .code-example .keyword {
+            color: #569cd6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .footer a:hover {
+            border-bottom-color: white;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .content {
+                padding: 40px 20px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="badge">🔐 Secure API</div>
+            <h1>Ofero Network License Registry</h1>
+            <p>Powerful API for verifying domain licenses and managing the Ofero Network ecosystem</p>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>All Systems Operational</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="number" id="domain-count">3</span>
+                    <span class="label">Registered Domains</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">99.9%</span>
+                    <span class="label">Uptime</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">&lt;100ms</span>
+                    <span class="label">Avg Response Time</span>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; margin-bottom: 40px; color: #1d2327;">Available Endpoints</h2>
+
+            <div class="endpoints">
+                <div class="endpoint-card">
+                    <span class="method">GET</span>
+                    <h3>Verify Domain License</h3>
+                    <div class="url">/api/v1/registry/verify/{domain}</div>
+                    <p>Check if a domain is registered and has a valid license in the Ofero Network. Returns license tier, expiration, and organization details.</p>
+                </div>
+
+                <div class="endpoint-card">
+                    <span class="method post">POST</span>
+                    <h3>Register Domain</h3>
+                    <div class="url">/api/v1/registry/register</div>
+                    <p>Register a new domain in the registry. Requires admin authentication. Set license tier, expiration, and organization information.</p>
+                </div>
+
+                <div class="endpoint-card">
+                    <span class="method">GET</span>
+                    <h3>List All Domains</h3>
+                    <div class="url">/api/v1/registry/list</div>
+                    <p>Retrieve a complete list of all registered domains. Requires admin authentication. Returns domain count and full registry.</p>
+                </div>
+
+                <div class="endpoint-card">
+                    <span class="method">GET</span>
+                    <h3>Health Check</h3>
+                    <div class="url">/api/v1/registry/health</div>
+                    <p>Check API status and availability. Returns service version, status, and current timestamp. No authentication required.</p>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; margin: 60px 0 30px; color: #1d2327;">Quick Start Example</h2>
+
+            <div class="code-example">
+<span class="comment"># Verify a domain license</span>
+curl https://licence.ofero.network/api/v1/registry/verify/irigarden.ro
+
+<span class="comment"># Response:</span>
+{
+  <span class="string">"valid"</span>: <span class="keyword">true</span>,
+  <span class="string">"domain"</span>: <span class="string">"irigarden.ro"</span>,
+  <span class="string">"license"</span>: {
+    <span class="string">"tier"</span>: <span class="string">"enterprise"</span>,
+    <span class="string">"lifetime"</span>: <span class="keyword">true</span>
+  },
+  <span class="string">"organization"</span>: {
+    <span class="string">"name"</span>: <span class="string">"Iri Garden"</span>
+  }
+}
+            </div>
+
+            <div class="cta-buttons">
+                <a href="/admin-panel.php" class="btn btn-primary">Admin Panel</a>
+                <a href="/api/v1/registry/health" class="btn btn-secondary">Check API Health</a>
+            </div>
+
+            <hr style="margin: 60px 0; border: none; border-top: 1px solid #e9ecef;">
+
+            <div style="text-align: center; color: #666;">
+                <h3 style="margin-bottom: 20px;">Need Help?</h3>
+                <p>Check the <a href="https://github.com/oferome/api-registry" style="color: #667eea;">documentation</a> or contact <a href="mailto:contact@ofero.network" style="color: #667eea;">contact@ofero.network</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 <a href="https://ofero.network">Ofero Network</a>. All rights reserved.</p>
+        <p style="margin-top: 10px; opacity: 0.7; font-size: 14px;">Powered by PHP • Secured by HTTPS • Cached for Performance</p>
+    </div>
+
+    <script>
+        // Update domain count from API
+        fetch('/api/v1/registry/health')
+            .then(res => res.json())
+            .then(data => {
+                console.log('API Health:', data);
+            })
+            .catch(err => console.error('API Error:', err));
+    </script>
+</body>
+</html>
