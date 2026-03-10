@@ -1304,6 +1304,34 @@ if ($view === 'editor') {
                         <?php endforeach; ?>
                     </div>
                     <button type="button" class="add-item-btn" onclick="addBrandAsset()">+ Add Brand Asset</button>
+
+                    <h3 style="margin: 30px 0 20px; color: var(--accent-color);">Cover Image</h3>
+                    <div style="background: var(--card-bg); border-left: 4px solid var(--accent-color); padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <strong style="color: var(--text-color); display: block; margin-bottom: 8px;">Cover / Header Image:</strong>
+                        <ul style="color: var(--muted-color); font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>Recommended size: <strong>1200x628px</strong> (Open Graph standard)</li>
+                            <li>Used by portals, social previews, and listing pages</li>
+                            <li>Use a high-quality photo representing your business</li>
+                        </ul>
+                    </div>
+                    <div class="grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="form-label">Cover Image URL</label>
+                            <input type="url" class="form-input" id="coverImageUrl" value="<?php echo htmlspecialchars($oferoData['branding']['coverImage']['url'] ?? ''); ?>" placeholder="https://example.com/assets/cover.jpg">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="form-label">Alt Text (accessibility)</label>
+                            <input type="text" class="form-input" id="coverImageAlt" value="<?php echo htmlspecialchars($oferoData['branding']['coverImage']['alt'] ?? ''); ?>" placeholder="e.g. Restaurant interior with wood-fired oven">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Width (px)</label>
+                            <input type="number" class="form-input" id="coverImageWidth" value="<?php echo htmlspecialchars($oferoData['branding']['coverImage']['width'] ?? '1200'); ?>" placeholder="1200">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Height (px)</label>
+                            <input type="number" class="form-input" id="coverImageHeight" value="<?php echo htmlspecialchars($oferoData['branding']['coverImage']['height'] ?? '628'); ?>" placeholder="628">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Communications Tab -->
@@ -1644,6 +1672,7 @@ if ($view === 'editor') {
                 banking: collectBanking(),
                 wallets: collectWallets(),
                 brandAssets: collectBrandAssets(),
+                branding: collectBranding(),
                 communications: {
                     social: collectSocial(),
                     support: collectSupport()
@@ -1762,6 +1791,19 @@ if ($view === 'editor') {
                 });
             });
             return items;
+        }
+
+        function collectBranding() {
+            const coverUrl = document.getElementById('coverImageUrl')?.value?.trim() || '';
+            if (!coverUrl) return null;
+            const branding = { coverImage: { url: coverUrl } };
+            const alt = document.getElementById('coverImageAlt')?.value?.trim() || '';
+            if (alt) branding.coverImage.alt = alt;
+            const width = parseInt(document.getElementById('coverImageWidth')?.value || '');
+            if (!isNaN(width) && width > 0) branding.coverImage.width = width;
+            const height = parseInt(document.getElementById('coverImageHeight')?.value || '');
+            if (!isNaN(height) && height > 0) branding.coverImage.height = height;
+            return branding;
         }
 
         function collectSocial() {

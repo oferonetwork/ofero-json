@@ -5,7 +5,13 @@
 	"description": "Universal metadata format for organizations, businesses, and protocols. Provides structured information for AI/LLM consumption, partner integrations, merchant verification, and web3 entity metadata.",
 	"$comment": "SECURITY REQUIREMENT: All URLs in this schema MUST use HTTPS protocol. HTTP URLs are explicitly disallowed for security, trust verification, and partnership integrity.",
 	"type": "object",
-	"required": ["language", "domain", "canonicalUrl", "metadata", "organization"],
+	"required": [
+		"language",
+		"domain",
+		"canonicalUrl",
+		"metadata",
+		"organization"
+	],
 	"properties": {
 		"language": {
 			"type": "string",
@@ -27,14 +33,21 @@
 			"type": "string",
 			"description": "Base domain without protocol. Used for domain ownership verification. Must match the domain extracted from canonicalUrl.",
 			"pattern": "^([a-z0-9]+([\\.-]{1}[a-z0-9]+)*\\.[a-z]{2,}|localhost)(:[0-9]{1,5})?$",
-			"examples": ["example.com", "api.example.co.uk", "localhost:3000"]
+			"examples": [
+				"example.com",
+				"api.example.co.uk",
+				"localhost:3000"
+			]
 		},
 		"canonicalUrl": {
 			"type": "string",
 			"format": "uri",
 			"pattern": "^https://.+/ofero\\.json$",
 			"description": "Exact canonical URL where this ofero.json file is located. MUST be HTTPS and MUST end with '/ofero.json'. This URL must match exactly in all partnerships.oferoJson references for partnership verification.",
-			"examples": ["https://yourdomain.com/.well-known/ofero.json", "https://example.com/metadata/ofero.json"]
+			"examples": [
+				"https://yourdomain.com/.well-known/ofero.json",
+				"https://example.com/metadata/ofero.json"
+			]
 		},
 		"metadata": {
 			"$ref": "#/$defs/Metadata"
@@ -177,7 +190,11 @@
 			"description": "NFT collections owned or operated by the organization",
 			"items": {
 				"type": "object",
-				"required": ["name", "contractAddress", "blockchain"],
+				"required": [
+					"name",
+					"contractAddress",
+					"blockchain"
+				],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -193,12 +210,22 @@
 					},
 					"network": {
 						"type": "string",
-						"enum": ["mainnet", "testnet", "devnet"],
+						"enum": [
+							"mainnet",
+							"testnet",
+							"devnet"
+						],
 						"description": "Network type"
 					},
 					"standard": {
 						"type": "string",
-						"enum": ["ERC-721", "ERC-1155", "ESDT-NFT", "SPL", "other"],
+						"enum": [
+							"ERC-721",
+							"ERC-1155",
+							"ESDT-NFT",
+							"SPL",
+							"other"
+						],
 						"description": "NFT standard: ERC-721 (Ethereum NFT), ERC-1155 (Multi-token), ESDT-NFT (MultiversX), SPL (Solana), other"
 					},
 					"totalSupply": {
@@ -238,9 +265,13 @@
 				"properties": {
 					"organization": {
 						"properties": {
-							"hqLocationId": { "type": "string" }
+							"hqLocationId": {
+								"type": "string"
+							}
 						},
-						"required": ["hqLocationId"]
+						"required": [
+							"hqLocationId"
+						]
 					}
 				}
 			},
@@ -252,7 +283,9 @@
 						"description": "Must contain at least one location when hqLocationId is specified in organization"
 					}
 				},
-				"required": ["locations"]
+				"required": [
+					"locations"
+				]
 			}
 		}
 	],
@@ -260,7 +293,9 @@
 		"TranslatableString": {
 			"type": "object",
 			"description": "Multi-language translations object with default value and language-specific translations",
-			"required": ["default"],
+			"required": [
+				"default"
+			],
 			"properties": {
 				"default": {
 					"type": "string",
@@ -282,17 +317,6 @@
 		},
 		"Organization": {
 			"type": "object",
-			"required": [
-				"legalName",
-				"brandName",
-				"entityType",
-				"legalForm",
-				"description",
-				"website",
-				"contactEmail",
-				"contactPhone",
-				"identifiers"
-			],
 			"properties": {
 				"legalName": {
 					"type": "string",
@@ -320,7 +344,17 @@
 				"entityType": {
 					"type": "string",
 					"description": "Type of entity",
-					"enum": ["company", "foundation", "association", "ngo", "protocol", "store", "individual", "project", "other"]
+					"enum": [
+						"company",
+						"foundation",
+						"association",
+						"ngo",
+						"protocol",
+						"store",
+						"individual",
+						"project",
+						"other"
+					]
 				},
 				"legalForm": {
 					"type": "string",
@@ -400,26 +434,34 @@
 						}
 					},
 					"then": {
-						"required": ["industry"]
+						"required": [
+							"industry"
+						]
 					}
 				},
 				{
 					"if": {
 						"properties": {
 							"entityType": {
-								"enum": ["association", "ngo", "foundation"]
+								"enum": [
+									"association",
+									"ngo",
+									"foundation"
+								]
 							}
 						}
 					},
 					"then": {
-						"required": ["socialActivityDomain", "nonProfitStatus"]
+						"required": [
+							"socialActivityDomain",
+							"nonProfitStatus"
+						]
 					}
 				}
 			]
 		},
 		"AdditionalWebsite": {
 			"type": "object",
-			"required": ["url", "type", "purpose"],
 			"properties": {
 				"url": {
 					"type": "string",
@@ -429,12 +471,24 @@
 				},
 				"type": {
 					"type": "string",
-					"enum": ["subdomain", "alternative-tld", "regional", "specialized"],
+					"enum": [
+						"subdomain",
+						"alternative-tld",
+						"regional",
+						"specialized"
+					],
 					"description": "Type of additional website"
 				},
 				"purpose": {
 					"type": "string",
-					"enum": ["shop", "blog", "docs", "support", "app", "other"],
+					"enum": [
+						"shop",
+						"blog",
+						"docs",
+						"support",
+						"app",
+						"other"
+					],
 					"description": "Purpose of the website"
 				},
 				"description": {
@@ -449,7 +503,6 @@
 		},
 		"Identifiers": {
 			"type": "object",
-			"required": ["global", "primaryIncorporation", "perCountry"],
 			"properties": {
 				"global": {
 					"$ref": "#/$defs/GlobalIdentifiers"
@@ -483,7 +536,6 @@
 		},
 		"PrimaryIncorporation": {
 			"type": "object",
-			"required": ["country", "registrationNumber", "taxId", "vatNumber"],
 			"properties": {
 				"country": {
 					"type": "string",
@@ -510,7 +562,9 @@
 		},
 		"CountryIdentifier": {
 			"type": "object",
-			"required": ["country"],
+			"required": [
+				"country"
+			],
 			"properties": {
 				"country": {
 					"type": "string",
@@ -525,7 +579,6 @@
 		},
 		"Location": {
 			"type": "object",
-			"required": ["id", "type", "name", "address"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -533,7 +586,12 @@
 				},
 				"type": {
 					"type": "string",
-					"enum": ["headquarters", "branch", "international-branch", "representative-office"],
+					"enum": [
+						"headquarters",
+						"branch",
+						"international-branch",
+						"representative-office"
+					],
 					"description": "Type of location"
 				},
 				"name": {
@@ -577,7 +635,6 @@
 		},
 		"Address": {
 			"type": "object",
-			"required": ["street", "city", "region", "postalCode", "country"],
 			"properties": {
 				"street": {
 					"type": "string",
@@ -604,7 +661,6 @@
 		},
 		"Coordinates": {
 			"type": "object",
-			"required": ["latitude", "longitude"],
 			"properties": {
 				"latitude": {
 					"type": "number",
@@ -625,7 +681,11 @@
 			"description": "A single special/holiday hours entry that overrides regular business hours for a specific date or date range. Use 'date' for a single day (e.g., a public holiday), or 'from'+'to' for a period (e.g., summer schedule, holiday season).",
 			"oneOf": [
 				{
-					"required": ["date", "name", "hours"],
+					"required": [
+						"date",
+						"name",
+						"hours"
+					],
 					"properties": {
 						"date": {
 							"type": "string",
@@ -639,13 +699,22 @@
 						"hours": {
 							"type": "string",
 							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
-							"examples": ["Closed", "10:00-14:00", "08:00-20:00"]
+							"examples": [
+								"Closed",
+								"10:00-14:00",
+								"08:00-20:00"
+							]
 						}
 					},
 					"additionalProperties": false
 				},
 				{
-					"required": ["from", "to", "name", "hours"],
+					"required": [
+						"from",
+						"to",
+						"name",
+						"hours"
+					],
 					"properties": {
 						"from": {
 							"type": "string",
@@ -664,7 +733,11 @@
 						"hours": {
 							"type": "string",
 							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
-							"examples": ["Closed", "10:00-14:00", "08:00-20:00"]
+							"examples": [
+								"Closed",
+								"10:00-14:00",
+								"08:00-20:00"
+							]
 						}
 					},
 					"additionalProperties": false
@@ -704,7 +777,6 @@
 		},
 		"Contact": {
 			"type": "object",
-			"required": ["name", "role", "email", "public"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -746,7 +818,6 @@
 		},
 		"Banking": {
 			"type": "object",
-			"required": ["accounts"],
 			"properties": {
 				"accounts": {
 					"type": "array",
@@ -759,7 +830,6 @@
 		},
 		"BankAccount": {
 			"type": "object",
-			"required": ["currency", "bankName", "type", "country"],
 			"properties": {
 				"label": {
 					"type": "string",
@@ -792,7 +862,11 @@
 				},
 				"type": {
 					"type": "string",
-					"enum": ["corporate", "business", "savings"],
+					"enum": [
+						"corporate",
+						"business",
+						"savings"
+					],
 					"description": "Type of bank account"
 				},
 				"country": {
@@ -804,7 +878,6 @@
 		},
 		"Wallet": {
 			"type": "object",
-			"required": ["blockchain", "network", "address", "label"],
 			"properties": {
 				"label": {
 					"type": "string",
@@ -907,7 +980,6 @@
 		},
 		"Branding": {
 			"type": "object",
-			"required": ["logos", "icons", "brandingKeywords"],
 			"properties": {
 				"logos": {
 					"$ref": "#/$defs/Logos"
@@ -924,13 +996,15 @@
 				},
 				"guidelines": {
 					"$ref": "#/$defs/Guidelines"
+				},
+				"coverImage": {
+					"$ref": "#/$defs/CoverImage"
 				}
 			}
 		},
 		"Logos": {
 			"type": "object",
 			"description": "Organization logos in multiple formats and variants. Recommended: Provide both square (1:1) and horizontal (wide) logo variants for maximum portal compatibility. Mark one logo as 'primary' to indicate the preferred/default logo.",
-			"required": ["vector", "raster"],
 			"properties": {
 				"vector": {
 					"type": "array",
@@ -950,11 +1024,16 @@
 		},
 		"LogoAsset": {
 			"type": "object",
-			"required": ["type", "url"],
 			"properties": {
 				"type": {
 					"type": "string",
-					"enum": ["svg", "pdf", "png", "jpeg", "jpg"],
+					"enum": [
+						"svg",
+						"pdf",
+						"png",
+						"jpeg",
+						"jpg"
+					],
 					"description": "File type"
 				},
 				"url": {
@@ -970,17 +1049,35 @@
 				},
 				"aspectRatio": {
 					"type": "string",
-					"enum": ["square", "horizontal", "vertical"],
+					"enum": [
+						"square",
+						"horizontal",
+						"vertical"
+					],
 					"description": "Logo aspect ratio: 'square' (1:1) for dashboards/avatars, 'horizontal' (wide) for headers/banners, 'vertical' (tall) for specialized layouts"
 				},
 				"logoType": {
 					"type": "string",
-					"enum": ["full", "icon-only", "text-only", "symbol", "wordmark"],
+					"enum": [
+						"full",
+						"icon-only",
+						"text-only",
+						"symbol",
+						"wordmark"
+					],
 					"description": "Logo composition: 'full' (icon+text), 'icon-only' (symbol/mark without text), 'text-only' (text/wordmark only), 'symbol' (abstract symbol), 'wordmark' (stylized text)"
 				},
 				"colorVariant": {
 					"type": "string",
-					"enum": ["color", "light", "dark", "monochrome", "grayscale", "white", "black"],
+					"enum": [
+						"color",
+						"light",
+						"dark",
+						"monochrome",
+						"grayscale",
+						"white",
+						"black"
+					],
 					"description": "Color variant: 'color' (full color), 'light' (for dark backgrounds), 'dark' (for light backgrounds), 'monochrome' (single color), 'grayscale', 'white', 'black'"
 				},
 				"width": {
@@ -995,7 +1092,11 @@
 				},
 				"density": {
 					"type": "string",
-					"enum": ["1x", "2x", "3x"],
+					"enum": [
+						"1x",
+						"2x",
+						"3x"
+					],
 					"description": "Pixel density for retina/HiDPI displays"
 				},
 				"alt": {
@@ -1017,7 +1118,6 @@
 		},
 		"Icons": {
 			"type": "object",
-			"required": ["favicon", "appIcons"],
 			"properties": {
 				"favicon": {
 					"$ref": "#/$defs/FaviconSet"
@@ -1056,7 +1156,6 @@
 		},
 		"AppIcon": {
 			"type": "object",
-			"required": ["url", "resolution", "purpose"],
 			"properties": {
 				"url": {
 					"type": "string",
@@ -1090,7 +1189,6 @@
 		},
 		"ColorPalette": {
 			"type": "object",
-			"required": ["primary", "secondary", "accent"],
 			"properties": {
 				"primary": {
 					"type": "string",
@@ -1112,7 +1210,6 @@
 		"Catalog": {
 			"type": "object",
 			"description": "Product and service catalog. For large catalogs, use productFeeds/serviceFeeds to link external feeds. For small businesses (restaurants, service providers), use inline items/menu/services arrays directly.",
-			"required": ["defaultCurrency"],
 			"properties": {
 				"defaultCurrency": {
 					"type": "string",
@@ -1155,12 +1252,22 @@
 							"description": "Available dietary options",
 							"items": {
 								"type": "string",
-								"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "keto", "paleo"]
+								"enum": [
+									"vegetarian",
+									"vegan",
+									"gluten-free",
+									"halal",
+									"kosher",
+									"dairy-free",
+									"nut-free",
+									"organic",
+									"keto",
+									"paleo"
+								]
 							}
 						}
 					}
 				},
-
 				"dailyMenu": {
 					"type": "object",
 					"description": "Daily specials or weekly rotating menu. Items may differ in portion size, price, or composition from the regular menu.",
@@ -1178,13 +1285,48 @@
 							"type": "object",
 							"description": "Daily specials indexed by day of the week",
 							"properties": {
-								"monday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"tuesday":   { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"wednesday": { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"thursday":  { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"friday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"saturday":  { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } },
-								"sunday":    { "type": "array", "items": { "$ref": "#/$defs/DailyMenuItem" } }
+								"monday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"tuesday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"wednesday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"thursday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"friday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"saturday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								},
+								"sunday": {
+									"type": "array",
+									"items": {
+										"$ref": "#/$defs/DailyMenuItem"
+									}
+								}
 							},
 							"additionalProperties": false
 						}
@@ -1221,7 +1363,6 @@
 		},
 		"MenuCategory": {
 			"type": "object",
-			"required": ["id", "name", "items"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -1260,7 +1401,6 @@
 		},
 		"MenuItem": {
 			"type": "object",
-			"required": ["id", "name", "price"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -1303,7 +1443,18 @@
 					"description": "Dietary labels",
 					"items": {
 						"type": "string",
-						"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "spicy", "contains-alcohol"]
+						"enum": [
+							"vegetarian",
+							"vegan",
+							"gluten-free",
+							"halal",
+							"kosher",
+							"dairy-free",
+							"nut-free",
+							"organic",
+							"spicy",
+							"contains-alcohol"
+						]
 					}
 				},
 				"allergens": {
@@ -1311,7 +1462,22 @@
 					"description": "Allergen warnings",
 					"items": {
 						"type": "string",
-						"enum": ["gluten", "dairy", "eggs", "fish", "shellfish", "tree-nuts", "peanuts", "soy", "sesame", "sulfites", "celery", "mustard", "lupin", "molluscs"]
+						"enum": [
+							"gluten",
+							"dairy",
+							"eggs",
+							"fish",
+							"shellfish",
+							"tree-nuts",
+							"peanuts",
+							"soy",
+							"sesame",
+							"sulfites",
+							"celery",
+							"mustard",
+							"lupin",
+							"molluscs"
+						]
 					}
 				},
 				"portionSize": {
@@ -1321,7 +1487,9 @@
 				"ingredients": {
 					"type": "array",
 					"description": "List of ingredients",
-					"items": { "type": "string" }
+					"items": {
+						"type": "string"
+					}
 				},
 				"available": {
 					"type": "boolean",
@@ -1338,7 +1506,10 @@
 					"description": "Size or variant options (e.g., Small/Medium/Large)",
 					"items": {
 						"type": "object",
-						"required": ["name", "price"],
+						"required": [
+							"name",
+							"price"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -1357,7 +1528,10 @@
 					"description": "Optional add-ons (e.g., extra cheese, toppings)",
 					"items": {
 						"type": "object",
-						"required": ["name", "price"],
+						"required": [
+							"name",
+							"price"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -1375,7 +1549,6 @@
 		},
 		"DailyMenuItem": {
 			"type": "object",
-			"required": ["name", "price"],
 			"description": "A single item in the daily menu. Standalone definition — may differ from regular menu items in portion size, price, or composition.",
 			"properties": {
 				"name": {
@@ -1402,11 +1575,21 @@
 				"ingredients": {
 					"type": "array",
 					"description": "List of ingredients",
-					"items": { "type": "string" }
+					"items": {
+						"type": "string"
+					}
 				},
 				"course": {
 					"type": "string",
-					"enum": ["starter", "soup", "main", "dessert", "drink", "side", "other"],
+					"enum": [
+						"starter",
+						"soup",
+						"main",
+						"dessert",
+						"drink",
+						"side",
+						"other"
+					],
 					"description": "Course type for set menus"
 				},
 				"dietary": {
@@ -1414,7 +1597,18 @@
 					"description": "Dietary labels",
 					"items": {
 						"type": "string",
-						"enum": ["vegetarian", "vegan", "gluten-free", "halal", "kosher", "dairy-free", "nut-free", "organic", "spicy", "contains-alcohol"]
+						"enum": [
+							"vegetarian",
+							"vegan",
+							"gluten-free",
+							"halal",
+							"kosher",
+							"dairy-free",
+							"nut-free",
+							"organic",
+							"spicy",
+							"contains-alcohol"
+						]
 					}
 				},
 				"allergens": {
@@ -1422,7 +1616,22 @@
 					"description": "Allergen warnings",
 					"items": {
 						"type": "string",
-						"enum": ["gluten", "dairy", "eggs", "fish", "shellfish", "tree-nuts", "peanuts", "soy", "sesame", "sulfites", "celery", "mustard", "lupin", "molluscs"]
+						"enum": [
+							"gluten",
+							"dairy",
+							"eggs",
+							"fish",
+							"shellfish",
+							"tree-nuts",
+							"peanuts",
+							"soy",
+							"sesame",
+							"sulfites",
+							"celery",
+							"mustard",
+							"lupin",
+							"molluscs"
+						]
 					}
 				},
 				"available": {
@@ -1456,7 +1665,10 @@
 					"description": "Private dining rooms or event spaces",
 					"items": {
 						"type": "object",
-						"required": ["name", "capacity"],
+						"required": [
+							"name",
+							"capacity"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -1517,7 +1729,9 @@
 					"description": "Third-party delivery platforms (Glovo, Bolt Food, Tazz, Uber Eats etc.)",
 					"items": {
 						"type": "object",
-						"required": ["name"],
+						"required": [
+							"name"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -1601,11 +1815,26 @@
 					"items": {
 						"type": "string",
 						"enum": [
-							"wifi", "air-conditioning", "heating", "terrace", "garden",
-							"live-music", "tv", "projector", "bar", "kids-menu",
-							"kids-play-area", "wheelchair-accessible", "pet-friendly",
-							"smoking-area", "non-smoking", "valet-parking", "coat-check",
-							"private-events", "birthday-packages", "gift-cards"
+							"wifi",
+							"air-conditioning",
+							"heating",
+							"terrace",
+							"garden",
+							"live-music",
+							"tv",
+							"projector",
+							"bar",
+							"kids-menu",
+							"kids-play-area",
+							"wheelchair-accessible",
+							"pet-friendly",
+							"smoking-area",
+							"non-smoking",
+							"valet-parking",
+							"coat-check",
+							"private-events",
+							"birthday-packages",
+							"gift-cards"
 						]
 					}
 				},
@@ -1618,7 +1847,12 @@
 				},
 				"priceRange": {
 					"type": "string",
-					"enum": ["$", "$$", "$$$", "$$$$"],
+					"enum": [
+						"$",
+						"$$",
+						"$$$",
+						"$$$$"
+					],
 					"description": "Price range indicator: $ = budget, $$ = moderate, $$$ = upscale, $$$$ = fine dining"
 				},
 				"averageCheckPerPerson": {
@@ -1646,7 +1880,18 @@
 			"properties": {
 				"propertyType": {
 					"type": "string",
-					"enum": ["hotel", "motel", "hostel", "apartment", "resort", "villa", "guesthouse", "bnb", "campsite", "other"],
+					"enum": [
+						"hotel",
+						"motel",
+						"hostel",
+						"apartment",
+						"resort",
+						"villa",
+						"guesthouse",
+						"bnb",
+						"campsite",
+						"other"
+					],
 					"description": "Type of accommodation property"
 				},
 				"starRating": {
@@ -1664,13 +1909,19 @@
 					"type": "string",
 					"pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
 					"description": "Standard check-in time (HH:MM, 24h format)",
-					"examples": ["14:00", "15:00"]
+					"examples": [
+						"14:00",
+						"15:00"
+					]
 				},
 				"checkOut": {
 					"type": "string",
 					"pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
 					"description": "Standard check-out time (HH:MM, 24h format)",
-					"examples": ["11:00", "12:00"]
+					"examples": [
+						"11:00",
+						"12:00"
+					]
 				},
 				"amenities": {
 					"type": "array",
@@ -1678,13 +1929,32 @@
 					"items": {
 						"type": "string",
 						"enum": [
-							"pool", "indoor-pool", "spa", "gym", "sauna", "jacuzzi",
-							"restaurant", "bar", "room-service", "breakfast-included",
-							"parking", "valet-parking", "ev-charging",
-							"wifi", "business-center", "conference-rooms",
-							"airport-shuttle", "concierge", "24h-reception",
-							"pet-friendly", "wheelchair-accessible", "kids-club",
-							"beach-access", "ski-in-ski-out", "garden", "terrace"
+							"pool",
+							"indoor-pool",
+							"spa",
+							"gym",
+							"sauna",
+							"jacuzzi",
+							"restaurant",
+							"bar",
+							"room-service",
+							"breakfast-included",
+							"parking",
+							"valet-parking",
+							"ev-charging",
+							"wifi",
+							"business-center",
+							"conference-rooms",
+							"airport-shuttle",
+							"concierge",
+							"24h-reception",
+							"pet-friendly",
+							"wheelchair-accessible",
+							"kids-club",
+							"beach-access",
+							"ski-in-ski-out",
+							"garden",
+							"terrace"
 						]
 					}
 				},
@@ -1729,7 +1999,6 @@
 		"ServiceItem": {
 			"type": "object",
 			"description": "A service offering with pricing",
-			"required": ["id", "name"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -1764,7 +2033,14 @@
 				},
 				"priceUnit": {
 					"type": "string",
-					"enum": ["fixed", "hourly", "per-item", "per-session", "per-person", "quote"],
+					"enum": [
+						"fixed",
+						"hourly",
+						"per-item",
+						"per-session",
+						"per-person",
+						"quote"
+					],
 					"description": "Pricing unit type"
 				},
 				"duration": {
@@ -1796,7 +2072,6 @@
 		"ServicePackage": {
 			"type": "object",
 			"description": "A service package or bundle (ideal for karting, experiences, subscriptions)",
-			"required": ["id", "name", "price"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -1879,7 +2154,6 @@
 		"PortfolioItem": {
 			"type": "object",
 			"description": "A portfolio item for creative businesses",
-			"required": ["id", "title"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -1911,7 +2185,9 @@
 					"description": "Project images",
 					"items": {
 						"type": "object",
-						"required": ["url"],
+						"required": [
+							"url"
+						],
 						"properties": {
 							"url": {
 								"type": "string",
@@ -1961,7 +2237,6 @@
 		},
 		"Feed": {
 			"type": "object",
-			"required": ["type", "format", "url", "description"],
 			"properties": {
 				"type": {
 					"type": "string",
@@ -1969,7 +2244,12 @@
 				},
 				"format": {
 					"type": "string",
-					"enum": ["json", "jsonl", "xml", "csv"],
+					"enum": [
+						"json",
+						"jsonl",
+						"xml",
+						"csv"
+					],
 					"description": "Feed format"
 				},
 				"url": {
@@ -2005,7 +2285,6 @@
 		},
 		"FeaturedItem": {
 			"type": "object",
-			"required": ["id", "name", "url"],
 			"properties": {
 				"id": {
 					"type": "string",
@@ -2025,7 +2304,6 @@
 		},
 		"RecommendedWebsite": {
 			"type": "object",
-			"required": ["url", "category", "description", "relevance"],
 			"properties": {
 				"url": {
 					"type": "string",
@@ -2035,7 +2313,13 @@
 				},
 				"category": {
 					"type": "string",
-					"enum": ["tool", "resource", "educational", "community", "other"],
+					"enum": [
+						"tool",
+						"resource",
+						"educational",
+						"community",
+						"other"
+					],
 					"description": "Category of recommendation"
 				},
 				"description": {
@@ -2050,7 +2334,6 @@
 		},
 		"Certificate": {
 			"type": "object",
-			"required": ["type", "name", "issuer"],
 			"properties": {
 				"type": {
 					"type": "string",
@@ -2092,7 +2375,6 @@
 		},
 		"Promotion": {
 			"type": "object",
-			"required": ["code", "description", "discountType"],
 			"properties": {
 				"code": {
 					"type": "string",
@@ -2104,7 +2386,12 @@
 				},
 				"discountType": {
 					"type": "string",
-					"enum": ["percentage", "fixed-amount", "free-shipping", "other"],
+					"enum": [
+						"percentage",
+						"fixed-amount",
+						"free-shipping",
+						"other"
+					],
 					"description": "Type of discount"
 				},
 				"discountValue": {
@@ -2139,7 +2426,12 @@
 			"properties": {
 				"type": {
 					"type": "string",
-					"enum": ["company", "freelancer", "agency", "individual"],
+					"enum": [
+						"company",
+						"freelancer",
+						"agency",
+						"individual"
+					],
 					"description": "Type of website manager"
 				},
 				"name": {
@@ -2282,7 +2574,6 @@
 		},
 		"TeamMember": {
 			"type": "object",
-			"required": ["name", "role"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2363,7 +2654,6 @@
 		},
 		"Investor": {
 			"type": "object",
-			"required": ["name", "type"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2434,7 +2724,6 @@
 		},
 		"TokenDistribution": {
 			"type": "object",
-			"required": ["category", "allocation"],
 			"properties": {
 				"category": {
 					"type": "string",
@@ -2454,7 +2743,6 @@
 		},
 		"Token": {
 			"type": "object",
-			"required": ["symbol", "name", "type", "blockchain", "network", "identifier", "decimals", "totalSupply"],
 			"properties": {
 				"symbol": {
 					"type": "string",
@@ -2548,7 +2836,6 @@
 		},
 		"PublicDataFeed": {
 			"type": "object",
-			"required": ["name", "format", "url"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2556,7 +2843,22 @@
 				},
 				"format": {
 					"type": "string",
-					"enum": ["gtfs", "gtfs-realtime", "ical", "json-ld", "csv", "xml", "geojson", "atom", "rss", "open-data", "sparql", "wfs", "wms", "other"],
+					"enum": [
+						"gtfs",
+						"gtfs-realtime",
+						"ical",
+						"json-ld",
+						"csv",
+						"xml",
+						"geojson",
+						"atom",
+						"rss",
+						"open-data",
+						"sparql",
+						"wfs",
+						"wms",
+						"other"
+					],
 					"description": "Data format: gtfs (General Transit Feed Specification), gtfs-realtime (live transit updates), ical (calendar events/courses - RFC 5545), json-ld (structured linked data), csv, xml, geojson (geographic data), atom/rss (news/updates), open-data (generic open data portal), sparql (semantic web endpoint), wfs/wms (geospatial web services), other"
 				},
 				"url": {
@@ -2596,7 +2898,6 @@
 		},
 		"ApiEndpoint": {
 			"type": "object",
-			"required": ["name", "version", "baseUrl"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2645,7 +2946,6 @@
 		},
 		"Partner": {
 			"type": "object",
-			"required": ["name", "type", "status"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2699,7 +2999,6 @@
 			"type": "object",
 			"description": "Partnership with another organization. IMPORTANT: For a partnership to be considered 'verified', both organizations must list each other in their respective ofero.json files. One-sided partnership declarations will be marked as 'pending-verification' or 'unreciprocated-invalid'. The oferoJson URL must EXACTLY match the partner's canonicalUrl field.",
 			"$comment": "VALIDATION: Automated validators should check reciprocity by fetching the partner's ofero.json, verifying mutual listing, and ensuring the oferoJson URL matches the partner's canonicalUrl field exactly.",
-			"required": ["name", "website", "oferoJson", "description", "status"],
 			"properties": {
 				"name": {
 					"type": "string",
@@ -2723,7 +3022,11 @@
 				},
 				"status": {
 					"type": "string",
-					"enum": ["pending-verification", "verified", "unreciprocated-invalid"],
+					"enum": [
+						"pending-verification",
+						"verified",
+						"unreciprocated-invalid"
+					],
 					"default": "pending-verification",
 					"description": "'pending-verification' = not yet checked (default), 'verified' = reciprocal partnership confirmed (validators should auto-upgrade when both parties list each other), 'unreciprocated-invalid' = partner does not list you back or URLs don't match"
 				}
@@ -2817,7 +3120,6 @@
 		},
 		"Milestone": {
 			"type": "object",
-			"required": ["quarter", "title", "status"],
 			"properties": {
 				"quarter": {
 					"type": "string",
@@ -2829,7 +3131,11 @@
 				},
 				"status": {
 					"type": "string",
-					"enum": ["planned", "in-progress", "completed"],
+					"enum": [
+						"planned",
+						"in-progress",
+						"completed"
+					],
 					"description": "Milestone status"
 				},
 				"description": {
@@ -2858,7 +3164,6 @@
 		},
 		"NewsItem": {
 			"type": "object",
-			"required": ["title", "url", "date", "source"],
 			"properties": {
 				"title": {
 					"type": "string",
@@ -2903,7 +3208,9 @@
 		},
 		"Verification": {
 			"type": "object",
-			"required": ["domain"],
+			"required": [
+				"domain"
+			],
 			"properties": {
 				"domain": {
 					"type": "string",
@@ -2928,7 +3235,6 @@
 		},
 		"WalletProof": {
 			"type": "object",
-			"required": ["message", "signature", "algorithm"],
 			"properties": {
 				"message": {
 					"type": "string",
@@ -2946,7 +3252,6 @@
 		},
 		"DnsRecord": {
 			"type": "object",
-			"required": ["record", "value"],
 			"properties": {
 				"record": {
 					"type": "string",
@@ -2960,7 +3265,6 @@
 		},
 		"Security": {
 			"type": "object",
-			"required": ["securityEmail"],
 			"properties": {
 				"pgp": {
 					"$ref": "#/$defs/PgpInfo"
@@ -2981,12 +3285,23 @@
 					"description": "Security audits conducted by third-party auditors",
 					"items": {
 						"type": "object",
-						"required": ["auditor", "date", "reportUrl", "scope"],
+						"required": [
+							"auditor",
+							"date",
+							"reportUrl",
+							"scope"
+						],
 						"properties": {
 							"auditor": {
 								"type": "string",
 								"description": "Auditor name or organization",
-								"examples": ["CertiK", "Hacken", "Quantstamp", "Trail of Bits", "OpenZeppelin"]
+								"examples": [
+									"CertiK",
+									"Hacken",
+									"Quantstamp",
+									"Trail of Bits",
+									"OpenZeppelin"
+								]
 							},
 							"date": {
 								"type": "string",
@@ -3001,7 +3316,14 @@
 							},
 							"scope": {
 								"type": "string",
-								"enum": ["smart-contracts", "full", "economic", "infrastructure", "api", "web-app"],
+								"enum": [
+									"smart-contracts",
+									"full",
+									"economic",
+									"infrastructure",
+									"api",
+									"web-app"
+								],
 								"description": "Audit scope: 'smart-contracts' (blockchain contracts), 'full' (comprehensive), 'economic' (tokenomics), 'infrastructure' (servers/deployment), 'api' (API security), 'web-app' (frontend/backend)"
 							},
 							"findings": {
@@ -3022,7 +3344,15 @@
 					"properties": {
 						"platform": {
 							"type": "string",
-							"enum": ["immunefi", "hackenproof", "cantina", "bugcrowd", "hackerone", "custom", "none"],
+							"enum": [
+								"immunefi",
+								"hackenproof",
+								"cantina",
+								"bugcrowd",
+								"hackerone",
+								"custom",
+								"none"
+							],
 							"default": "none",
 							"description": "Bug bounty platform: 'immunefi' (web3), 'hackenproof', 'cantina', 'bugcrowd', 'hackerone' (traditional), 'custom' (self-hosted), 'none' (no program)"
 						},
@@ -3039,7 +3369,9 @@
 						},
 						"inScope": {
 							"type": "array",
-							"items": { "type": "string" },
+							"items": {
+								"type": "string"
+							},
 							"description": "Short list of in-scope assets (e.g., 'smart contracts', 'web app', 'mobile app', 'API')"
 						}
 					},
@@ -3049,7 +3381,9 @@
 		},
 		"PgpInfo": {
 			"type": "object",
-			"required": ["publicKey"],
+			"required": [
+				"publicKey"
+			],
 			"properties": {
 				"publicKey": {
 					"type": "string",
@@ -3186,7 +3520,6 @@
 		},
 		"Support": {
 			"type": "object",
-			"required": ["email"],
 			"properties": {
 				"email": {
 					"type": "string",
@@ -3216,7 +3549,9 @@
 		},
 		"AiSettings": {
 			"type": "object",
-			"required": ["indexing"],
+			"required": [
+				"indexing"
+			],
 			"properties": {
 				"indexing": {
 					"$ref": "#/$defs/AiIndexing"
@@ -3238,7 +3573,10 @@
 		},
 		"AiIndexing": {
 			"type": "object",
-			"required": ["allow", "allowTraining"],
+			"required": [
+				"allow",
+				"allowTraining"
+			],
 			"properties": {
 				"allow": {
 					"type": "boolean",
@@ -3270,7 +3608,6 @@
 		},
 		"Jurisdiction": {
 			"type": "object",
-			"required": ["country", "regulator", "licenseType", "licenseId"],
 			"properties": {
 				"country": {
 					"type": "string",
@@ -3334,7 +3671,14 @@
 			"properties": {
 				"model": {
 					"type": "string",
-					"enum": ["company", "dao", "foundation-controlled", "multisig", "hybrid", "other"],
+					"enum": [
+						"company",
+						"dao",
+						"foundation-controlled",
+						"multisig",
+						"hybrid",
+						"other"
+					],
 					"description": "Governance model type"
 				},
 				"daoContracts": {
@@ -3342,7 +3686,11 @@
 					"description": "DAO smart contracts for governance",
 					"items": {
 						"type": "object",
-						"required": ["network", "address", "role"],
+						"required": [
+							"network",
+							"address",
+							"role"
+						],
 						"properties": {
 							"network": {
 								"type": "string",
@@ -3364,7 +3712,10 @@
 					"description": "Multisig signers information",
 					"items": {
 						"type": "object",
-						"required": ["role", "wallet"],
+						"required": [
+							"role",
+							"wallet"
+						],
 						"properties": {
 							"role": {
 								"type": "string",
@@ -3394,11 +3745,21 @@
 					"description": "Documentation resources",
 					"items": {
 						"type": "object",
-						"required": ["type", "url"],
+						"required": [
+							"type",
+							"url"
+						],
 						"properties": {
 							"type": {
 								"type": "string",
-								"enum": ["api-docs", "user-docs", "sdk", "faq", "guide", "whitepaper"],
+								"enum": [
+									"api-docs",
+									"user-docs",
+									"sdk",
+									"faq",
+									"guide",
+									"whitepaper"
+								],
 								"description": "Documentation type"
 							},
 							"url": {
@@ -3431,7 +3792,10 @@
 					"description": "Cashback and rewards programs",
 					"items": {
 						"type": "object",
-						"required": ["name", "type"],
+						"required": [
+							"name",
+							"type"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -3439,7 +3803,12 @@
 							},
 							"type": {
 								"type": "string",
-								"enum": ["cashback", "points", "token-rewards", "mixed"],
+								"enum": [
+									"cashback",
+									"points",
+									"token-rewards",
+									"mixed"
+								],
 								"description": "Reward program type"
 							},
 							"maxRate": {
@@ -3466,7 +3835,9 @@
 					"description": "Staking programs",
 					"items": {
 						"type": "object",
-						"required": ["name"],
+						"required": [
+							"name"
+						],
 						"properties": {
 							"name": {
 								"type": "string",
@@ -3504,13 +3875,15 @@
 		"Metadata": {
 			"type": "object",
 			"description": "File metadata including versioning, timestamps, and update information",
-			"required": ["version", "schemaVersion", "lastUpdated"],
 			"properties": {
 				"version": {
 					"type": "string",
 					"description": "Semantic version of this ofero.json file (MAJOR.MINOR.PATCH). Increment when content changes.",
 					"pattern": "^\\d+\\.\\d+\\.\\d+$",
-					"examples": ["1.0.0", "2.1.3"]
+					"examples": [
+						"1.0.0",
+						"2.1.3"
+					]
 				},
 				"schemaVersion": {
 					"type": "string",
@@ -3537,7 +3910,14 @@
 				},
 				"updateFrequency": {
 					"type": "string",
-					"enum": ["hourly", "daily", "weekly", "monthly", "quarterly", "rarely"],
+					"enum": [
+						"hourly",
+						"daily",
+						"weekly",
+						"monthly",
+						"quarterly",
+						"rarely"
+					],
 					"description": "Expected update frequency for this file - helps platforms know how often to re-crawl"
 				},
 				"changelogUrl": {
@@ -3552,7 +3932,6 @@
 		"BusinessClassification": {
 			"type": "object",
 			"description": "Business classification and industry categorization for merchant verification and partnership discovery",
-			"required": ["industry", "targetMarket", "operationalStatus"],
 			"properties": {
 				"industry": {
 					"type": "array",
@@ -3567,19 +3946,31 @@
 					"type": "string",
 					"description": "Merchant Category Code - 4 digits used by payment processors (Visa, Mastercard, etc.)",
 					"pattern": "^\\d{4}$",
-					"examples": ["5814", "5411", "5999"]
+					"examples": [
+						"5814",
+						"5411",
+						"5999"
+					]
 				},
 				"naicsCode": {
 					"type": "string",
 					"description": "North American Industry Classification System code - 6 digits (US/Canada/Mexico standard)",
 					"pattern": "^\\d{6}$",
-					"examples": ["722513", "445110", "541511"]
+					"examples": [
+						"722513",
+						"445110",
+						"541511"
+					]
 				},
 				"sicCode": {
 					"type": "string",
 					"description": "Standard Industrial Classification code - 4 digits (legacy US standard)",
 					"pattern": "^\\d{4}$",
-					"examples": ["5812", "5411", "7372"]
+					"examples": [
+						"5812",
+						"5411",
+						"7372"
+					]
 				},
 				"primaryProducts": {
 					"type": "array",
@@ -3588,7 +3979,16 @@
 						"type": "string"
 					},
 					"minItems": 1,
-					"examples": [["food", "beverages"], ["software", "consulting"]]
+					"examples": [
+						[
+							"food",
+							"beverages"
+						],
+						[
+							"software",
+							"consulting"
+						]
+					]
 				},
 				"secondaryProducts": {
 					"type": "array",
@@ -3596,21 +3996,36 @@
 					"items": {
 						"type": "string"
 					},
-					"examples": [["merchandise", "gift cards"]]
+					"examples": [
+						[
+							"merchandise",
+							"gift cards"
+						]
+					]
 				},
 				"targetMarket": {
 					"type": "array",
 					"description": "Target market segments - at least one required",
 					"items": {
 						"type": "string",
-						"enum": ["B2C", "B2B", "B2G", "C2C"]
+						"enum": [
+							"B2C",
+							"B2B",
+							"B2G",
+							"C2C"
+						]
 					},
 					"minItems": 1,
 					"uniqueItems": true
 				},
 				"operationalStatus": {
 					"type": "string",
-					"enum": ["active", "suspended", "closed", "pending"],
+					"enum": [
+						"active",
+						"suspended",
+						"closed",
+						"pending"
+					],
 					"description": "Current operational status: active (operating), suspended (temporarily not operating), closed (permanently closed), pending (pending approval/launch)"
 				}
 			},
@@ -3715,7 +4130,12 @@
 			"properties": {
 				"dataClassification": {
 					"type": "string",
-					"enum": ["public", "internal", "confidential", "restricted"],
+					"enum": [
+						"public",
+						"internal",
+						"confidential",
+						"restricted"
+					],
 					"description": "Data classification level: 'public' (freely shareable), 'internal' (organization only), 'confidential' (need-to-know), 'restricted' (highest security)"
 				},
 				"gdprCompliance": {
@@ -3738,7 +4158,10 @@
 					"description": "List of open source repositories",
 					"items": {
 						"type": "object",
-						"required": ["url", "license"],
+						"required": [
+							"url",
+							"license"
+						],
 						"properties": {
 							"url": {
 								"type": "string",
@@ -3761,6 +4184,35 @@
 							}
 						}
 					}
+				}
+			}
+		},
+		"CoverImage": {
+			"type": "object",
+			"description": "Cover/header image for the organization profile. Recommended size: 1200x628px (Open Graph standard). Used by portals, social previews, and listing pages.",
+			"required": [
+				"url"
+			],
+			"properties": {
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"description": "URL to the cover image file",
+					"pattern": "^https://"
+				},
+				"alt": {
+					"type": "string",
+					"description": "Alternative text description for accessibility (e.g., \"Bella Pizzeria restaurant interior\")"
+				},
+				"width": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Image width in pixels. Recommended: 1200"
+				},
+				"height": {
+					"type": "integer",
+					"minimum": 1,
+					"description": "Image height in pixels. Recommended: 628"
 				}
 			}
 		}

@@ -891,6 +891,49 @@
 			"applicableProducts": "All menu items"
 		}
 	],
+	"branding": {
+		"logos": {
+			"vector": [
+				{
+					"type": "svg",
+					"url": "https://bella-pizzeria.com/assets/logo-square.svg",
+					"primary": true,
+					"aspectRatio": "square",
+					"logoType": "full",
+					"colorVariant": "color",
+					"width": 512,
+					"height": 512,
+					"alt": "Bella Pizzeria logo"
+				}
+			],
+			"raster": [
+				{
+					"type": "png",
+					"url": "https://bella-pizzeria.com/assets/logo-square-1024.png",
+					"primary": true,
+					"aspectRatio": "square",
+					"logoType": "full",
+					"colorVariant": "color",
+					"width": 1024,
+					"height": 1024,
+					"alt": "Bella Pizzeria logo"
+				}
+			]
+		},
+		"coverImage": {
+			"url": "https://bella-pizzeria.com/assets/cover.jpg",
+			"alt": "Bella Pizzeria restaurant interior with wood-fired oven",
+			"width": 1200,
+			"height": 628
+		},
+		"brandingKeywords": [
+			"italian",
+			"pizza",
+			"artisan",
+			"authentic",
+			"wood-fired"
+		]
+	},
 	"communications": {
 		"social": {
 			"facebook": "https://facebook.com/bellapizzeria",
