@@ -20,7 +20,7 @@
 		},
 		"availableLanguages": {
 			"type": "array",
-			"description": "List of available language codes for this organization. Each language SHOULD have a corresponding ofero-{lang}.json overlay file accessible at the same base URL (e.g., if ofero.json is at https://example.com/.well-known/ofero.json, then ofero-ro.json should be at https://example.com/.well-known/ofero-ro.json). Overlay files contain only translatable fields in the target language.",
+			"description": "List of language codes for which this organization provides translations. Translations are embedded inline using the TranslatableString structure (default + translations object) within the main ofero.json file.",
 			"items": {
 				"type": "string",
 				"pattern": "^[a-z]{2}$",

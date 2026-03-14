@@ -111,13 +111,27 @@ if (result.valid) {
 
 ## Multi-Language Support
 
-The base `ofero.json` is always in English. For other languages, create overlay files at the same path:
+The base `ofero.json` is written in the company's **primary language** — whichever language the company operates in. There is no requirement to use English. Declare it with the top-level `language` field:
 
-- `/.well-known/ofero.json` — base file (English)
-- `/.well-known/ofero-ro.json` — Romanian overlay
-- `/.well-known/ofero-de.json` — German overlay
+```json
+{ "language": "de" }
+```
 
-Overlay files contain only translatable fields (`name`, `description`, etc.) in the target language.
+Translations into other languages are embedded inline using the `TranslatableString` structure:
+
+```json
+{
+  "description": {
+    "default": "Eine globale Fintech-Plattform",
+    "translations": {
+      "en": "A global fintech platform",
+      "fr": "Une plateforme fintech mondiale"
+    }
+  }
+}
+```
+
+Consumers that need a specific language should read `language` from the file, look up their preferred language in `translations`, and fall back to `default` if not found.
 
 ---
 

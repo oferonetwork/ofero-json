@@ -5,6 +5,21 @@ All notable changes to the ofero.json metadata standard will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-14
+
+### Changed
+
+- **Primary language is no longer required to be English.** The `default` field in every `TranslatableString` must now match the language declared by the top-level `language` field — which can be any ISO 639-1 language code. Companies should write their `ofero.json` in whatever language they operate in.
+- Removed language overlay files (`ofero-{lang}.json`) from the specification. Translations are handled entirely via the inline `TranslatableString` structure (`default` + `translations` object), making separate overlay files redundant.
+- Updated `availableLanguages` schema description to reflect inline-only translation model.
+- Updated all documentation examples to use `de`/`fr` instead of `ro` as the non-English example language.
+
+### Removed
+
+- Language overlay file pattern (`/.well-known/ofero-{lang}.json`) — superseded by inline `TranslatableString.translations`.
+
+---
+
 ## [1.0.0] - 2025-03-07
 
 ### Added

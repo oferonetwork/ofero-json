@@ -2074,12 +2074,11 @@ Schema version and additional notes.
 
 ## Multi-Language Support
 
-Ofero.json supports translations through **two complementary systems**:
+Ofero.json supports translations through the **TranslatableString structure** — inline translations embedded directly within the main file. There is no requirement to use English as the primary language. A company writes the `default` value in whichever language they operate in, as declared by the top-level `language` field.
 
-1. **TranslatableString Structure** - Inline translations within the main file
-2. **Language Overlay Files** - Separate files for complete translations
+Consumers that need a specific language should read `language` from the base file, then look up their preferred language in `translations`. If not found, fall back to `default`.
 
-### TranslatableString Structure (New in v1.0)
+### TranslatableString Structure
 
 **Breaking Change:** The TranslatableString definition has been redesigned to use an object with `default` and `translations` properties.
 
@@ -2087,22 +2086,22 @@ Ofero.json supports translations through **two complementary systems**:
 
 ```json
 {
-	"default": "English text (required)",
+	"default": "Text in the company's primary language (required)",
 	"translations": {
-		"ro": "Romanian translation here",
+		"en": "English translation here",
 		"de": "Text auf Deutsch",
-		"en-US": "American English text",
-		"ro-RO": "Romanian (Romania) translation here"
+		"fr": "Texte en français",
+		"en-US": "American English text"
 	}
 }
 ```
 
 **Key Features:**
 
-- **Required `default` field**: Always present, typically matches the root `language` field
-- **Optional `translations` object**: Contains language/locale-specific translations
-- **Locale support**: Supports both language codes (`en`, `ro`) and locale codes (`en-US`, `ro-RO`)
-- **Pattern:** `^[a-z]{2}(-[A-Z]{2})?$` (e.g., `en`, `en-US`, `ro`, `ro-RO`)
+- **Required `default` field**: Always present, written in the language declared by the top-level `language` field
+- **Optional `translations` object**: Contains translations into other languages/locales
+- **Locale support**: Supports both language codes (`en`, `de`) and locale codes (`en-US`, `de-DE`)
+- **Pattern:** `^[a-z]{2}(-[A-Z]{2})?$` (e.g., `en`, `en-US`, `de`, `de-DE`)
 
 **Example Usage:**
 
@@ -2110,24 +2109,21 @@ Ofero.json supports translations through **two complementary systems**:
 {
 	"organization": {
 		"brandName": {
-			"default": "Ofero",
-			"translations": {
-				"ro": "Ofero"
-			}
+			"default": "Ofero"
 		},
 		"description": {
 			"default": "A global fintech platform connecting businesses",
 			"translations": {
-				"ro": "A global fintech platform connecting businesses in Romanian",
-				"de": "Eine globale Fintech-Plattform zur Vernetzung von Unternehmen"
+				"de": "Eine globale Fintech-Plattform zur Vernetzung von Unternehmen",
+				"fr": "Une plateforme fintech mondiale connectant les entreprises"
 			}
 		}
 	},
 	"keywords": {
 		"default": "fintech, blockchain, web3, DeFi, payments",
 		"translations": {
-			"ro": "financial technology, blockchain, web3, DeFi, payments",
-			"de": "Finanztechnologie, Blockchain, Web3, DeFi, Zahlungen"
+			"de": "Finanztechnologie, Blockchain, Web3, DeFi, Zahlungen",
+			"fr": "technologie financière, blockchain, web3, DeFi, paiements"
 		}
 	}
 }
@@ -2154,57 +2150,6 @@ Ofero.json supports translations through **two complementary systems**:
 		"default": "Ofero",
 		"translations": {
 			"ro": "Ofero"
-		}
-	}
-}
-```
-
-### Language Overlay Files (Optional)
-
-In addition to inline translations, you can create separate language overlay files:
-
-### How It Works
-
-1. **Base File** (`ofero.json`) - Contains all fields in your primary language (usually English)
-2. **Language Overlays** (`ofero-{lang}.json`) - Contains **only translatable fields** in the target language
-
-### Example Structure
-
-**Base file:** `https://yourdomain.com/.well-known/ofero.json`
-
-```json
-{
-	"version": "1.0",
-	"language": "en",
-	"organization": {
-		"brandName": {
-			"default": "Ofero",
-			"translations": {
-				"ro": "Ofero"
-			}
-		},
-		"description": {
-			"default": "A global fintech platform...",
-			"translations": {
-				"ro": "A global fintech platform..."
-			}
-		}
-	}
-}
-```
-
-**Romanian overlay:** `https://yourdomain.com/.well-known/ofero-ro.json`
-
-```json
-{
-	"version": "1.0",
-	"language": "ro",
-	"organization": {
-		"brandName": {
-			"default": "Ofero"
-		},
-		"description": {
-			"default": "A global fintech platform..."
 		}
 	}
 }
@@ -2840,7 +2785,7 @@ For complete examples, see:
 
 ### Getting Started
 
-1. **Choose Your Primary Language**: Usually English (`en`)
+1. **Choose Your Primary Language**: The language your organization operates in (e.g., `en`, `de`, `fr`, `hu`)
 2. **Determine Your Entity Type**: company, association, ngo, protocol, etc.
 3. **Find Your Legal Form**: Consult the legal forms reference
 4. **Gather Required Information**: Legal name, identifiers, contact details
@@ -2876,7 +2821,7 @@ For complete examples, see:
 
 1. ❌ **Hardcoding Dates**: Use `generatedAt` as actual generation time
 2. ❌ **Missing Required Fields**: Validate against schema before deploying
-3. ❌ **Inconsistent Language**: Don't mix languages in base file
+3. ❌ **Inconsistent Language**: Don't mix languages in `default` values — all `default` fields must be in the language declared by the top-level `language` field
 4. ❌ **Invalid URLs**: Always use absolute URLs with protocol (https://)
 5. ❌ **Wrong Entity Type**: Choose correct entity type for your organization
 6. ❌ **Translating Technical Fields**: Don't translate IDs, codes, addresses
