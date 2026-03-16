@@ -53,6 +53,8 @@
 				"latitude": 44.4396,
 				"longitude": 26.0963
 			},
+			"phone": "+40212345678",
+			"email": "info@grandhotel.com",
 			"businessHours": {
 				"monday": "00:00-24:00",
 				"tuesday": "00:00-24:00",
@@ -62,7 +64,23 @@
 				"saturday": "00:00-24:00",
 				"sunday": "00:00-24:00",
 				"timezone": "Europe/Bucharest"
-			}
+			},
+			"amenities": [
+				"wifi",
+				"parking",
+				"wheelchair-accessible",
+				"pool",
+				"gym",
+				"spa",
+				"bar",
+				"non-smoking"
+			],
+			"paymentMethods": [
+				{ "type": "cash" },
+				{ "type": "card", "providers": ["visa", "mastercard", "amex"] },
+				{ "type": "bank-transfer" },
+				{ "type": "mobile-payment", "providers": ["apple-pay", "google-pay"] }
+			]
 		}
 	],
 	"accommodationDetails": {

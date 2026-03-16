@@ -614,11 +614,37 @@
 						"$ref": "#/$defs/SpecialHoursEntry"
 					}
 				},
+				"phone": {
+					"type": "string",
+					"description": "Direct phone number for this location (e.g., \"+14155551234\")"
+				},
+				"email": {
+					"type": "string",
+					"format": "email",
+					"description": "Direct email address for this location"
+				},
 				"contacts": {
 					"type": "array",
 					"description": "Contact persons at this location",
 					"items": {
 						"$ref": "#/$defs/Contact"
+					}
+				},
+				"amenities": {
+					"type": "array",
+					"description": "Facilities and features available at this location. Use standard values where possible; custom strings are accepted.",
+					"items": {
+						"type": "string"
+					},
+					"examples": [
+						["wifi", "free-wifi", "parking", "free-parking", "terrace", "air-conditioning", "wheelchair-accessible", "bar", "non-smoking", "pool", "gym", "spa", "playground", "delivery", "takeaway", "reservations", "pet-friendly", "baby-chairs", "live-music", "private-room"]
+					]
+				},
+				"paymentMethods": {
+					"type": "array",
+					"description": "Payment methods accepted at this location.",
+					"items": {
+						"$ref": "#/$defs/PaymentMethod"
 					}
 				},
 				"photos": {
@@ -632,6 +658,41 @@
 					}
 				}
 			}
+		},
+		"PaymentMethod": {
+			"type": "object",
+			"description": "A payment method accepted at a location. Use 'type' for the category and 'providers' for specific brands or networks.",
+			"required": ["type"],
+			"properties": {
+				"type": {
+					"type": "string",
+					"enum": [
+						"cash",
+						"card",
+						"bank-transfer",
+						"crypto",
+						"meal-voucher",
+						"gift-card",
+						"mobile-payment",
+						"check",
+						"buy-now-pay-later",
+						"other"
+					],
+					"description": "Payment method category. 'card' covers debit/credit cards; 'meal-voucher' covers food/lunch vouchers (providers vary by country); 'mobile-payment' covers NFC/QR-based wallets; 'other' for anything not listed."
+				},
+				"providers": {
+					"type": "array",
+					"description": "Specific brands, networks, or tokens accepted. Well-known values per type — card: visa, mastercard, amex, discover, unionpay, jcb, diners. crypto: btc, eth, usdc, usdt, sol, bnb, xrp, matic. mobile-payment: apple-pay, google-pay, samsung-pay. meal-voucher and gift-card providers vary by country — use local provider names as strings.",
+					"items": {
+						"type": "string"
+					}
+				},
+				"notes": {
+					"type": "string",
+					"description": "Optional notes (e.g., 'minimum 10 USD for card', 'crypto via QR at cashier')"
+				}
+			},
+			"additionalProperties": false
 		},
 		"Address": {
 			"type": "object",

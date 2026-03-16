@@ -1015,6 +1015,8 @@ Physical locations, offices, and branches.
 					"hours": "09:00-15:00"
 				}
 			],
+			"phone": "+14155551234", // Optional direct phone for this location
+			"email": "location@example.com", // Optional direct email for this location
 			"contacts": [
 				// Optional contact persons
 				{
@@ -1025,6 +1027,16 @@ Physical locations, offices, and branches.
 					"languages": ["en", "ro"],
 					"public": true // Publicly accessible contact
 				}
+			],
+			"amenities": [
+				// Optional — facilities and features at this location
+				"wifi", "parking", "terrace", "wheelchair-accessible"
+			],
+			"paymentMethods": [
+				// Optional — payment methods accepted at this location
+				{ "type": "cash" },
+				{ "type": "card", "providers": ["visa", "mastercard"] },
+				{ "type": "mobile-payment", "providers": ["apple-pay", "google-pay"] }
 			]
 		}
 	]
@@ -1049,6 +1061,77 @@ Physical locations, offices, and branches.
 - `date` and `from`/`to` are mutually exclusive within the same entry.
 - When a date falls within multiple entries, the **first matching entry** takes precedence.
 - `specialHours` does not inherit the `timezone` from `businessHours`; the parent location's `businessHours.timezone` is assumed.
+
+#### Amenities (`amenities`)
+
+`amenities` is an optional array of strings inside each `Location` listing the facilities and features available at that location. Any string is valid; the values below are recommended for interoperability:
+
+| Value | Description |
+|---|---|
+| `wifi` | Wi-Fi available (may be paid) |
+| `free-wifi` | Free Wi-Fi |
+| `parking` | Parking available (may be paid) |
+| `free-parking` | Free parking |
+| `terrace` | Outdoor terrace |
+| `air-conditioning` | Air conditioning |
+| `wheelchair-accessible` | Accessible entrance/facilities |
+| `bar` | Bar service |
+| `non-smoking` | Non-smoking area |
+| `pool` | Swimming pool |
+| `gym` | Fitness center |
+| `spa` | Spa/wellness center |
+| `playground` | Children's playground |
+| `delivery` | Delivery service available |
+| `takeaway` | Takeaway/to-go available |
+| `reservations` | Reservations accepted |
+| `pet-friendly` | Pets allowed |
+| `baby-chairs` | High chairs for children |
+| `live-music` | Live music events |
+| `private-room` | Private dining/event room |
+
+Custom values are accepted for facilities not listed above.
+
+#### Payment Methods (`paymentMethods`)
+
+`paymentMethods` is an optional array inside each `Location` describing accepted payment options. Each entry has a required `type` and an optional `providers` array for specific brands or networks.
+
+```json
+"paymentMethods": [
+	{ "type": "cash" },
+	{ "type": "card", "providers": ["visa", "mastercard", "amex"] },
+	{ "type": "meal-voucher", "providers": ["ticket-restaurant", "edenred"] },
+	{ "type": "crypto", "providers": ["btc", "eth", "usdc"] },
+	{ "type": "mobile-payment", "providers": ["apple-pay", "google-pay"] },
+	{ "type": "buy-now-pay-later", "notes": "Via partner app at checkout" }
+]
+```
+
+**`type` enum values:**
+
+| Value | Description |
+|---|---|
+| `cash` | Physical cash |
+| `card` | Debit or credit card |
+| `bank-transfer` | Direct bank transfer (SEPA, SWIFT, etc.) |
+| `crypto` | Cryptocurrency |
+| `meal-voucher` | Food/lunch vouchers (providers vary by country) |
+| `gift-card` | Gift cards (providers vary by country) |
+| `mobile-payment` | NFC/QR-based mobile wallets |
+| `check` | Bank check |
+| `buy-now-pay-later` | Installment / BNPL services |
+| `other` | Any other payment method |
+
+**Well-known `providers` values:**
+
+| Type | Well-known providers |
+|---|---|
+| `card` | `visa`, `mastercard`, `amex`, `discover`, `unionpay`, `jcb`, `diners` |
+| `crypto` | `btc`, `eth`, `usdc`, `usdt`, `sol`, `bnb`, `xrp`, `matic` |
+| `mobile-payment` | `apple-pay`, `google-pay`, `samsung-pay` |
+| `meal-voucher` | *(no standard values — providers vary by country, use local names)* |
+| `gift-card` | *(no standard values — providers vary by country, use local names)* |
+
+> **Note:** `providers` accepts any string. The values above are suggestions for interoperability. For `meal-voucher` and `gift-card`, use the local provider names as strings (e.g., `"ticket-restaurant"`, `"edenred"`, `"sodexo"`).
 
 ### Banking Section
 

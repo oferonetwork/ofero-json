@@ -87,6 +87,8 @@
 				"latitude": 37.7749,
 				"longitude": -122.4194
 			},
+			"phone": "+14155551234",
+			"email": "downtown@bella-pizzeria.com",
 			"businessHours": {
 				"monday": "11:00-23:00",
 				"tuesday": "11:00-23:00",
@@ -97,6 +99,21 @@
 				"sunday": "12:00-22:00",
 				"timezone": "America/Los_Angeles"
 			},
+			"amenities": [
+				"wifi",
+				"terrace",
+				"air-conditioning",
+				"non-smoking",
+				"wheelchair-accessible",
+				"delivery",
+				"takeaway",
+				"reservations"
+			],
+			"paymentMethods": [
+				{ "type": "cash" },
+				{ "type": "card", "providers": ["visa", "mastercard", "amex"] },
+				{ "type": "mobile-payment", "providers": ["apple-pay", "google-pay"] }
+			],
 			"specialHours": [
 				{
 					"date": "2025-12-25",
