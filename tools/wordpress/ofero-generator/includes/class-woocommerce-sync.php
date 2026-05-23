@@ -147,36 +147,126 @@ class Ofero_WooCommerce_Sync {
     }
 
     /**
-     * Generate catalog from selected WooCommerce products
+     * REST API namespace and route for the v2 products feed.
      */
-    public function generate_catalog() {
+    const REST_NAMESPACE = 'ofero/v2';
+    const REST_ROUTE = '/products';
+
+    /**
+     * Register the REST endpoint that serves the WooCommerce products feed.
+     * Called from the plugin bootstrap on rest_api_init.
+     */
+    public static function register_rest_routes() {
+        register_rest_route(self::REST_NAMESPACE, self::REST_ROUTE, array(
+            'methods' => 'GET',
+            'permission_callback' => '__return_true',
+            'callback' => function () {
+                $instance = new self();
+                $response = $instance->build_products_feed();
+                return rest_ensure_response($response);
+            },
+        ));
+    }
+
+    /**
+     * Absolute URL of the REST endpoint serving the products feed.
+     * Used by the form handler to fill in catalog.feeds[].url.
+     */
+    public static function get_feed_url() {
+        return rest_url(self::REST_NAMESPACE . self::REST_ROUTE);
+    }
+
+    /**
+     * Build the JSON body served at the REST endpoint.
+     * Generic JSON Feed-ish shape — { lastUpdated, itemCount, items: [...] }.
+     */
+    public function build_products_feed() {
         if (!self::is_woocommerce_active()) {
-            return array();
+            return array(
+                'lastUpdated' => current_time('c'),
+                'itemCount' => 0,
+                'items' => array(),
+            );
         }
 
         $selected_ids = $this->get_selected_product_ids();
-
-        if (empty($selected_ids)) {
-            return array();
-        }
-
-        $catalog = array(
-            'type' => 'products',
-            'lastUpdated' => current_time('c'),
-            'items' => array(),
-        );
-
+        $items = array();
         foreach ($selected_ids as $product_id) {
             $product = wc_get_product($product_id);
             if ($product) {
                 $ofero_product = $this->convert_product_to_ofero($product);
                 if ($ofero_product) {
-                    $catalog['items'][] = $ofero_product;
+                    $items[] = $ofero_product;
                 }
             }
         }
 
-        return $catalog;
+        return array(
+            'lastUpdated' => current_time('c'),
+            'itemCount' => count($items),
+            'items' => $items,
+        );
+    }
+
+    /**
+     * v2-style feed reference for catalog.feeds[].
+     * Returns null when nothing is selected, so the caller can skip adding it.
+     */
+    public function generate_feed_reference() {
+        if (!self::is_woocommerce_active()) {
+            return null;
+        }
+        $selected_ids = $this->get_selected_product_ids();
+        if (empty($selected_ids)) {
+            return null;
+        }
+        return array(
+            'type' => 'products',
+            'format' => 'json',
+            'url' => self::get_feed_url(),
+            'name' => array('default' => 'WooCommerce products'),
+            'lastUpdated' => current_time('c'),
+            'itemCount' => count($selected_ids),
+            'standard' => 'json-feed',
+        );
+    }
+
+    /**
+     * Build catalog.signature[] from the first few selected WooCommerce products.
+     * Capped at 6 (CatalogPreviewItem maxItems in v2 schema).
+     */
+    public function generate_signature_items($limit = 6) {
+        if (!self::is_woocommerce_active()) {
+            return array();
+        }
+        $signature = array();
+        foreach ($this->get_selected_product_ids() as $product_id) {
+            if (count($signature) >= $limit) {
+                break;
+            }
+            $product = wc_get_product($product_id);
+            if (!$product) {
+                continue;
+            }
+            $preview = array(
+                'id' => (string) $product->get_id(),
+                'name' => array('default' => $product->get_name()),
+            );
+            $img_id = $product->get_image_id();
+            if ($img_id) {
+                $img_url = wp_get_attachment_image_url($img_id, 'medium');
+                if ($img_url) {
+                    $preview['imageUrl'] = $img_url;
+                }
+            }
+            $price = $product->get_price();
+            if ($price !== '') {
+                $preview['priceFormatted'] = wp_strip_all_tags($product->get_price_html());
+            }
+            $preview['url'] = get_permalink($product->get_id());
+            $signature[] = $preview;
+        }
+        return $signature;
     }
 
     /**

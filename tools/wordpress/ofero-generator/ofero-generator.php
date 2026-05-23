@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Generator
  * Plugin URI: https://ofero.me/ofero-json
  * Description: A complete admin interface for generating and managing ofero.json files with all sections, validation, and auto-save.
- * Version: 1.3.1
+ * Version: 2.0.0
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -18,7 +18,8 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_GENERATOR_VERSION', '1.3.1');
+define('OFERO_GENERATOR_VERSION', '2.0.0');
+define('OFERO_GENERATOR_SCHEMA_VERSION', 'ofero-metadata-2.0');
 define('OFERO_GENERATOR_PATH', plugin_dir_path(__FILE__));
 define('OFERO_GENERATOR_URL', plugin_dir_url(__FILE__));
 define('OFERO_GENERATOR_BASENAME', plugin_basename(__FILE__));
@@ -89,6 +90,34 @@ class Ofero_Generator {
 
         // Register hooks
         $this->register_hooks();
+
+        // Register WooCommerce products REST endpoint (v2 feed)
+        add_action('rest_api_init', array('Ofero_WooCommerce_Sync', 'register_rest_routes'));
+
+        // Notice if existing ofero.json on disk is still v1
+        add_action('admin_notices', array($this, 'maybe_show_v1_migration_notice'));
+    }
+
+    /**
+     * Show a one-time admin notice if the saved ofero.json still declares v1.
+     */
+    public function maybe_show_v1_migration_notice() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        // Only on our plugin pages to avoid noise
+        if (!$screen || strpos($screen->id, 'ofero-generator') === false) {
+            return;
+        }
+        $existing = $this->file_manager->load();
+        if (!is_array($existing)) {
+            return;
+        }
+        $sv = $existing['metadata']['schemaVersion'] ?? '';
+        if ($sv === 'ofero-metadata-1.0') {
+            echo '<div class="notice notice-warning"><p><strong>Ofero Generator:</strong> the ofero.json on disk still declares <code>ofero-metadata-1.0</code>. This plugin now writes v2 (<code>ofero-metadata-2.0</code>). Saving from this page will migrate the file — inline catalog data (<code>catalog.menu</code>, <code>catalog.services</code>, etc.) will be dropped because v2 only allows <code>catalog.feeds[]</code>. See <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+        }
     }
 
     /**

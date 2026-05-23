@@ -149,6 +149,63 @@ class Ofero_Validator {
                     'field' => 'metadata.schemaVersion',
                     'message' => __('Schema version is required.', 'ofero-generator')
                 );
+            } elseif ($data['metadata']['schemaVersion'] === 'ofero-metadata-1.0') {
+                $errors[] = array(
+                    'field' => 'metadata.schemaVersion',
+                    'message' => __('Schema version "ofero-metadata-1.0" is no longer supported. This plugin writes v2 — upgrade your file per docs/MIGRATION-v1-to-v2.md.', 'ofero-generator')
+                );
+            } elseif ($data['metadata']['schemaVersion'] !== 'ofero-metadata-2.0') {
+                $errors[] = array(
+                    'field' => 'metadata.schemaVersion',
+                    'message' => sprintf(
+                        __('Schema version must be "ofero-metadata-2.0", got "%s".', 'ofero-generator'),
+                        $data['metadata']['schemaVersion']
+                    )
+                );
+            }
+        }
+
+        // v2 forbids inline catalog data
+        if (isset($data['catalog']) && is_array($data['catalog'])) {
+            $forbidden = array('menu', 'dailyMenu', 'services', 'packages', 'portfolio', 'productFeeds', 'serviceFeeds');
+            foreach ($forbidden as $key) {
+                if (array_key_exists($key, $data['catalog'])) {
+                    $errors[] = array(
+                        'field' => 'catalog.' . $key,
+                        'message' => sprintf(
+                            __('catalog.%s was removed in v2.0. Move this data to catalog.feeds[] (see docs/MIGRATION-v1-to-v2.md).', 'ofero-generator'),
+                            $key
+                        )
+                    );
+                }
+            }
+
+            // Inline cap enforcement
+            if (isset($data['catalog']['signature']) && is_array($data['catalog']['signature']) && count($data['catalog']['signature']) > 6) {
+                $errors[] = array(
+                    'field' => 'catalog.signature',
+                    'message' => __('catalog.signature is capped at 6 items in v2.0. Move the rest to a catalog.feeds[] entry.', 'ofero-generator')
+                );
+            }
+            if (isset($data['catalog']['highlights']) && is_array($data['catalog']['highlights']) && count($data['catalog']['highlights']) > 6) {
+                $errors[] = array(
+                    'field' => 'catalog.highlights',
+                    'message' => __('catalog.highlights is capped at 6 items in v2.0. Move the rest to a catalog.feeds[] entry.', 'ofero-generator')
+                );
+            }
+        }
+
+        if (isset($data['featured']) && is_array($data['featured'])) {
+            foreach (array('products', 'services') as $f) {
+                if (isset($data['featured'][$f]) && is_array($data['featured'][$f]) && count($data['featured'][$f]) > 12) {
+                    $errors[] = array(
+                        'field' => 'featured.' . $f,
+                        'message' => sprintf(
+                            __('featured.%s is capped at 12 items in v2.0. Move the rest to catalog.feeds[].', 'ofero-generator'),
+                            $f
+                        )
+                    );
+                }
             }
         }
 

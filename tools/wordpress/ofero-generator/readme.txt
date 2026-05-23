@@ -3,12 +3,14 @@ Contributors: Ofero Network
 Tags: ofero, json, business info, structured data, generator, editor
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.3.1
+Stable tag: 2.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A complete admin interface for generating and managing ofero.json files with validation, auto-save, and backup functionality.
+
+**v2.0.0 writes ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** Inline catalog data (menus, products, services, packages, portfolios) is no longer allowed — those move to external feeds referenced via `catalog.feeds[]`. WooCommerce products are now served from a built-in REST endpoint and added automatically to the feeds list. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
 
 == Description ==
 
@@ -103,6 +105,17 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 
 == Changelog ==
 
+= 2.0.0 =
+* BREAKING: writes ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files (`ofero-metadata-1.0`) are flagged by the validator with a migration pointer; the next save migrates the file to v2 and drops inline catalog fields.
+* BREAKING: inline catalog data (`catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio`, `catalog.productFeeds`, `catalog.serviceFeeds`) is no longer written. v2 requires those to live in external feeds referenced via `catalog.feeds[]`.
+* NEW: Catalog tab now manages `catalog.feeds[]` entries (type, format, URL, name, language, standard, itemCount), plus inline previews (`catalog.signature[]`, `catalog.highlights[]`, max 6 each).
+* NEW: WooCommerce products are now exposed via a built-in REST endpoint at `/wp-json/ofero/v2/products` (no filesystem writes needed). The endpoint URL is automatically added to `catalog.feeds[]` on save when you have products selected, and the first selected products auto-populate `catalog.signature[]` when empty.
+* CHANGE: Menu and Services tabs now show an explainer pointing to the Catalog tab — they don't render inline editors anymore.
+* CHANGE: Restaurant tab still edits `restaurantDetails` (capacity, hours, amenities — valid in v2), with a note about the menu move.
+* NEW: admin notice on plugin pages when the saved ofero.json still declares v1.
+* NEW: validator enforces v2 (rejects v1 schemaVersion, rejects inline catalog keys, enforces `signature`/`highlights` ≤ 6, `featured.*` ≤ 12).
+* Plugin version bumped to 2.0.0.
+
 = 1.3.0 =
 * IMPROVED: Internationalized all registration number and tax ID examples
 * IMPROVED: Wider postal code field in locations section for better UX
@@ -123,6 +136,9 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 * Preview with JSON highlighting
 
 == Upgrade Notice ==
+
+= 2.0.0 =
+Breaking: writes ofero.json v2. Inline catalog data is dropped on save — full menus/products/services must live in external feeds referenced from catalog.feeds[]. Migrate before saving.
 
 = 1.3.0 =
 UX improvements: Better help text, clearer social media format guidelines, and internationalized examples.

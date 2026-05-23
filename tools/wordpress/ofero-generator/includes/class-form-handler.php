@@ -263,8 +263,8 @@ class Ofero_Form_Handler {
             'domain' => sanitize_text_field($_POST['domain'] ?? ''),
             'canonicalUrl' => esc_url_raw($_POST['canonicalUrl'] ?? ''),
             'metadata' => array(
-                'version' => sanitize_text_field($_POST['metadata_version'] ?? '1.0.0'),
-                'schemaVersion' => 'ofero-metadata-1.0',
+                'version' => sanitize_text_field($_POST['metadata_version'] ?? '2.0.0'),
+                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-2.0',
                 'lastUpdated' => current_time('c'),
                 'createdAt' => sanitize_text_field($_POST['metadata_createdAt'] ?? current_time('c'))
             ),
@@ -614,10 +614,31 @@ class Ofero_Form_Handler {
     }
 
     /**
-     * Collect catalog from POST (manual menu + WooCommerce fallback)
+     * Collect catalog from POST for v2.0 output.
+     *
+     * v2 forbids inline menus / products / services etc. The catalog block only
+     * holds:
+     *   - defaultCurrency, priceListUrl
+     *   - feeds[]: external feed references (manual entries + WooCommerce REST endpoint)
+     *   - signature[] (<=6) and highlights[] (<=6): tiny inline previews
+     *
+     * Existing v1 form fields (menu categories, daily menu, etc.) are NOT
+     * written to ofero.json anymore. The menu/restaurant tabs in the UI become
+     * lightweight feed-reference editors in v2 templates.
      */
     private function collect_catalog() {
-        // WooCommerce sync takes priority if active
+        $catalog = array(
+            'defaultCurrency' => strtoupper(sanitize_text_field($_POST['menu_currency'] ?? 'USD')),
+        );
+
+        $price_list_url = esc_url_raw($_POST['catalog_price_list_url'] ?? '');
+        if (!empty($price_list_url)) {
+            $catalog['priceListUrl'] = $price_list_url;
+        }
+
+        $feeds = $this->collect_catalog_feeds();
+
+        // WooCommerce sync: if active, persist selection and append a REST feed reference
         if (Ofero_WooCommerce_Sync::is_woocommerce_active()) {
             if (isset($_POST['selected_products']) && is_array($_POST['selected_products'])) {
                 $selected_ids = array_map('intval', $_POST['selected_products']);
@@ -626,239 +647,123 @@ class Ofero_Form_Handler {
             }
             update_option('ofero_generator_catalog_auto_sync', isset($_POST['catalog_auto_sync']));
             $woo_sync = new Ofero_WooCommerce_Sync();
-            return $woo_sync->generate_catalog();
+            $woo_feed = $woo_sync->generate_feed_reference();
+            if ($woo_feed) {
+                $feeds[] = $woo_feed;
+            }
         }
 
-        // Manual menu
-        $catalog = array(
-            'defaultCurrency' => strtoupper(sanitize_text_field($_POST['menu_currency'] ?? 'USD')),
-        );
-
-        // Menu section
-        $menu = array();
-
-        $allergen_url = esc_url_raw($_POST['menu_allergen_url'] ?? '');
-        if (!empty($allergen_url)) {
-            $menu['allergenInfo'] = $allergen_url;
+        if (!empty($feeds)) {
+            $catalog['feeds'] = array_slice($feeds, 0, 50);
         }
 
-        $dietary = isset($_POST['menu_dietary']) && is_array($_POST['menu_dietary'])
-            ? array_map('sanitize_text_field', $_POST['menu_dietary'])
-            : array();
-        if (!empty($dietary)) {
-            $menu['dietaryOptions'] = $dietary;
+        $signature = $this->collect_catalog_preview_items('catalog_signature', 6);
+        // Auto-populate from WooCommerce if user didn't enter any
+        if (empty($signature) && Ofero_WooCommerce_Sync::is_woocommerce_active()) {
+            $woo_sync = new Ofero_WooCommerce_Sync();
+            $signature = $woo_sync->generate_signature_items(6);
+        }
+        if (!empty($signature)) {
+            $catalog['signature'] = $signature;
         }
 
-        // Categories + items
-        $categories = $this->collect_menu_categories();
-        if (!empty($categories)) {
-            $menu['categories'] = $categories;
-        }
-
-        if (!empty($menu)) {
-            $catalog['menu'] = $menu;
-        }
-
-        // Daily menu
-        $daily_menu = $this->collect_daily_menu();
-        if (!empty($daily_menu)) {
-            $catalog['dailyMenu'] = $daily_menu;
+        $highlights = $this->collect_catalog_preview_items('catalog_highlights', 6);
+        if (!empty($highlights)) {
+            $catalog['highlights'] = $highlights;
         }
 
         return $catalog;
     }
 
     /**
-     * Collect menu categories and their items from POST
+     * Collect manual catalog.feeds[] entries from POST.
+     * Each entry: {type, format, url, name?, language?, lastUpdated?, itemCount?, standard?}.
      */
-    private function collect_menu_categories() {
-        $categories = array();
-
-        if (!isset($_POST['menu_cat_id']) || !is_array($_POST['menu_cat_id'])) {
-            return $categories;
+    private function collect_catalog_feeds() {
+        $feeds = array();
+        if (!isset($_POST['catalog_feed_url']) || !is_array($_POST['catalog_feed_url'])) {
+            return $feeds;
         }
-
-        $count = count($_POST['menu_cat_id']);
-
-        for ($catIdx = 0; $catIdx < $count; $catIdx++) {
-            $cat_id = sanitize_text_field($_POST['menu_cat_id'][$catIdx] ?? '');
-            if (empty($cat_id)) {
+        $valid_types = array('products','menu','services','packages','portfolio','reservations','rooms','other');
+        $valid_formats = array('json','jsonl','xml','csv','rss','atom','schema.org-jsonld','google-merchant-xml','gtfs','ical','other');
+        $count = count($_POST['catalog_feed_url']);
+        for ($i = 0; $i < $count; $i++) {
+            $url = esc_url_raw($_POST['catalog_feed_url'][$i] ?? '');
+            if (empty($url)) {
                 continue;
             }
-
-            $category = array(
-                'id'        => $cat_id,
-                'name'      => array('default' => sanitize_text_field($_POST['menu_cat_name'][$catIdx] ?? '')),
-                'sortOrder' => intval($_POST['menu_cat_sort'][$catIdx] ?? ($catIdx + 1)),
+            $type = sanitize_text_field($_POST['catalog_feed_type'][$i] ?? 'other');
+            $format = sanitize_text_field($_POST['catalog_feed_format'][$i] ?? 'json');
+            $entry = array(
+                'type' => in_array($type, $valid_types, true) ? $type : 'other',
+                'format' => in_array($format, $valid_formats, true) ? $format : 'json',
+                'url' => $url,
             );
-
-            $service_hours = sanitize_text_field($_POST['menu_cat_service_hours'][$catIdx] ?? '');
-            if (!empty($service_hours)) {
-                $category['serviceHours'] = $service_hours;
+            $name = sanitize_text_field($_POST['catalog_feed_name'][$i] ?? '');
+            if (!empty($name)) {
+                $entry['name'] = array('default' => $name);
             }
-
-            // Items belonging to this category
-            $items = $this->collect_menu_items_for_category($catIdx);
-            $category['items'] = $items;
-
-            $categories[] = $category;
+            $lang = sanitize_text_field($_POST['catalog_feed_language'][$i] ?? '');
+            if (!empty($lang) && preg_match('/^[a-z]{2}$/', $lang)) {
+                $entry['language'] = $lang;
+            }
+            $standard = sanitize_text_field($_POST['catalog_feed_standard'][$i] ?? '');
+            if (!empty($standard)) {
+                $entry['standard'] = $standard;
+            }
+            $item_count = intval($_POST['catalog_feed_item_count'][$i] ?? 0);
+            if ($item_count > 0) {
+                $entry['itemCount'] = $item_count;
+            }
+            $feeds[] = $entry;
         }
-
-        return $categories;
+        return $feeds;
     }
 
     /**
-     * Collect menu items for a specific category index
+     * Collect CatalogPreviewItem entries for catalog.signature[] or catalog.highlights[].
+     * Hard-capped at $limit (schema enforces maxItems 6).
      */
-    private function collect_menu_items_for_category($catIdx) {
+    private function collect_catalog_preview_items($prefix, $limit) {
         $items = array();
-
-        if (!isset($_POST['menu_item_cat']) || !is_array($_POST['menu_item_cat'])) {
+        $name_key = $prefix . '_name';
+        if (!isset($_POST[$name_key]) || !is_array($_POST[$name_key])) {
             return $items;
         }
-
-        $total_items = count($_POST['menu_item_cat']);
-
-        for ($i = 0; $i < $total_items; $i++) {
-            if (intval($_POST['menu_item_cat'][$i]) !== $catIdx) {
+        $count = min(count($_POST[$name_key]), $limit);
+        for ($i = 0; $i < $count; $i++) {
+            $name = sanitize_text_field($_POST[$name_key][$i] ?? '');
+            if (empty($name)) {
                 continue;
             }
-
-            $item_id = sanitize_text_field($_POST['menu_item_id'][$i] ?? '');
-            $item_name = sanitize_text_field($_POST['menu_item_name'][$i] ?? '');
-            if (empty($item_id) && empty($item_name)) {
-                continue;
+            $entry = array('name' => array('default' => $name));
+            $id = sanitize_text_field($_POST[$prefix . '_id'][$i] ?? '');
+            if (!empty($id)) {
+                $entry['id'] = $id;
             }
-
-            $item = array(
-                'id'    => $item_id,
-                'name'  => array('default' => $item_name),
-                'price' => floatval($_POST['menu_item_price'][$i] ?? 0),
-            );
-
-            $desc = sanitize_textarea_field($_POST['menu_item_desc'][$i] ?? '');
+            $desc = sanitize_text_field($_POST[$prefix . '_description'][$i] ?? '');
             if (!empty($desc)) {
-                $item['description'] = array('default' => $desc);
+                $entry['description'] = array('default' => $desc);
             }
-
-            $portion = sanitize_text_field($_POST['menu_item_portion'][$i] ?? '');
-            if (!empty($portion)) {
-                $item['portionSize'] = $portion;
+            $cat = sanitize_text_field($_POST[$prefix . '_category'][$i] ?? '');
+            if (!empty($cat)) {
+                $entry['category'] = $cat;
             }
-
-            $ingredients_raw = sanitize_textarea_field($_POST['menu_item_ingredients'][$i] ?? '');
-            if (!empty($ingredients_raw)) {
-                $item['ingredients'] = array_values(array_filter(array_map('trim', explode(',', $ingredients_raw))));
-            }
-
-            $image = esc_url_raw($_POST['menu_item_image'][$i] ?? '');
+            $image = esc_url_raw($_POST[$prefix . '_image_url'][$i] ?? '');
             if (!empty($image)) {
-                $item['image'] = $image;
+                $entry['imageUrl'] = $image;
             }
-
-            $prep = sanitize_text_field($_POST['menu_item_prep'][$i] ?? '');
-            if (!empty($prep)) {
-                $item['preparationTime'] = $prep;
+            $url = esc_url_raw($_POST[$prefix . '_url'][$i] ?? '');
+            if (!empty($url)) {
+                $entry['url'] = $url;
             }
-
-            $calories = intval($_POST['menu_item_calories'][$i] ?? 0);
-            if ($calories > 0) {
-                $item['calories'] = $calories;
+            $price = sanitize_text_field($_POST[$prefix . '_price_formatted'][$i] ?? '');
+            if (!empty($price)) {
+                $entry['priceFormatted'] = $price;
             }
-
-            $dietary_key = 'menu_item_dietary_' . $catIdx . '_' . $i;
-            if (isset($_POST[$dietary_key]) && is_array($_POST[$dietary_key])) {
-                $item['dietary'] = array_map('sanitize_text_field', $_POST[$dietary_key]);
-            }
-
-            $allergen_key = 'menu_item_allergens_' . $catIdx . '_' . $i;
-            if (isset($_POST[$allergen_key]) && is_array($_POST[$allergen_key])) {
-                $item['allergens'] = array_map('sanitize_text_field', $_POST[$allergen_key]);
-            }
-
-            $item['available'] = !empty($_POST['menu_item_available'][$i]);
-            $item['popular']   = !empty($_POST['menu_item_popular'][$i]);
-
-            $items[] = $item;
+            $items[] = $entry;
         }
-
         return $items;
-    }
-
-    /**
-     * Collect daily menu from POST
-     */
-    private function collect_daily_menu() {
-        $daily_menu = array();
-        $week_days  = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
-
-        $week_of = sanitize_text_field($_POST['daily_menu_week_of'] ?? '');
-        if (!empty($week_of)) {
-            $daily_menu['weekOf'] = $week_of;
-        }
-
-        $note = sanitize_text_field($_POST['daily_menu_note'] ?? '');
-        if (!empty($note)) {
-            $daily_menu['note'] = array('default' => $note);
-        }
-
-        $schedule = array();
-
-        foreach ($week_days as $day) {
-            $names = $_POST['daily_' . $day . '_name'] ?? array();
-            if (!is_array($names) || empty($names)) {
-                continue;
-            }
-
-            $day_items = array();
-            $count = count($names);
-
-            for ($i = 0; $i < $count; $i++) {
-                $name = sanitize_text_field($names[$i] ?? '');
-                if (empty($name)) {
-                    continue;
-                }
-
-                $item = array(
-                    'name'  => array('default' => $name),
-                    'price' => floatval($_POST['daily_' . $day . '_price'][$i] ?? 0),
-                );
-
-                $desc = sanitize_textarea_field($_POST['daily_' . $day . '_desc'][$i] ?? '');
-                if (!empty($desc)) {
-                    $item['description'] = array('default' => $desc);
-                }
-
-                $portion = sanitize_text_field($_POST['daily_' . $day . '_portion'][$i] ?? '');
-                if (!empty($portion)) {
-                    $item['portionSize'] = $portion;
-                }
-
-                $course = sanitize_text_field($_POST['daily_' . $day . '_course'][$i] ?? '');
-                if (!empty($course)) {
-                    $item['course'] = $course;
-                }
-
-                $ingredients_raw = sanitize_textarea_field($_POST['daily_' . $day . '_ingredients'][$i] ?? '');
-                if (!empty($ingredients_raw)) {
-                    $item['ingredients'] = array_values(array_filter(array_map('trim', explode(',', $ingredients_raw))));
-                }
-
-                $item['available'] = !empty($_POST['daily_' . $day . '_available'][$i]);
-
-                $day_items[] = $item;
-            }
-
-            if (!empty($day_items)) {
-                $schedule[$day] = $day_items;
-            }
-        }
-
-        if (!empty($schedule)) {
-            $daily_menu['schedule'] = $schedule;
-        }
-
-        return $daily_menu;
     }
 
     /**

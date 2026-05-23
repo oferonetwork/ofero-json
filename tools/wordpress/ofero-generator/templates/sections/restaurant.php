@@ -18,6 +18,13 @@ $amenities    = $rd['amenities'] ?? array();
 $cuisine      = $rd['cuisine'] ?? array();
 ?>
 
+<div class="notice notice-info inline" style="margin: 12px 0; padding: 10px 14px;">
+    <p style="margin: 0;">
+        <strong><?php esc_html_e('v2 reminder:', 'ofero-generator'); ?></strong>
+        <?php esc_html_e('This tab still edits restaurantDetails (capacity, service types, reservations, amenities) — those remain valid in v2. The actual menu has moved to catalog.feeds[] — see the Menu and Catalog tabs.', 'ofero-generator'); ?>
+    </p>
+</div>
+
 <div class="ofero-card">
     <h2><?php esc_html_e('Seating Capacity', 'ofero-generator'); ?></h2>
     <table class="form-table">
