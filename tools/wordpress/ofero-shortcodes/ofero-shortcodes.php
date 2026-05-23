@@ -696,7 +696,7 @@ class Ofero_Shortcodes {
             switch ($field) {
                 case 'name':
                     if (!empty($org['brandName']) || !empty($org['legalName'])) {
-                        $name = !empty($org['brandName']) ? $org['brandName'] : $org['legalName'];
+                        $name = !empty($org['brandName']) ? $this->parser->resolve_translatable($org['brandName']) : $org['legalName'];
                         $output .= '<div class="ofero-org-name">' . esc_html($name) . '</div>';
                     }
                     break;
@@ -709,7 +709,7 @@ class Ofero_Shortcodes {
 
                 case 'description':
                     if (!empty($org['description'])) {
-                        $output .= '<div class="ofero-org-description">' . esc_html($org['description']) . '</div>';
+                        $output .= '<div class="ofero-org-description">' . esc_html($this->parser->resolve_translatable($org['description'])) . '</div>';
                     }
                     break;
 
@@ -777,7 +777,7 @@ class Ofero_Shortcodes {
             switch ($field) {
                 case 'name':
                     if (!empty($loc['name'])) {
-                        $output .= '<div class="ofero-loc-name">' . esc_html($loc['name']) . '</div>';
+                        $output .= '<div class="ofero-loc-name">' . esc_html($this->parser->resolve_translatable($loc['name'])) . '</div>';
                     }
                     break;
 
@@ -1234,19 +1234,19 @@ class Ofero_Shortcodes {
 
                     case 'name':
                         if (!empty($member['name'])) {
-                            $output .= '<h4 class="ofero-team-name">' . esc_html($member['name']) . '</h4>';
+                            $output .= '<h4 class="ofero-team-name">' . esc_html($this->parser->resolve_translatable($member['name'])) . '</h4>';
                         }
                         break;
 
                     case 'role':
                         if (!empty($member['role'])) {
-                            $output .= '<p class="ofero-team-role">' . esc_html($member['role']) . '</p>';
+                            $output .= '<p class="ofero-team-role">' . esc_html($this->parser->resolve_translatable($member['role'])) . '</p>';
                         }
                         break;
 
                     case 'bio':
                         if (!empty($member['bio'])) {
-                            $output .= '<p class="ofero-team-bio">' . esc_html($member['bio']) . '</p>';
+                            $output .= '<p class="ofero-team-bio">' . esc_html($this->parser->resolve_translatable($member['bio'])) . '</p>';
                         }
                         break;
 
@@ -1299,7 +1299,7 @@ class Ofero_Shortcodes {
                 switch ($field) {
                     case 'name':
                         if (!empty($cert['name'])) {
-                            $output .= '<h4 class="ofero-cert-name">' . esc_html($cert['name']) . '</h4>';
+                            $output .= '<h4 class="ofero-cert-name">' . esc_html($this->parser->resolve_translatable($cert['name'])) . '</h4>';
                         }
                         break;
 
@@ -1401,7 +1401,7 @@ class Ofero_Shortcodes {
 
                     case 'description':
                         if (!empty($promo['description'])) {
-                            $output .= '<p class="ofero-promo-description">' . esc_html($promo['description']) . '</p>';
+                            $output .= '<p class="ofero-promo-description">' . esc_html($this->parser->resolve_translatable($promo['description'])) . '</p>';
                         }
                         break;
 
