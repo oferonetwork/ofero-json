@@ -3,9 +3,9 @@
   "domain": "techcorp.example.com",
   "canonicalUrl": "https://techcorp.example.com/.well-known/ofero.json",
   "metadata": {
-    "version": "1.2.3",
-    "schemaVersion": "ofero-metadata-1.0",
-    "lastUpdated": "2025-01-15T14:30:00Z",
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2025-01-10T09:00:00Z",
     "createdBy": "ofero-cli/1.2.0",
     "updatedBy": "manual/1.0",
@@ -38,13 +38,28 @@
     }
   },
   "businessClassification": {
-    "industry": ["technology", "software", "saas", "enterprise-saas"],
+    "industry": [
+      "technology",
+      "software",
+      "saas",
+      "enterprise-saas"
+    ],
     "mccCode": "5734",
     "naicsCode": "518210",
     "sicCode": "7372",
-    "primaryProducts": ["enterprise-software", "cloud-platform", "data-analytics"],
-    "secondaryProducts": ["consulting", "training", "support"],
-    "targetMarket": ["B2B"],
+    "primaryProducts": [
+      "enterprise-software",
+      "cloud-platform",
+      "data-analytics"
+    ],
+    "secondaryProducts": [
+      "consulting",
+      "training",
+      "support"
+    ],
+    "targetMarket": [
+      "B2B"
+    ],
     "operationalStatus": "active"
   },
   "platformAccounts": {

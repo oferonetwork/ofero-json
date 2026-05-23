@@ -265,10 +265,21 @@ function validateBasic(data: any): ValidationError[] {
 			});
 		}
 
-		if (!data.metadata.schemaVersion || data.metadata.schemaVersion !== 'ofero-metadata-1.0') {
+		if (!data.metadata.schemaVersion) {
 			errors.push({
 				path: 'metadata.schemaVersion',
-				message: 'Schema version must be "ofero-metadata-1.0"'
+				message: 'Schema version must be "ofero-metadata-2.0"'
+			});
+		} else if (data.metadata.schemaVersion === 'ofero-metadata-1.0') {
+			errors.push({
+				path: 'metadata.schemaVersion',
+				message:
+					'Schema version "ofero-metadata-1.0" is no longer supported. This is a v2 validator — upgrade your file per docs/MIGRATION-v1-to-v2.md and bump schemaVersion to "ofero-metadata-2.0".'
+			});
+		} else if (data.metadata.schemaVersion !== 'ofero-metadata-2.0') {
+			errors.push({
+				path: 'metadata.schemaVersion',
+				message: `Schema version must be "ofero-metadata-2.0", got "${data.metadata.schemaVersion}"`
 			});
 		}
 
@@ -412,6 +423,9 @@ function validateModerate(data: any): ValidationError[] {
 		}
 	}
 
+	// Reject v1 inline-catalog fields with a clear migration message
+	errors.push(...validateNoInlineCatalog(data));
+
 	return errors;
 }
 
@@ -471,128 +485,162 @@ function validateStrict(data: any): ValidationError[] {
 		});
 	}
 
-	// Validate menu items
-	if (data.catalog?.menu?.categories) {
-		data.catalog.menu.categories.forEach((cat: any, catIdx: number) => {
-			const base = `catalog.menu.categories[${catIdx}]`;
+	// Validate catalog.feeds[]
+	const feedErrors = validateFeeds(data);
+	errors.push(...feedErrors);
 
-			// Validate serviceHours format HH:MM-HH:MM
-			if (cat.serviceHours !== undefined) {
-				const hoursRegex = /^\d{2}:\d{2}-\d{2}:\d{2}$/;
-				if (!hoursRegex.test(cat.serviceHours)) {
-					errors.push({
-						path: `${base}.serviceHours`,
-						message: `serviceHours must be in HH:MM-HH:MM format (e.g., "08:00-12:00"), got "${cat.serviceHours}"`
-					});
-				}
+	// Validate inline-catalog caps (signature, highlights, featured)
+	const capErrors = validateInlineCaps(data);
+	errors.push(...capErrors);
+
+	return errors;
+}
+
+/**
+ * Validate catalog.feeds[] entries
+ * Each feed must have type/format/url, HTTPS url, and (when present) date-time lastUpdated.
+ */
+function validateFeeds(data: any): ValidationError[] {
+	const errors: ValidationError[] = [];
+	const feeds: any[] = Array.isArray(data?.catalog?.feeds) ? data.catalog.feeds : [];
+
+	const validTypes = [
+		'products',
+		'menu',
+		'services',
+		'packages',
+		'portfolio',
+		'reservations',
+		'rooms',
+		'other'
+	];
+	const validFormats = [
+		'json',
+		'jsonl',
+		'xml',
+		'csv',
+		'rss',
+		'atom',
+		'schema.org-jsonld',
+		'google-merchant-xml',
+		'gtfs',
+		'ical',
+		'other'
+	];
+
+	feeds.forEach((feed, idx) => {
+		const base = `catalog.feeds[${idx}]`;
+		if (!feed || typeof feed !== 'object') {
+			errors.push({ path: base, message: 'Feed entry must be an object' });
+			return;
+		}
+		if (!feed.type) {
+			errors.push({ path: `${base}.type`, message: 'Feed type is required' });
+		} else if (!validTypes.includes(feed.type)) {
+			errors.push({
+				path: `${base}.type`,
+				message: `Invalid feed type "${feed.type}". Must be one of: ${validTypes.join(', ')}`
+			});
+		}
+		if (!feed.format) {
+			errors.push({ path: `${base}.format`, message: 'Feed format is required' });
+		} else if (!validFormats.includes(feed.format)) {
+			errors.push({
+				path: `${base}.format`,
+				message: `Invalid feed format "${feed.format}". Must be one of: ${validFormats.join(', ')}`
+			});
+		}
+		if (!feed.url) {
+			errors.push({ path: `${base}.url`, message: 'Feed url is required' });
+		} else if (typeof feed.url !== 'string' || !feed.url.startsWith('https://')) {
+			errors.push({ path: `${base}.url`, message: 'Feed url must be an HTTPS URL' });
+		}
+		if (feed.lastUpdated !== undefined) {
+			const date = new Date(feed.lastUpdated);
+			if (isNaN(date.getTime())) {
+				errors.push({
+					path: `${base}.lastUpdated`,
+					message: 'lastUpdated must be a valid ISO 8601 date-time'
+				});
 			}
+		}
+		if (feed.itemCount !== undefined) {
+			if (typeof feed.itemCount !== 'number' || feed.itemCount < 0 || !Number.isInteger(feed.itemCount)) {
+				errors.push({
+					path: `${base}.itemCount`,
+					message: 'itemCount must be a non-negative integer'
+				});
+			}
+		}
+		if (feed.language !== undefined && !/^[a-z]{2}$/.test(feed.language)) {
+			errors.push({
+				path: `${base}.language`,
+				message: 'Feed language must be a valid ISO 639-1 code (e.g., en, fr, de)'
+			});
+		}
+	});
 
-			if (cat.items) {
-				cat.items.forEach((item: any, itemIdx: number) => {
-					const itemBase = `${base}.items[${itemIdx}]`;
+	return errors;
+}
 
-					if (item.price < 0) {
-						errors.push({
-							path: `${itemBase}.price`,
-							message: 'Price must be a non-negative number'
-						});
-					}
+/**
+ * Enforce inline-catalog hard caps:
+ *   featured.products / featured.services <= 12
+ *   catalog.signature <= 6
+ *   catalog.highlights <= 6
+ */
+function validateInlineCaps(data: any): ValidationError[] {
+	const errors: ValidationError[] = [];
 
-					if (item.ingredients !== undefined && !Array.isArray(item.ingredients)) {
-						errors.push({
-							path: `${itemBase}.ingredients`,
-							message: 'ingredients must be an array of strings'
-						});
-					}
+	const featured = data?.featured;
+	if (featured && typeof featured === 'object') {
+		(['products', 'services'] as const).forEach((k) => {
+			const arr = featured[k];
+			if (Array.isArray(arr) && arr.length > 12) {
+				errors.push({
+					path: `featured.${k}`,
+					message: `featured.${k} is capped at 12 items in v2.0 (got ${arr.length}). Move the rest to catalog.feeds[].`
 				});
 			}
 		});
 	}
 
-	// Validate dailyMenu
-	if (data.catalog?.dailyMenu) {
-		const dm = data.catalog.dailyMenu;
-		const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-		const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-		const validCourses = ['starter', 'soup', 'main', 'dessert', 'drink', 'side', 'other'];
+	const sig = data?.catalog?.signature;
+	if (Array.isArray(sig) && sig.length > 6) {
+		errors.push({
+			path: 'catalog.signature',
+			message: `catalog.signature is capped at 6 items (got ${sig.length}). Move the rest to a catalog.feeds[] entry.`
+		});
+	}
 
-		if (dm.weekOf !== undefined && !dateRegex.test(dm.weekOf)) {
+	const hl = data?.catalog?.highlights;
+	if (Array.isArray(hl) && hl.length > 6) {
+		errors.push({
+			path: 'catalog.highlights',
+			message: `catalog.highlights is capped at 6 items (got ${hl.length}). Move the rest to a catalog.feeds[] entry.`
+		});
+	}
+
+	return errors;
+}
+
+/**
+ * Reject any v1 inline-catalog fields. Used at moderate level so v1 files fail
+ * with a clear migration message rather than an opaque schema error.
+ */
+function validateNoInlineCatalog(data: any): ValidationError[] {
+	const errors: ValidationError[] = [];
+	const forbidden = ['menu', 'dailyMenu', 'services', 'packages', 'portfolio', 'productFeeds', 'serviceFeeds'];
+	const catalog = data?.catalog;
+	if (!catalog || typeof catalog !== 'object') return errors;
+	for (const key of forbidden) {
+		if (key in catalog) {
 			errors.push({
-				path: 'catalog.dailyMenu.weekOf',
-				message: 'weekOf must be a valid date in YYYY-MM-DD format'
-			});
-		}
-
-		if (dm.schedule) {
-			// Check for unexpected day keys
-			Object.keys(dm.schedule).forEach((day) => {
-				if (!validDays.includes(day)) {
-					errors.push({
-						path: `catalog.dailyMenu.schedule.${day}`,
-						message: `Invalid day key "${day}". Must be one of: ${validDays.join(', ')}`
-					});
-				}
-			});
-
-			validDays.forEach((day) => {
-				const items: any[] = dm.schedule[day];
-				if (!items) return;
-
-				if (!Array.isArray(items)) {
-					errors.push({
-						path: `catalog.dailyMenu.schedule.${day}`,
-						message: `schedule.${day} must be an array`
-					});
-					return;
-				}
-
-				items.forEach((item: any, idx: number) => {
-					const base = `catalog.dailyMenu.schedule.${day}[${idx}]`;
-
-					if (!item.name?.default) {
-						errors.push({
-							path: `${base}.name`,
-							message: 'Daily menu item must have a name with a default value'
-						});
-					}
-
-					if (item.price === undefined || item.price === null) {
-						errors.push({
-							path: `${base}.price`,
-							message: 'Daily menu item must have a price'
-						});
-					} else if (typeof item.price !== 'number' || item.price < 0) {
-						errors.push({
-							path: `${base}.price`,
-							message: 'Daily menu item price must be a non-negative number'
-						});
-					}
-
-					if (item.course !== undefined && !validCourses.includes(item.course)) {
-						errors.push({
-							path: `${base}.course`,
-							message: `Invalid course "${item.course}". Must be one of: ${validCourses.join(', ')}`
-						});
-					}
-
-					if (item.ingredients !== undefined && !Array.isArray(item.ingredients)) {
-						errors.push({
-							path: `${base}.ingredients`,
-							message: 'ingredients must be an array of strings'
-						});
-					}
-
-					if (item.portionSize !== undefined && typeof item.portionSize !== 'string') {
-						errors.push({
-							path: `${base}.portionSize`,
-							message: 'portionSize must be a string (e.g., "220g", "350ml")'
-						});
-					}
-				});
+				path: `catalog.${key}`,
+				message: `catalog.${key} was removed in v2.0. Move this data to catalog.feeds[] (see docs/MIGRATION-v1-to-v2.md).`
 			});
 		}
 	}
-
 	return errors;
 }
 
@@ -647,27 +695,37 @@ function getRecommendedFieldWarnings(data: any): ValidationWarning[] {
 		});
 	}
 
-	// Restaurant-specific recommendations
-	if (data.catalog?.menu?.categories) {
-		data.catalog.menu.categories.forEach((cat: any, catIdx: number) => {
-			if (cat.items) {
-				cat.items.forEach((item: any, itemIdx: number) => {
-					const base = `catalog.menu.categories[${catIdx}].items[${itemIdx}]`;
-					if (!item.ingredients || item.ingredients.length === 0) {
-						warnings.push({
-							path: `${base}.ingredients`,
-							message: `Menu item "${item.name?.default || item.id}" has no ingredients listed`,
-							type: 'recommended'
-						});
-					}
-					if (!item.portionSize) {
-						warnings.push({
-							path: `${base}.portionSize`,
-							message: `Menu item "${item.name?.default || item.id}" has no portionSize specified`,
-							type: 'recommended'
-						});
-					}
-				});
+	// Warn if catalog exists but has no external feeds (v2: catalog without feeds is incomplete)
+	if (data.catalog && typeof data.catalog === 'object') {
+		const feeds = data.catalog.feeds;
+		const hasFeeds = Array.isArray(feeds) && feeds.length > 0;
+		const hasAnyInlinePreview =
+			(Array.isArray(data.catalog.signature) && data.catalog.signature.length > 0) ||
+			(Array.isArray(data.catalog.highlights) && data.catalog.highlights.length > 0);
+		if (!hasFeeds && !hasAnyInlinePreview) {
+			warnings.push({
+				path: 'catalog.feeds',
+				message:
+					'Catalog section is present but has no feeds[] or inline previews. Add a catalog.feeds[] entry pointing to your external menu/products/portfolio.',
+				type: 'recommended'
+			});
+		}
+	}
+
+	// Warn about stale feeds (lastUpdated > 90 days ago)
+	if (Array.isArray(data?.catalog?.feeds)) {
+		const ninetyDaysAgoMs = 90 * 24 * 60 * 60 * 1000;
+		const now = Date.now();
+		data.catalog.feeds.forEach((feed: any, idx: number) => {
+			if (feed?.lastUpdated) {
+				const t = new Date(feed.lastUpdated).getTime();
+				if (!isNaN(t) && now - t > ninetyDaysAgoMs) {
+					warnings.push({
+						path: `catalog.feeds[${idx}].lastUpdated`,
+						message: `Feed has not been updated in over 90 days (lastUpdated: ${feed.lastUpdated})`,
+						type: 'staleness'
+					});
+				}
 			}
 		});
 	}

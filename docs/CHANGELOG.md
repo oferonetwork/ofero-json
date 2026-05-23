@@ -5,6 +5,57 @@ All notable changes to the ofero.json metadata standard will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-05-22
+
+### BREAKING CHANGES
+
+ofero.json is now an identity/metadata file only. Operational catalog data (menus, products, services, packages, portfolios) **must** live in external feeds referenced via `catalog.feeds[]`. v1 files are rejected by v2 validators on purpose. See [`docs/MIGRATION-v1-to-v2.md`](MIGRATION-v1-to-v2.md) for the full upgrade path.
+
+**Why:** real ofero.json files reached 2 MB once businesses inlined catalogs, which crashed CMS plugins (notably the WordPress Elementor shortcodes plugin) that re-parse the JSON on every render. Identity and catalog data also have different cadence and ownership, so they should be served separately.
+
+### Removed
+
+- `catalog.menu` — full menu with `categories[].items[]`, variants, addons
+- `catalog.dailyMenu` — weekly schedule of daily specials
+- `catalog.services[]` — inline service offerings
+- `catalog.packages[]` — inline service packages
+- `catalog.portfolio[]` — inline portfolio items
+- `catalog.productFeeds[]` — replaced by unified `catalog.feeds[]`
+- `catalog.serviceFeeds[]` — replaced by unified `catalog.feeds[]`
+- `$defs.MenuCategory`, `MenuItem`, `DailyMenuItem`, `ServiceItem`, `ServicePackage`, `PortfolioItem` — no longer referenced
+
+### Added
+
+- `catalog.feeds[]` — unified array of external feed references, with `type` enum (`products | menu | services | packages | portfolio | reservations | rooms | other`) and `format` enum that now includes `schema.org-jsonld`, `google-merchant-xml`, `gtfs`, `ical`, `rss`, `atom` alongside `json | jsonl | xml | csv`
+- `Feed` object extended with optional `name` (TranslatableString), `language`, `lastUpdated`, `etag`, `itemCount`, `standard` fields
+- `catalog.signature[]` — tiny inline preview of hero items, **maxItems: 6**
+- `catalog.highlights[]` — tiny inline preview of portfolio teasers, **maxItems: 6**
+- `$defs.CatalogPreviewItem` — shape for `signature[]` / `highlights[]` entries
+- `featured.products[]` and `featured.services[]` now hard-capped at **maxItems: 12** each
+- New section in SPECIFICATION.md: **"Why ofero.json is not a catalog"** (rationale and prescribed external standards: Schema.org Menu/Product, Google Merchant Feed, JSON Feed, GTFS)
+- New section in SPECIFICATION.md: **`catalog.feeds[]` reference** with worked examples
+- New file: [`docs/MIGRATION-v1-to-v2.md`](MIGRATION-v1-to-v2.md) — field-by-field mapping, step-by-step recipe, FAQ
+
+### Changed
+
+- `metadata.schemaVersion` const: `"ofero-metadata-1.0"` → `"ofero-metadata-2.0"`
+- Recommended max file size: 500 KB → **100 KB**
+- `Catalog` description updated to reflect external-only catalog policy
+- `RestaurantDetails` description no longer references the removed `catalog.menu`
+- SPECIFICATION.md examples 4–8 (restaurant, auto service, karting, architecture, modeling) rewritten to use external feed references and inline previews
+
+### Migration
+
+See [`docs/MIGRATION-v1-to-v2.md`](MIGRATION-v1-to-v2.md). Summary:
+
+1. Export inline catalog data to an external feed (prefer Schema.org Menu/Product JSON-LD or Google Merchant XML)
+2. Replace `catalog.menu` / `catalog.services` / etc. with `catalog.feeds[]` entries
+3. Bump `metadata.schemaVersion` to `"ofero-metadata-2.0"` and `metadata.version` to `2.0.0`
+4. Trim `featured` arrays to ≤ 12 items each
+5. Validate with the v2 validator at strict level
+
+---
+
 ## [1.0.1] - 2026-03-14
 
 ### Changed
@@ -243,5 +294,7 @@ Schema Version Format:
 
 ---
 
+[2.0.0]: https://github.com/oferonetwork/ofero-json/releases/tag/v2.0.0
+[1.0.1]: https://github.com/oferonetwork/ofero-json/releases/tag/v1.0.1
 [1.0.0]: https://github.com/oferonetwork/ofero-json/releases/tag/v1.0.0
 

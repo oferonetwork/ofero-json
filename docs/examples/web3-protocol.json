@@ -4,8 +4,8 @@
   "canonicalUrl": "https://defiprotocol.xyz/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-1.0",
-    "lastUpdated": "2025-01-15T16:00:00Z",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2024-06-01T08:00:00Z",
     "updateFrequency": "weekly"
   },
@@ -32,10 +32,22 @@
     }
   },
   "businessClassification": {
-    "industry": ["fintech", "blockchain", "defi", "defi-lending"],
+    "industry": [
+      "fintech",
+      "blockchain",
+      "defi",
+      "defi-lending"
+    ],
     "mccCode": "6211",
-    "primaryProducts": ["lending-protocol", "yield-farming", "liquidity-pools"],
-    "targetMarket": ["C2C", "B2C"],
+    "primaryProducts": [
+      "lending-protocol",
+      "yield-farming",
+      "liquidity-pools"
+    ],
+    "targetMarket": [
+      "C2C",
+      "B2C"
+    ],
     "operationalStatus": "active"
   },
   "platformAccounts": {

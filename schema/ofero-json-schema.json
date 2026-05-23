@@ -637,7 +637,28 @@
 						"type": "string"
 					},
 					"examples": [
-						["wifi", "free-wifi", "parking", "free-parking", "terrace", "air-conditioning", "wheelchair-accessible", "bar", "non-smoking", "pool", "gym", "spa", "playground", "delivery", "takeaway", "reservations", "pet-friendly", "baby-chairs", "live-music", "private-room"]
+						[
+							"wifi",
+							"free-wifi",
+							"parking",
+							"free-parking",
+							"terrace",
+							"air-conditioning",
+							"wheelchair-accessible",
+							"bar",
+							"non-smoking",
+							"pool",
+							"gym",
+							"spa",
+							"playground",
+							"delivery",
+							"takeaway",
+							"reservations",
+							"pet-friendly",
+							"baby-chairs",
+							"live-music",
+							"private-room"
+						]
 					]
 				},
 				"paymentMethods": {
@@ -662,7 +683,9 @@
 		"PaymentMethod": {
 			"type": "object",
 			"description": "A payment method accepted at a location. Use 'type' for the category and 'providers' for specific brands or networks.",
-			"required": ["type"],
+			"required": [
+				"type"
+			],
 			"properties": {
 				"type": {
 					"type": "string",
@@ -1270,148 +1293,34 @@
 		},
 		"Catalog": {
 			"type": "object",
-			"description": "Product and service catalog. For large catalogs, use productFeeds/serviceFeeds to link external feeds. For small businesses (restaurants, service providers), use inline items/menu/services arrays directly.",
+			"description": "Pointer to operational catalog data (products, menus, services). As of v2.0.0, full catalog data MUST live in external feeds referenced via catalog.feeds[]. Only small curated previews (signature, highlights) and featured items are allowed inline. See docs/MIGRATION-v1-to-v2.md.",
 			"properties": {
 				"defaultCurrency": {
 					"type": "string",
-					"description": "Default currency for catalog (ISO 4217 code)",
+					"description": "Default currency for catalog items (ISO 4217 code)",
 					"pattern": "^[A-Z]{3}$"
 				},
-				"productFeeds": {
+				"feeds": {
 					"type": "array",
-					"description": "Product feed URLs for large catalogs",
+					"description": "External feed references for catalog data (products, menus, services, etc.). Prefer existing standards: Schema.org Menu/Product (JSON-LD), Google Merchant XML, JSON Feed.",
 					"items": {
 						"$ref": "#/$defs/Feed"
 					}
 				},
-				"serviceFeeds": {
+				"signature": {
 					"type": "array",
-					"description": "Service feed URLs for large catalogs",
+					"description": "A tiny inline preview of signature/hero items (e.g., chef's signature dishes, flagship services). Hard-capped to keep ofero.json small. Full catalog must live in catalog.feeds[].",
+					"maxItems": 6,
 					"items": {
-						"$ref": "#/$defs/Feed"
+						"$ref": "#/$defs/CatalogPreviewItem"
 					}
 				},
-				"menu": {
-					"type": "object",
-					"description": "Restaurant/food service menu with categories. Ideal for restaurants, cafes, bars.",
-					"properties": {
-						"categories": {
-							"type": "array",
-							"description": "Menu categories (e.g., Appetizers, Main Course, Desserts, Drinks)",
-							"items": {
-								"$ref": "#/$defs/MenuCategory"
-							}
-						},
-						"allergenInfo": {
-							"type": "string",
-							"format": "uri",
-							"pattern": "^https://",
-							"description": "URL to allergen information page"
-						},
-						"dietaryOptions": {
-							"type": "array",
-							"description": "Available dietary options",
-							"items": {
-								"type": "string",
-								"enum": [
-									"vegetarian",
-									"vegan",
-									"gluten-free",
-									"halal",
-									"kosher",
-									"dairy-free",
-									"nut-free",
-									"organic",
-									"keto",
-									"paleo"
-								]
-							}
-						}
-					}
-				},
-				"dailyMenu": {
-					"type": "object",
-					"description": "Daily specials or weekly rotating menu. Items may differ in portion size, price, or composition from the regular menu.",
-					"properties": {
-						"weekOf": {
-							"type": "string",
-							"format": "date",
-							"description": "The Monday date of the week this daily menu applies to (YYYY-MM-DD)"
-						},
-						"note": {
-							"$ref": "#/$defs/TranslatableString",
-							"description": "Optional note about the daily menu (e.g., 'Menu changes every Monday')"
-						},
-						"schedule": {
-							"type": "object",
-							"description": "Daily specials indexed by day of the week",
-							"properties": {
-								"monday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"tuesday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"wednesday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"thursday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"friday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"saturday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								},
-								"sunday": {
-									"type": "array",
-									"items": {
-										"$ref": "#/$defs/DailyMenuItem"
-									}
-								}
-							},
-							"additionalProperties": false
-						}
-					}
-				},
-				"services": {
+				"highlights": {
 					"type": "array",
-					"description": "Service offerings with pricing. Ideal for service businesses (auto repair, salons, professional services).",
+					"description": "A tiny inline preview of portfolio/project highlights for landing-page rendering. Hard-capped. Full portfolio must live in catalog.feeds[].",
+					"maxItems": 6,
 					"items": {
-						"$ref": "#/$defs/ServiceItem"
-					}
-				},
-				"packages": {
-					"type": "array",
-					"description": "Service packages or bundles with pricing. Ideal for karting, experiences, memberships.",
-					"items": {
-						"$ref": "#/$defs/ServicePackage"
-					}
-				},
-				"portfolio": {
-					"type": "array",
-					"description": "Portfolio items for creative businesses (architecture, photography, modeling).",
-					"items": {
-						"$ref": "#/$defs/PortfolioItem"
+						"$ref": "#/$defs/CatalogPreviewItem"
 					}
 				},
 				"priceListUrl": {
@@ -1422,289 +1331,9 @@
 				}
 			}
 		},
-		"MenuCategory": {
-			"type": "object",
-			"properties": {
-				"id": {
-					"type": "string",
-					"description": "Category identifier"
-				},
-				"name": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Category name (e.g., 'Appetizers', 'Main Course')"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Category description"
-				},
-				"image": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "Category image URL"
-				},
-				"sortOrder": {
-					"type": "integer",
-					"description": "Display order (lower numbers first)"
-				},
-				"serviceHours": {
-					"type": "string",
-					"description": "Hours when this category is served (e.g., '08:00-12:00'). Omit if available all day."
-				},
-				"items": {
-					"type": "array",
-					"description": "Menu items in this category",
-					"items": {
-						"$ref": "#/$defs/MenuItem"
-					}
-				}
-			}
-		},
-		"MenuItem": {
-			"type": "object",
-			"properties": {
-				"id": {
-					"type": "string",
-					"description": "Item identifier"
-				},
-				"name": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Item name"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Item description"
-				},
-				"price": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Price in default currency"
-				},
-				"priceFormatted": {
-					"type": "string",
-					"description": "Formatted price with currency symbol (e.g., '35 RON', '$12.99')"
-				},
-				"image": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "Item image URL"
-				},
-				"calories": {
-					"type": "integer",
-					"minimum": 0,
-					"description": "Calorie count"
-				},
-				"preparationTime": {
-					"type": "string",
-					"description": "Preparation time (e.g., '15 min', '20-30 min')"
-				},
-				"dietary": {
-					"type": "array",
-					"description": "Dietary labels",
-					"items": {
-						"type": "string",
-						"enum": [
-							"vegetarian",
-							"vegan",
-							"gluten-free",
-							"halal",
-							"kosher",
-							"dairy-free",
-							"nut-free",
-							"organic",
-							"spicy",
-							"contains-alcohol"
-						]
-					}
-				},
-				"allergens": {
-					"type": "array",
-					"description": "Allergen warnings",
-					"items": {
-						"type": "string",
-						"enum": [
-							"gluten",
-							"dairy",
-							"eggs",
-							"fish",
-							"shellfish",
-							"tree-nuts",
-							"peanuts",
-							"soy",
-							"sesame",
-							"sulfites",
-							"celery",
-							"mustard",
-							"lupin",
-							"molluscs"
-						]
-					}
-				},
-				"portionSize": {
-					"type": "string",
-					"description": "Portion size or weight (e.g., '220g', '300g', '1.3kg', '2-3 persons')"
-				},
-				"ingredients": {
-					"type": "array",
-					"description": "List of ingredients",
-					"items": {
-						"type": "string"
-					}
-				},
-				"available": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether item is currently available"
-				},
-				"popular": {
-					"type": "boolean",
-					"default": false,
-					"description": "Mark as popular/featured item"
-				},
-				"variants": {
-					"type": "array",
-					"description": "Size or variant options (e.g., Small/Medium/Large)",
-					"items": {
-						"type": "object",
-						"required": [
-							"name",
-							"price"
-						],
-						"properties": {
-							"name": {
-								"type": "string",
-								"description": "Variant name (e.g., 'Small', 'Large', '500ml')"
-							},
-							"price": {
-								"type": "number",
-								"minimum": 0,
-								"description": "Variant price"
-							}
-						}
-					}
-				},
-				"addons": {
-					"type": "array",
-					"description": "Optional add-ons (e.g., extra cheese, toppings)",
-					"items": {
-						"type": "object",
-						"required": [
-							"name",
-							"price"
-						],
-						"properties": {
-							"name": {
-								"type": "string",
-								"description": "Add-on name"
-							},
-							"price": {
-								"type": "number",
-								"minimum": 0,
-								"description": "Add-on price"
-							}
-						}
-					}
-				}
-			}
-		},
-		"DailyMenuItem": {
-			"type": "object",
-			"description": "A single item in the daily menu. Standalone definition — may differ from regular menu items in portion size, price, or composition.",
-			"properties": {
-				"name": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Item name"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Item description"
-				},
-				"portionSize": {
-					"type": "string",
-					"description": "Portion size or weight (e.g., '220g', '300g', '2-3 persons')"
-				},
-				"price": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Price in default currency"
-				},
-				"priceFormatted": {
-					"type": "string",
-					"description": "Formatted price with currency symbol (e.g., '35 RON', '$12.99')"
-				},
-				"ingredients": {
-					"type": "array",
-					"description": "List of ingredients",
-					"items": {
-						"type": "string"
-					}
-				},
-				"course": {
-					"type": "string",
-					"enum": [
-						"starter",
-						"soup",
-						"main",
-						"dessert",
-						"drink",
-						"side",
-						"other"
-					],
-					"description": "Course type for set menus"
-				},
-				"dietary": {
-					"type": "array",
-					"description": "Dietary labels",
-					"items": {
-						"type": "string",
-						"enum": [
-							"vegetarian",
-							"vegan",
-							"gluten-free",
-							"halal",
-							"kosher",
-							"dairy-free",
-							"nut-free",
-							"organic",
-							"spicy",
-							"contains-alcohol"
-						]
-					}
-				},
-				"allergens": {
-					"type": "array",
-					"description": "Allergen warnings",
-					"items": {
-						"type": "string",
-						"enum": [
-							"gluten",
-							"dairy",
-							"eggs",
-							"fish",
-							"shellfish",
-							"tree-nuts",
-							"peanuts",
-							"soy",
-							"sesame",
-							"sulfites",
-							"celery",
-							"mustard",
-							"lupin",
-							"molluscs"
-						]
-					}
-				},
-				"available": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether this item is available today"
-				}
-			}
-		},
 		"RestaurantDetails": {
 			"type": "object",
-			"description": "Restaurant-specific details: seating capacity, service types, reservation and ordering information. Use alongside catalog.menu for full restaurant metadata.",
+			"description": "Restaurant-specific details: seating capacity, service types, reservation and ordering information. Pair with a catalog.feeds[] entry of type \"menu\" for the actual menu data.",
 			"properties": {
 				"seatingCapacity": {
 					"type": "integer",
@@ -2057,271 +1686,82 @@
 				}
 			}
 		},
-		"ServiceItem": {
-			"type": "object",
-			"description": "A service offering with pricing",
-			"properties": {
-				"id": {
-					"type": "string",
-					"description": "Service identifier"
-				},
-				"name": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Service name"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Service description"
-				},
-				"category": {
-					"type": "string",
-					"description": "Service category (e.g., 'oil-change', 'brakes', 'diagnostics')"
-				},
-				"price": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Fixed price (if applicable)"
-				},
-				"priceFrom": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Starting price for variable pricing"
-				},
-				"priceTo": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Maximum price for variable pricing"
-				},
-				"priceUnit": {
-					"type": "string",
-					"enum": [
-						"fixed",
-						"hourly",
-						"per-item",
-						"per-session",
-						"per-person",
-						"quote"
-					],
-					"description": "Pricing unit type"
-				},
-				"duration": {
-					"type": "string",
-					"description": "Estimated duration (e.g., '30 min', '1-2 hours')"
-				},
-				"bookingRequired": {
-					"type": "boolean",
-					"default": false,
-					"description": "Whether booking/appointment is required"
-				},
-				"bookingUrl": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "Online booking URL"
-				},
-				"warranty": {
-					"type": "string",
-					"description": "Warranty information (e.g., '1 year', '6 months or 10,000km')"
-				},
-				"available": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether service is currently available"
-				}
-			}
-		},
-		"ServicePackage": {
-			"type": "object",
-			"description": "A service package or bundle (ideal for karting, experiences, subscriptions)",
-			"properties": {
-				"id": {
-					"type": "string",
-					"description": "Package identifier"
-				},
-				"name": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Package name (e.g., '10-Minute Race', 'Full Day Experience')"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Package description"
-				},
-				"price": {
-					"type": "number",
-					"minimum": 0,
-					"description": "Package price"
-				},
-				"pricePerPerson": {
-					"type": "boolean",
-					"default": false,
-					"description": "Whether price is per person"
-				},
-				"duration": {
-					"type": "string",
-					"description": "Package duration (e.g., '10 min', '2 hours', 'full day')"
-				},
-				"includes": {
-					"type": "array",
-					"description": "What's included in the package",
-					"items": {
-						"type": "string"
-					}
-				},
-				"minParticipants": {
-					"type": "integer",
-					"minimum": 1,
-					"description": "Minimum number of participants"
-				},
-				"maxParticipants": {
-					"type": "integer",
-					"minimum": 1,
-					"description": "Maximum number of participants"
-				},
-				"ageRequirement": {
-					"type": "string",
-					"description": "Age requirement (e.g., '16+', '18+ for adults, 8+ for kids')"
-				},
-				"requirements": {
-					"type": "array",
-					"description": "Requirements or prerequisites",
-					"items": {
-						"type": "string"
-					}
-				},
-				"bookingUrl": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "Online booking URL"
-				},
-				"image": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "Package image URL"
-				},
-				"popular": {
-					"type": "boolean",
-					"default": false,
-					"description": "Mark as popular/featured package"
-				},
-				"available": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether package is currently available"
-				}
-			}
-		},
-		"PortfolioItem": {
-			"type": "object",
-			"description": "A portfolio item for creative businesses",
-			"properties": {
-				"id": {
-					"type": "string",
-					"description": "Portfolio item identifier"
-				},
-				"title": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Project/work title"
-				},
-				"description": {
-					"$ref": "#/$defs/TranslatableString",
-					"description": "Project description"
-				},
-				"category": {
-					"type": "string",
-					"description": "Portfolio category (e.g., 'residential', 'commercial', 'fashion', 'editorial')"
-				},
-				"client": {
-					"type": "string",
-					"description": "Client name (if public)"
-				},
-				"date": {
-					"type": "string",
-					"format": "date",
-					"description": "Project completion date"
-				},
-				"images": {
-					"type": "array",
-					"description": "Project images",
-					"items": {
-						"type": "object",
-						"required": [
-							"url"
-						],
-						"properties": {
-							"url": {
-								"type": "string",
-								"format": "uri",
-								"pattern": "^https://",
-								"description": "Image URL"
-							},
-							"thumbnail": {
-								"type": "string",
-								"format": "uri",
-								"pattern": "^https://",
-								"description": "Thumbnail URL"
-							},
-							"caption": {
-								"type": "string",
-								"description": "Image caption"
-							}
-						}
-					}
-				},
-				"url": {
-					"type": "string",
-					"format": "uri",
-					"pattern": "^https://",
-					"description": "URL to full project page"
-				},
-				"awards": {
-					"type": "array",
-					"description": "Awards received for this project",
-					"items": {
-						"type": "string"
-					}
-				},
-				"tags": {
-					"type": "array",
-					"description": "Tags for categorization and search",
-					"items": {
-						"type": "string"
-					}
-				},
-				"featured": {
-					"type": "boolean",
-					"default": false,
-					"description": "Mark as featured project"
-				}
-			}
-		},
 		"Feed": {
 			"type": "object",
+			"description": "External catalog feed reference. Replaces inline menus/products/services that lived in ofero.json v1. Prefer existing industry standards (Schema.org Menu/Product JSON-LD, Google Merchant XML, JSON Feed) over custom formats.",
+			"required": [
+				"type",
+				"format",
+				"url"
+			],
 			"properties": {
 				"type": {
 					"type": "string",
-					"description": "Feed type identifier"
+					"description": "Feed content type",
+					"enum": [
+						"products",
+						"menu",
+						"services",
+						"packages",
+						"portfolio",
+						"reservations",
+						"rooms",
+						"other"
+					]
 				},
 				"format": {
 					"type": "string",
+					"description": "Feed wire format",
 					"enum": [
 						"json",
 						"jsonl",
 						"xml",
-						"csv"
-					],
-					"description": "Feed format"
+						"csv",
+						"rss",
+						"atom",
+						"schema.org-jsonld",
+						"google-merchant-xml",
+						"gtfs",
+						"ical",
+						"other"
+					]
 				},
 				"url": {
 					"type": "string",
 					"format": "uri",
-					"description": "Feed URL",
-					"pattern": "^https://"
+					"pattern": "^https://",
+					"description": "HTTPS URL where the feed is served"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Human-readable feed name (e.g., \"Lunch menu\", \"Spring 2026 collection\")"
 				},
 				"description": {
-					"type": "string",
+					"$ref": "#/$defs/TranslatableString",
 					"description": "Feed description"
+				},
+				"language": {
+					"type": "string",
+					"pattern": "^[a-z]{2}$",
+					"description": "Primary language of feed content (ISO 639-1)"
+				},
+				"lastUpdated": {
+					"type": "string",
+					"format": "date-time",
+					"description": "Timestamp the feed was last regenerated. Consumers may use this to skip re-fetching unchanged data."
+				},
+				"etag": {
+					"type": "string",
+					"description": "Optional ETag value matching the HTTP ETag header served at url. Allows lightweight cache validation."
+				},
+				"itemCount": {
+					"type": "integer",
+					"minimum": 0,
+					"description": "Approximate number of items in the feed. Useful for consumers to budget memory/parsing time."
+				},
+				"standard": {
+					"type": "string",
+					"description": "Optional identifier of the standard the feed conforms to (e.g., \"schema.org/Menu\", \"schema.org/Product\", \"google-merchant\", \"json-feed-1.1\")"
 				}
 			}
 		},
@@ -2333,14 +1773,16 @@
 					"description": "Featured products",
 					"items": {
 						"$ref": "#/$defs/FeaturedItem"
-					}
+					},
+					"maxItems": 12
 				},
 				"services": {
 					"type": "array",
 					"description": "Featured services",
 					"items": {
 						"$ref": "#/$defs/FeaturedItem"
-					}
+					},
+					"maxItems": 12
 				}
 			}
 		},
@@ -3948,8 +3390,8 @@
 				},
 				"schemaVersion": {
 					"type": "string",
-					"description": "ofero.json schema version identifier - always 'ofero-metadata-1.0' for this schema version",
-					"const": "ofero-metadata-1.0"
+					"description": "ofero.json schema version identifier - always 'ofero-metadata-2.0' for v2.x schemas. v1 files (ofero-metadata-1.0) are rejected by v2 validators; see docs/MIGRATION-v1-to-v2.md.",
+					"const": "ofero-metadata-2.0"
 				},
 				"createdAt": {
 					"type": "string",
@@ -4274,6 +3716,47 @@
 					"type": "integer",
 					"minimum": 1,
 					"description": "Image height in pixels. Recommended: 628"
+				}
+			}
+		},
+		"CatalogPreviewItem": {
+			"type": "object",
+			"description": "A minimal inline preview of one catalog item. Use only for landing-page rendering; never store a full catalog as previews. Full data must live in catalog.feeds[].",
+			"required": [
+				"name"
+			],
+			"properties": {
+				"id": {
+					"type": "string",
+					"description": "Stable identifier matching the corresponding entry in the external feed (optional)"
+				},
+				"name": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Display name"
+				},
+				"description": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Short description (one line preferred)"
+				},
+				"category": {
+					"type": "string",
+					"description": "Optional category label (e.g., \"main course\", \"residential\", \"branding\")"
+				},
+				"imageUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Preview image URL"
+				},
+				"url": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Link to the full item (on the org website or external feed)"
+				},
+				"priceFormatted": {
+					"type": "string",
+					"description": "Optional formatted price string (e.g., \"35 RON\", \"$12.99\"). Authoritative pricing lives in the external feed."
 				}
 			}
 		}

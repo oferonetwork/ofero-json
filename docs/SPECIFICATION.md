@@ -1,11 +1,13 @@
-# Ofero.json Metadata Standard - Specification v1.0
+# Ofero.json Metadata Standard - Specification v2.0
 
 **Official Specification for the ofero.json Universal Metadata Format**
 
-**Version:** 1.0.0
-**Schema Version:** ofero-metadata-1.0
-**Last Updated:** December 14, 2025
+**Version:** 2.0.0
+**Schema Version:** ofero-metadata-2.0
+**Last Updated:** May 22, 2026
 **Status:** Public Standard
+
+> **Breaking change from v1.x.** In v2.0.0, ofero.json is an identity/metadata file only. Operational catalog data (menus, products, services, packages, portfolio items) must live in **external feeds** referenced via `catalog.feeds[]`. See [MIGRATION-v1-to-v2.md](MIGRATION-v1-to-v2.md) for the upgrade path.
 
 ---
 
@@ -93,7 +95,7 @@ The file **must** be placed in the `/.well-known/` directory at the root of your
 - **Format**: JSON (UTF-8 encoding)
 - **Extension**: `.json`
 - **MIME Type**: `application/json`
-- **Maximum Size**: Recommended < 500 KB (excluding external references)
+- **Maximum Size**: Recommended < 100 KB. Catalog data (menus, products, services, packages, portfolios) **MUST** be referenced externally via `catalog.feeds[]`, not inlined. See [Why ofero.json is not a catalog](#why-oferojson-is-not-a-catalog) for the rationale.
 
 ### HTTP Requirements
 
@@ -130,7 +132,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"canonicalUrl": "https://yourdomain.com/.well-known/ofero.json",
 	"metadata": {
 		"version": "1.0.0",
-		"schemaVersion": "ofero-metadata-1.0",
+		"schemaVersion": "ofero-metadata-2.0",
 		"lastUpdated": "2025-01-15T10:00:00Z",
 		"createdAt": "2025-01-15T10:00:00Z"
 	},
@@ -208,10 +210,10 @@ Every ofero.json file **must** contain these top-level fields:
 		/* Logos, icons, brand guidelines */
 	},
 	"catalog": {
-		/* Product/service feeds */
+		/* External catalog feeds (catalog.feeds[]) + tiny inline previews (signature, highlights). Full catalog data lives outside ofero.json. */
 	},
 	"featured": {
-		/* Featured products/services */
+		/* Featured products/services (capped: max 12 each) */
 	},
 	"verification": {
 		/* Domain and wallet proofs */
@@ -268,6 +270,152 @@ Every ofero.json file **must** contain these top-level fields:
 	}
 }
 ```
+
+---
+
+## Why ofero.json is not a catalog
+
+**v2.0.0 makes a hard break: operational catalog data (menus, products, services, packages, portfolios) no longer lives inside ofero.json.** It must live in external feeds referenced via `catalog.feeds[]`. This document exists in English on purpose, because the rationale needs to travel with the standard.
+
+### The two problems we hit in production
+
+1. **CMS plugin meltdown.** Real ofero.json files reached 2 MB once a restaurant added its full menu, or a store inlined its products. The reference WordPress shortcodes plugin parses the whole JSON tree on every shortcode render. With a 2 MB file inside Elementor, pages crashed — even though most shortcodes only need `organization`, `locations`, or `communications.social`. The download cost is paid once; the **parse cost is paid every render**.
+2. **Wrong separation of concerns.** Identity/metadata (legal name, locations, brand assets, banking, verification, partnerships) changes rarely and is owned by one team. Catalog data (menus, prices, stock, daily specials) changes constantly and is owned by different systems (POS, inventory, e-commerce). Coupling them in one file forces every consumer to re-download the slow-changing identity data every time the fast-changing catalog ticks — and forces every consumer to parse the heavy stuff to read the light stuff.
+
+### What v2.0.0 changes
+
+- `catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio` are **removed from the schema**. The old `catalog.productFeeds` and `catalog.serviceFeeds` are **unified into `catalog.feeds[]`**.
+- `catalog` now holds: `defaultCurrency`, `feeds[]` (external references), `signature[]` (≤ 6 inline preview items), `highlights[]` (≤ 6 inline preview items for portfolios), `priceListUrl`.
+- The recommended max file size drops from 500 KB to **100 KB**.
+- `metadata.schemaVersion` becomes `"ofero-metadata-2.0"`. v1 and v2 readers reject each other's files on purpose.
+
+### What lives inline, what lives in a feed
+
+| In `ofero.json` (small, slow-changing) | In an external feed (large, fast-changing) |
+| --- | --- |
+| Up to 12 `featured.products` / `featured.services` | Full product catalog |
+| Up to 6 `catalog.signature` items (chef's signature dishes, flagship services) | Full menu / service list |
+| Up to 6 `catalog.highlights` (portfolio teasers) | Full portfolio with all images |
+| `restaurantDetails` (capacity, hours, amenities) | Daily menu, weekly specials |
+
+### Prefer existing standards over custom feeds
+
+When you publish an external feed, **do not invent a new format**. Use what consumers already understand:
+
+- **Menus** → [Schema.org Menu](https://schema.org/Menu) as JSON-LD
+- **Products** → [Schema.org Product](https://schema.org/Product) as JSON-LD, or [Google Merchant Feed](https://support.google.com/merchants/answer/7052112) as XML
+- **Events / reservations** → [Schema.org Event](https://schema.org/Event), iCal
+- **Generic content** → [JSON Feed 1.1](https://www.jsonfeed.org/)
+- **Public transit** → GTFS
+
+Use the `Feed.standard` field to declare which standard your feed conforms to so consumers can use existing parsers.
+
+---
+
+## `catalog.feeds[]` reference
+
+A `Feed` is an external reference to operational data hosted at a separate URL. The fields:
+
+| Field | Required | Description |
+| --- | --- | --- |
+| `type` | yes | One of: `products`, `menu`, `services`, `packages`, `portfolio`, `reservations`, `rooms`, `other` |
+| `format` | yes | One of: `json`, `jsonl`, `xml`, `csv`, `rss`, `atom`, `schema.org-jsonld`, `google-merchant-xml`, `gtfs`, `ical`, `other` |
+| `url` | yes | HTTPS URL where the feed is served |
+| `name` | no | Human-readable feed name (TranslatableString) |
+| `description` | no | Feed description (TranslatableString) |
+| `language` | no | Primary language of feed content (ISO 639-1) |
+| `lastUpdated` | no | ISO 8601 timestamp the feed was last regenerated |
+| `etag` | no | Optional ETag value matching the HTTP ETag header at `url` |
+| `itemCount` | no | Approximate number of items in the feed |
+| `standard` | no | Identifier of the standard the feed conforms to (e.g. `"schema.org/Menu"`, `"google-merchant"`) |
+
+### Example: restaurant menu as Schema.org Menu JSON-LD
+
+```json
+{
+	"catalog": {
+		"defaultCurrency": "USD",
+		"feeds": [
+			{
+				"type": "menu",
+				"format": "schema.org-jsonld",
+				"standard": "schema.org/Menu",
+				"url": "https://restaurant.example.com/feeds/menu.jsonld",
+				"name": { "default": "Main menu" },
+				"language": "en",
+				"lastUpdated": "2026-05-22T10:00:00Z",
+				"itemCount": 142
+			}
+		],
+		"signature": [
+			{
+				"id": "margherita",
+				"name": { "default": "Pizza Margherita" },
+				"category": "pizza",
+				"priceFormatted": "$14.00",
+				"imageUrl": "https://restaurant.example.com/img/margherita.jpg"
+			}
+		]
+	}
+}
+```
+
+### Example: e-commerce as Google Merchant XML
+
+```json
+{
+	"catalog": {
+		"defaultCurrency": "USD",
+		"feeds": [
+			{
+				"type": "products",
+				"format": "google-merchant-xml",
+				"standard": "google-merchant",
+				"url": "https://store.example.com/feeds/products.xml",
+				"language": "en",
+				"itemCount": 4820
+			}
+		]
+	}
+}
+```
+
+### Example: architecture firm portfolio
+
+```json
+{
+	"catalog": {
+		"feeds": [
+			{
+				"type": "portfolio",
+				"format": "json",
+				"url": "https://modernarch.example.com/api/portfolio.json",
+				"itemCount": 87
+			}
+		],
+		"highlights": [
+			{
+				"id": "villa-m",
+				"name": { "default": "Villa M — Minimalist Lake House" },
+				"category": "residential",
+				"imageUrl": "https://modernarch.example.com/portfolio/villa-m/thumb.jpg",
+				"url": "https://modernarch.example.com/portfolio/villa-m"
+			}
+		]
+	}
+}
+```
+
+### HTTP caching guidance
+
+Because consumers may re-fetch ofero.json frequently, hosts SHOULD:
+
+- Set `Cache-Control: public, max-age=3600` (1 hour) on `/.well-known/ofero.json`
+- Serve a meaningful `Last-Modified` header so consumers can use conditional GETs
+- Serve `ETag` headers to support `If-None-Match` validation
+- Update `metadata.lastUpdated` and bump `metadata.version` (semver patch) whenever the file content changes — this lets clients key their cache off the version
+
+For feed URLs, the same caching headers apply to each external feed.
 
 ---
 
@@ -485,8 +633,8 @@ The `metadata` section contains file versioning, timestamps, and update frequenc
 
 - **Type:** String
 - **Required:** Yes
-- **Const:** `"ofero-metadata-1.0"`
-- **Description:** Ofero.json schema version. This is constant and only changes when the ofero.json standard itself gets updated.
+- **Const:** `"ofero-metadata-2.0"`
+- **Description:** Ofero.json schema version. This is constant and only changes when the ofero.json standard itself gets updated. v1 files (`ofero-metadata-1.0`) are rejected by v2 validators — see [MIGRATION-v1-to-v2.md](MIGRATION-v1-to-v2.md).
 
 #### `metadata.lastUpdated`
 
@@ -2148,7 +2296,7 @@ Schema version and additional notes.
 {
 	"extensions": {
 		"notes": "Additional notes about this file...", // Translatable
-		"schemaVersion": "ofero-metadata-1.0" // REQUIRED: Schema version
+		"schemaVersion": "ofero-metadata-2.0" // REQUIRED: Schema version (must be ofero-metadata-2.0 in v2.x)
 	}
 }
 ```
@@ -2382,8 +2530,9 @@ Ofero.json supports three validation levels:
 - `organization.website` valid HTTPS URL
 - `organization.entityType` valid enum
 - `organization.primaryPhone` matches E.164 pattern (if provided)
-- `extensions.schemaVersion` = `"ofero-metadata-1.0"`
+- `extensions.schemaVersion` = `"ofero-metadata-2.0"` (v2.x; v1 strings rejected)
 - TranslatableString fields have required `default` property
+- No inline catalog data: `catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio`, `catalog.productFeeds`, `catalog.serviceFeeds` must NOT be present
 
 #### Moderate (Recommended)
 
@@ -2472,7 +2621,7 @@ All moderate validation plus:
 		}
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-1.0"
+		"schemaVersion": "ofero-metadata-2.0"
 	}
 }
 ```
@@ -2551,7 +2700,7 @@ All moderate validation plus:
 		"preferredSources": ["https://globaleducation.org", "https://docs.globaleducation.org"]
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-1.0"
+		"schemaVersion": "ofero-metadata-2.0"
 	}
 }
 ```
@@ -2625,227 +2774,63 @@ All moderate validation plus:
 		]
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-1.0"
+		"schemaVersion": "ofero-metadata-2.0"
 	}
 }
 ```
 
-### Example 4: Restaurant with Menu
+### Example 4: Restaurant with external menu feed
 
 See the complete example in [examples/restaurant-example.json](examples/restaurant-example.json).
 
 Key features demonstrated:
 
-- `catalog.menu` with categories and menu items
-- Pricing with variants (sizes) and add-ons
-- Dietary labels and allergen information
-- Multi-language support for menu items
+- `catalog.feeds[]` pointing to an external Schema.org Menu JSON-LD feed
+- `catalog.signature[]` with a handful of inline signature dishes for landing-page rendering
 - `restaurantDetails` for capacity, service types, reservations, amenities
 - `apiEndpoints.availability` for real-time occupancy data
 
-#### Pricing rules for menu items
+See the [`catalog.feeds[]` reference](#catalogfeeds-reference) above for the feed structure. Full menu data lives in the external feed; only the signature preview lives inline.
 
-- `price` — numeric value, required. Currency is defined once at `catalog.defaultCurrency`.
-- `priceUnit` — optional string for when the pricing basis needs clarification (e.g. `"per glass"`, `"per kg"`). Omit for standard per-portion pricing.
-- Do **not** use a `priceFormatted` field. Formatting is the responsibility of the consuming system.
-
-#### Variants and add-ons
-
-Each `variant` and `addon` must have a unique `id` within its parent item, so that order systems and external portals can reference them unambiguously.
-
-```json
-{
-	"catalog": {
-		"defaultCurrency": "USD",
-		"menu": {
-			"categories": [
-				{
-					"id": "pizza",
-					"name": { "default": "Pizza" },
-					"items": [
-						{
-							"id": "margherita",
-							"name": { "default": "Pizza Margherita" },
-							"description": { "default": "Tomato sauce, mozzarella, basil" },
-							"price": 35,
-							"dietary": ["vegetarian"],
-							"allergens": ["gluten", "dairy"],
-							"variants": [
-								{ "id": "margherita-small", "name": "Small (26cm)", "price": 35 },
-								{ "id": "margherita-large", "name": "Large (32cm)", "price": 45 }
-							],
-							"addons": [
-								{ "id": "addon-extra-mozzarella", "name": "Extra mozzarella", "price": 8 },
-								{ "id": "addon-prosciutto", "name": "Prosciutto", "price": 12 }
-							]
-						}
-					]
-				}
-			],
-			"dietaryOptions": ["vegetarian", "vegan", "gluten-free"]
-		}
-	},
-	"restaurantDetails": {
-		"seatingCapacity": 80,
-		"indoorSeats": 60,
-		"outdoorSeats": 20,
-		"serviceTypes": {
-			"dineIn": true,
-			"takeaway": true,
-			"delivery": true
-		},
-		"reservations": {
-			"required": false,
-			"recommended": true,
-			"bookingUrl": "https://restaurant.com/book",
-			"advanceNotice": "24h"
-		},
-		"amenities": ["wifi", "air-conditioning", "terrace", "wheelchair-accessible"],
-		"cuisine": ["italian", "pizza", "mediterranean"],
-		"priceRange": "$$",
-		"averageCheckPerPerson": 45,
-		"ratingsUrl": "https://g.page/your-restaurant"
-	},
-	"apiEndpoints": {
-		"availability": "https://restaurant.com/api/availability",
-		"reservations": "https://restaurant.com/api/reservations"
-	}
-}
-```
-
-### Example 5: Auto Service with Service List
+### Example 5: Auto service with external services feed
 
 See the complete example in [examples/auto-service-example.json](examples/auto-service-example.json).
 
 Key features demonstrated:
 
-- `catalog.services` with variable pricing
-- Duration estimates and warranty information
-- Service categories
+- `catalog.feeds[]` with `type: "services"` pointing to the external service catalog
+- `catalog.signature[]` for top services (optional preview)
+- `restaurantDetails`-style operational data lives in entity-specific sections, not in `catalog`
 
-```json
-{
-	"catalog": {
-		"defaultCurrency": "USD",
-		"services": [
-			{
-				"id": "oil-change",
-				"name": { "default": "Oil and Filter Change" },
-				"category": "maintenance",
-				"price": 80,
-				"priceUnit": "fixed",
-				"duration": "30 min",
-				"warranty": "30 days"
-			},
-			{
-				"id": "brake-pads",
-				"name": { "default": "Brake Pad Replacement" },
-				"category": "brakes",
-				"priceFrom": 100,
-				"priceTo": 200,
-				"priceUnit": "fixed",
-				"duration": "1-2 hours",
-				"warranty": "6 months or 10,000 km"
-			}
-		]
-	}
-}
-```
-
-### Example 6: Karting Center with Packages
+### Example 6: Karting center with external packages feed
 
 See the complete example in [examples/karting-example.json](examples/karting-example.json).
 
 Key features demonstrated:
 
-- `catalog.packages` for experience-based pricing
-- Participant limits and age requirements
-- What's included in each package
+- `catalog.feeds[]` with `type: "packages"`
+- `catalog.signature[]` for the most popular packages (≤ 6 items)
+- Participant limits and age requirements live in the external feed
 
-```json
-{
-	"catalog": {
-		"defaultCurrency": "USD",
-		"packages": [
-			{
-				"id": "adult-10min",
-				"name": { "default": "Adult Race - 10 minutes" },
-				"price": 75,
-				"pricePerPerson": true,
-				"duration": "10 min",
-				"includes": ["Helmet and equipment", "Safety briefing"],
-				"ageRequirement": "16+, min 150cm",
-				"maxParticipants": 10
-			},
-			{
-				"id": "corporate-event",
-				"name": { "default": "Corporate Event" },
-				"price": 150,
-				"pricePerPerson": true,
-				"duration": "3 hours",
-				"includes": ["Exclusive track access", "Catering", "Trophies"],
-				"minParticipants": 10,
-				"maxParticipants": 40
-			}
-		]
-	}
-}
-```
-
-### Example 7: Architecture Firm with Portfolio
+### Example 7: Architecture firm with external portfolio feed
 
 See the complete example in [examples/architecture-firm-example.json](examples/architecture-firm-example.json).
 
 Key features demonstrated:
 
-- `catalog.portfolio` for showcasing projects
-- Service pricing (per sqm, hourly)
-- Awards and project categories
+- `catalog.feeds[]` with `type: "portfolio"` and `type: "services"`
+- `catalog.highlights[]` for landing-page project teasers (≤ 6 items)
+- Full image galleries and project details live in the external feed
 
-```json
-{
-	"catalog": {
-		"defaultCurrency": "EUR",
-		"services": [
-			{
-				"id": "residential-design",
-				"name": { "default": "Residential Architecture" },
-				"priceFrom": 25,
-				"priceTo": 50,
-				"priceUnit": "per-item",
-				"duration": "3-6 months"
-			}
-		],
-		"portfolio": [
-			{
-				"id": "villa-m",
-				"title": { "default": "Villa M - Minimalist Lake House" },
-				"category": "residential",
-				"client": "Private Client",
-				"date": "2024-08-15",
-				"images": [
-					{
-						"url": "https://modernarch.ro/portfolio/villa-m/exterior.jpg",
-						"caption": "Lake-facing facade"
-					}
-				],
-				"awards": ["Romanian Architecture Award 2024"],
-				"featured": true
-			}
-		]
-	}
-}
-```
-
-### Example 8: Modeling Agency with Portfolio
+### Example 8: Modeling agency with external portfolio feed
 
 See the complete example in [examples/modeling-agency-example.json](examples/modeling-agency-example.json).
 
 Key features demonstrated:
 
-- `catalog.portfolio` for showcasing campaigns
-- B2B service offerings
-- Team section with leadership info
+- `catalog.feeds[]` with `type: "portfolio"`
+- `catalog.highlights[]` for campaign teasers
+- `team` section with leadership info (unchanged in v2)
 
 ---
 
@@ -2944,7 +2929,7 @@ For complete examples, see:
 - Comprehensive field reference documentation
 - Three validation levels (basic, moderate, strict)
 
-**Schema Version:** `ofero-metadata-1.0`
+**Schema Version:** `ofero-metadata-2.0` (v2.x)
 
 **Security & Standards:**
 

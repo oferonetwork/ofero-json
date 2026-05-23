@@ -3,9 +3,9 @@
   "domain": "globalfashion.example.com",
   "canonicalUrl": "https://globalfashion.example.com/.well-known/ofero.json",
   "metadata": {
-    "version": "1.0.0",
-    "schemaVersion": "ofero-metadata-1.0",
-    "lastUpdated": "2025-01-15T10:00:00Z",
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2025-01-15T10:00:00Z"
   },
   "organization": {
@@ -30,10 +30,20 @@
     }
   },
   "businessClassification": {
-    "industry": ["retail", "ecommerce", "fashion"],
+    "industry": [
+      "retail",
+      "ecommerce",
+      "fashion"
+    ],
     "mccCode": "5651",
-    "primaryProducts": ["clothing", "accessories", "footwear"],
-    "targetMarket": ["B2C"],
+    "primaryProducts": [
+      "clothing",
+      "accessories",
+      "footwear"
+    ],
+    "targetMarket": [
+      "B2C"
+    ],
     "operationalStatus": "active"
   },
   "platformAccounts": {
@@ -78,7 +88,11 @@
     "support": {
       "email": "support@globalfashion.example.com",
       "phone": "+14155559999",
-      "languages": ["en", "es", "fr"]
+      "languages": [
+        "en",
+        "es",
+        "fr"
+      ]
     }
   },
   "brandAssets": {

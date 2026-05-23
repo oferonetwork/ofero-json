@@ -2,6 +2,8 @@
 
 **ofero.json** is an open, machine-readable metadata standard for organizations, businesses, and protocols. It provides structured identity and business data in a single well-known JSON file at `/.well-known/ofero.json`.
 
+> **v2.0.0 is a breaking change.** Operational catalog data (menus, products, services, packages, portfolios) is no longer allowed inline — it must live in external feeds referenced via `catalog.feeds[]`. v1 files are rejected by v2 validators on purpose. See [`docs/MIGRATION-v1-to-v2.md`](docs/MIGRATION-v1-to-v2.md) for the upgrade path and the reasoning.
+
 ## What is ofero.json?
 
 ofero.json enables:
@@ -23,10 +25,10 @@ Place your `ofero.json` at `/.well-known/ofero.json` on your domain:
   "domain": "example.com",
   "canonicalUrl": "https://example.com/.well-known/ofero.json",
   "metadata": {
-    "version": "1.0.0",
-    "schemaVersion": "ofero-metadata-1.0",
-    "lastUpdated": "2025-01-15T10:00:00Z",
-    "createdAt": "2025-01-15T10:00:00Z"
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2026-05-22T10:00:00Z",
+    "createdAt": "2026-05-22T10:00:00Z"
   },
   "organization": {
     "legalName": "Your Company LLC",
@@ -91,7 +93,7 @@ The JSON Schema (`schema/ofero-json-schema.json`) is the single source of truth.
 |---|---|
 | `basic` | Required fields, JSON structure, schema version |
 | `moderate` | Basic + email/URL formats, ISO codes *(recommended)* |
-| `strict` | Moderate + GPS ranges, hex colors, IBAN, menu item integrity |
+| `strict` | Moderate + GPS ranges, hex colors, IBAN, feed reference integrity, inline-cap enforcement |
 
 ### TypeScript
 
