@@ -287,6 +287,58 @@ class Ofero_Parser {
     }
 
     /**
+     * Get a top-level section by name (lazy section access)
+     *
+     * Returns just the requested branch of the JSON tree. Use this from
+     * shortcode handlers instead of pulling the whole tree when only one
+     * section is needed.
+     *
+     * @param array  $data    The ofero.json data array
+     * @param string $section Top-level key (e.g., "organization", "locations")
+     * @return mixed|null     The section value or null if missing
+     */
+    public function get_section($data, $section) {
+        if (!is_array($data) || empty($section)) {
+            return null;
+        }
+        return array_key_exists($section, $data) ? $data[$section] : null;
+    }
+
+    /**
+     * Check if this ofero.json is v2 (schemaVersion ofero-metadata-2.0)
+     *
+     * @param array $data The ofero.json data array
+     * @return bool       Whether the file declares v2 schema
+     */
+    public function is_v2($data) {
+        if (!is_array($data) || !isset($data['metadata']['schemaVersion'])) {
+            return false;
+        }
+        return $data['metadata']['schemaVersion'] === 'ofero-metadata-2.0';
+    }
+
+    /**
+     * Detect a v1 inline catalog and return the offending keys.
+     * Used to surface a migration warning to the site owner.
+     *
+     * @param array $data The ofero.json data array
+     * @return array      List of v1 catalog keys present (empty if none)
+     */
+    public function v1_catalog_keys($data) {
+        $forbidden = array('menu', 'dailyMenu', 'services', 'packages', 'portfolio', 'productFeeds', 'serviceFeeds');
+        $found = array();
+        if (!isset($data['catalog']) || !is_array($data['catalog'])) {
+            return $found;
+        }
+        foreach ($forbidden as $k) {
+            if (array_key_exists($k, $data['catalog'])) {
+                $found[] = $k;
+            }
+        }
+        return $found;
+    }
+
+    /**
      * Format a field value for display
      *
      * @param mixed  $value  The value to format

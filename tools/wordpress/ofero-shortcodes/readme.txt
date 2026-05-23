@@ -3,12 +3,16 @@ Contributors: oferome
 Tags: ofero, shortcodes, business info, structured data, json
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.3.0
+Stable tag: 2.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Display data from your ofero.json file using simple shortcodes. Compatible with Elementor, WPBakery, Gutenberg, and any theme.
+Display data from your ofero.json file using simple shortcodes. Compatible with Elementor 3.5+ (including Elementor 4.x), WPBakery, Gutenberg, and any theme.
+
+**v2.0.0 requires ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** v1 files are rejected with a migration warning. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
+
+**Elementor compatibility:** widgets register via the modern `elementor/widgets/register` hook (Elementor 3.5+). Tested with Elementor 3.5 through 4.x. A legacy fallback covers Elementor < 3.5.
 
 == Description ==
 
@@ -64,6 +68,10 @@ Ofero Shortcodes allows you to display information from your ofero.json file any
 
 **Contact Form:**
 `[ofero_contact_form fields="name,email,phone,subject,message"]`
+
+**External Feed (v2 only):**
+`[ofero_feed type="menu" limit="20"]`
+Explicitly fetch and render a feed declared in `catalog.feeds[]`. Other shortcodes never touch external feeds — only this one does. Recognized feed formats: Schema.org Menu JSON-LD, Google Merchant XML, generic JSON.
 
 = Field Paths =
 
@@ -125,6 +133,16 @@ Yes. Enter the full URL in the "External URL" setting. The plugin will fetch and
 3. Organization card output
 
 == Changelog ==
+
+= 2.0.0 =
+* BREAKING: requires ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files trigger a migration warning in the admin and may not render catalog data correctly.
+* COMPAT: Elementor widget registration migrated to the modern `elementor/widgets/register` hook (Elementor 3.5+, including 4.x). Removes the deprecation notice from `widgets_registered` / `register_widget_type` which Elementor scheduled for removal in 4.3. A legacy fallback still covers Elementor < 3.5.
+* NEW: `[ofero_feed type="..." limit="..."]` shortcode — the only shortcode that fetches a `catalog.feeds[]` URL. All other shortcodes read only ofero.json itself, so they never download external catalogs.
+* FIX: shortcodes no longer parse the full ofero.json tree per render. Each handler pulls only the section it needs (organization, locations, communications, banking, brandAssets, team, certificates, promoCodes), cached separately. This fixes Elementor page crashes on large files.
+* FIX: cache key now includes the file's `Last-Modified`/`ETag`, so updates auto-invalidate without manual cache clearing. The "Clear Cache" button now wipes all ofero transients, not just the single legacy key.
+* NEW: admin warning when the loaded ofero.json exceeds 200 KB (v2 recommends < 100 KB).
+* NEW: admin error when `metadata.schemaVersion` is `ofero-metadata-1.0` or when v1 inline catalog fields (menu, products, services, etc.) are detected.
+* Plugin version bumped to 2.0.0.
 
 = 1.3.0 =
 * NEW: [ofero_team] shortcode for displaying team members (leadership, advisors, investors)

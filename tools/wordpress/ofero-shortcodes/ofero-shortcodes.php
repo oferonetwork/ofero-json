@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Shortcodes
  * Plugin URI: https://ofero.me/ofero-json
  * Description: Display data from your ofero.json file using simple shortcodes. Compatible with Elementor, WPBakery, Gutenberg, and any theme.
- * Version: 1.3.0
+ * Version: 2.0.0
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_SHORTCODES_VERSION', '1.3.0');
+define('OFERO_SHORTCODES_VERSION', '2.0.0');
 define('OFERO_SHORTCODES_PATH', plugin_dir_path(__FILE__));
 define('OFERO_SHORTCODES_URL', plugin_dir_url(__FILE__));
 
@@ -26,29 +26,55 @@ define('OFERO_SHORTCODES_URL', plugin_dir_url(__FILE__));
 require_once OFERO_SHORTCODES_PATH . 'includes/class-ofero-parser.php';
 
 /**
- * Register Elementor Widgets
+ * Register Elementor widgets.
+ *
+ * Uses the Elementor 3.5+ API (`elementor/widgets/register` + `$widgets_manager->register()`).
+ * The old `widgets_registered` + `register_widget_type()` were deprecated in Elementor 3.5
+ * and scheduled for removal in 4.3. We keep a compatibility branch for sites still on
+ * Elementor < 3.5, but call the new API on every supported version (3.5 through 4.x).
+ *
+ * @param \Elementor\Widgets_Manager|null $widgets_manager Passed by the new hook; null on the legacy hook.
  */
-function ofero_register_elementor_widgets() {
-    // Check if Elementor is active
+function ofero_register_elementor_widgets($widgets_manager = null) {
     if (!did_action('elementor/loaded')) {
         return;
     }
 
-    // Include widget files
     require_once OFERO_SHORTCODES_PATH . 'includes/elementor/class-elementor-ofero-field-widget.php';
     require_once OFERO_SHORTCODES_PATH . 'includes/elementor/class-elementor-ofero-organization-widget.php';
     require_once OFERO_SHORTCODES_PATH . 'includes/elementor/class-elementor-ofero-location-widget.php';
     require_once OFERO_SHORTCODES_PATH . 'includes/elementor/class-elementor-ofero-social-widget.php';
     require_once OFERO_SHORTCODES_PATH . 'includes/elementor/class-elementor-ofero-banking-widget.php';
 
-    // Register widgets
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Elementor_Ofero_Field_Widget());
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Elementor_Ofero_Organization_Widget());
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Elementor_Ofero_Location_Widget());
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Elementor_Ofero_Social_Widget());
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new Elementor_Ofero_Banking_Widget());
+    $widgets = array(
+        new Elementor_Ofero_Field_Widget(),
+        new Elementor_Ofero_Organization_Widget(),
+        new Elementor_Ofero_Location_Widget(),
+        new Elementor_Ofero_Social_Widget(),
+        new Elementor_Ofero_Banking_Widget(),
+    );
+
+    if ($widgets_manager && method_exists($widgets_manager, 'register')) {
+        // Elementor 3.5+ / 4.x
+        foreach ($widgets as $widget) {
+            $widgets_manager->register($widget);
+        }
+        return;
+    }
+
+    // Elementor < 3.5 fallback
+    $legacy_manager = \Elementor\Plugin::instance()->widgets_manager;
+    if (method_exists($legacy_manager, 'register_widget_type')) {
+        foreach ($widgets as $widget) {
+            $legacy_manager->register_widget_type($widget);
+        }
+    }
 }
-add_action('elementor/widgets/widgets_registered', 'ofero_register_elementor_widgets');
+add_action('elementor/widgets/register', 'ofero_register_elementor_widgets');
+// Fallback for Elementor < 3.5 (the new hook does not fire there)
+if (defined('ELEMENTOR_VERSION') && version_compare(ELEMENTOR_VERSION, '3.5.0', '<')) {
+    add_action('elementor/widgets/widgets_registered', 'ofero_register_elementor_widgets');
+}
 
 /**
  * Add Elementor Widget Categories
@@ -124,6 +150,7 @@ class Ofero_Shortcodes {
         add_shortcode('ofero_certificates', array($this, 'certificates_shortcode'));
         add_shortcode('ofero_promo', array($this, 'promo_shortcode'));
         add_shortcode('ofero_contact_form', array($this, 'contact_form_shortcode'));
+        add_shortcode('ofero_feed', array($this, 'feed_shortcode'));
     }
 
     /**
@@ -132,6 +159,35 @@ class Ofero_Shortcodes {
     private function register_admin_menu() {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_notices', array($this, 'admin_notices'));
+    }
+
+    /**
+     * Show admin notices for: file too large (>200 KB), v1 schema, or inline catalog.
+     * These help the site owner notice misconfigurations that hurt performance.
+     */
+    public function admin_notices() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+        $size = get_transient('ofero_size_warning');
+        if ($size) {
+            $kb = round(((int) $size) / 1024);
+            echo '<div class="notice notice-warning"><p><strong>Ofero Shortcodes:</strong> your ofero.json is ' . esc_html((string) $kb) . ' KB. v2 recommends &lt; 100 KB. Move catalog data to <code>catalog.feeds[]</code> — see <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+        }
+
+        $data = $this->get_ofero_data();
+        if (!$data) return;
+
+        $schema_version = $data['metadata']['schemaVersion'] ?? '';
+        if ($schema_version === 'ofero-metadata-1.0') {
+            echo '<div class="notice notice-error"><p><strong>Ofero Shortcodes:</strong> your ofero.json declares <code>ofero-metadata-1.0</code>. This plugin is v2-only and may not render catalog data correctly. Upgrade your file per <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+        }
+
+        $v1_keys = $this->parser->v1_catalog_keys($data);
+        if (!empty($v1_keys)) {
+            echo '<div class="notice notice-warning"><p><strong>Ofero Shortcodes:</strong> your ofero.json still contains v1 inline catalog fields (<code>' . esc_html(implode(', ', $v1_keys)) . '</code>). Move them into <code>catalog.feeds[]</code>.</p></div>';
+        }
     }
 
     /**
@@ -321,16 +377,31 @@ class Ofero_Shortcodes {
             <pre>[ofero_contact_form fields="name,email,phone,subject,message" submit_text="Send Message"]</pre>
             <p class="description">Emails are sent to the contact email from your ofero.json file.</p>
 
+            <h3>External Feed Shortcode (v2)</h3>
+            <p>Use <code>[ofero_feed]</code> to render an external feed declared in <code>catalog.feeds[]</code>. This is the only shortcode that fetches an external URL — all other shortcodes read only ofero.json itself.</p>
+            <pre>[ofero_feed type="menu" limit="20"]</pre>
+            <p class="description">
+                Supported <code>type</code> values: <code>menu</code>, <code>products</code>, <code>services</code>, <code>packages</code>, <code>portfolio</code>, <code>reservations</code>, <code>rooms</code>, <code>other</code>.
+                Recognized feed formats: Schema.org Menu JSON-LD, Google Merchant XML, generic JSON.
+                Feed body is cached separately under its own ETag/Last-Modified.
+            </p>
+
             <hr>
 
             <h2>Current ofero.json Status</h2>
             <?php
             $data = $this->get_ofero_data();
             if ($data) {
+                $schema_version = $data['metadata']['schemaVersion'] ?? '';
+                $version_ok = $schema_version === 'ofero-metadata-2.0';
                 echo '<p style="color: green;">&#10003; ofero.json loaded successfully.</p>';
                 echo '<p><strong>Organization:</strong> ' . esc_html($data['organization']['legalName'] ?? 'Not set') . '</p>';
                 echo '<p><strong>Domain:</strong> ' . esc_html($data['domain'] ?? 'Not set') . '</p>';
+                echo '<p><strong>Schema version:</strong> ' . esc_html($schema_version) . ($version_ok ? ' <span style="color:green">(v2 OK)</span>' : ' <span style="color:#d63638">(plugin requires v2 — upgrade your file)</span>') . '</p>';
                 echo '<p><strong>Last Updated:</strong> ' . esc_html($data['metadata']['lastUpdated'] ?? 'Not set') . '</p>';
+                if (isset($data['catalog']['feeds']) && is_array($data['catalog']['feeds'])) {
+                    echo '<p><strong>catalog.feeds[]:</strong> ' . count($data['catalog']['feeds']) . ' feed(s) declared.</p>';
+                }
             } else {
                 echo '<p style="color: red;">&#10007; ofero.json not found or invalid.</p>';
             }
@@ -343,54 +414,216 @@ class Ofero_Shortcodes {
         </div>
         <?php
 
-        // Handle cache clearing
+        // Handle cache clearing — delete all ofero_json_* and ofero_feed_* transients
         if (isset($_GET['clear_cache'])) {
+            global $wpdb;
+            $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_ofero_json_%' OR option_name LIKE '_transient_timeout_ofero_json_%' OR option_name LIKE '_transient_ofero_feed_%' OR option_name LIKE '_transient_timeout_ofero_feed_%'");
             delete_transient('ofero_json_data');
+            delete_transient('ofero_size_warning');
             echo '<div class="notice notice-success"><p>Cache cleared successfully.</p></div>';
         }
     }
 
     /**
-     * Get ofero.json data (with caching)
+     * Size threshold above which the file triggers an admin warning (200 KB).
+     */
+    const SIZE_WARNING_BYTES = 204800;
+
+    /**
+     * Build a cache key qualified by the source URL/path AND its Last-Modified marker.
+     * When the source changes, the marker changes and the old cache entries fall out
+     * naturally — no manual invalidation needed.
+     */
+    private function cache_key($suffix, $marker) {
+        return 'ofero_json_' . md5(($marker ?? '') . '|' . $suffix);
+    }
+
+    /**
+     * Resolve the source identity (URL or local path) and a Last-Modified marker.
+     * The marker is used to key all caches so updates auto-invalidate.
+     *
+     * @return array{0:string,1:string,2:string} [type ('url'|'file'|'none'), source, marker]
+     */
+    private function resolve_source() {
+        $external_url = get_option('ofero_json_url', '');
+        if (!empty($external_url)) {
+            return array('url', $external_url, '');
+        }
+        $path = get_option('ofero_json_path', '.well-known/ofero.json');
+        $full_path = ABSPATH . $path;
+        if (file_exists($full_path)) {
+            return array('file', $full_path, (string) filemtime($full_path));
+        }
+        return array('none', '', '');
+    }
+
+    /**
+     * Fetch raw ofero.json data with cache.
+     *
+     * Caches the parsed array under a key qualified by source + Last-Modified header
+     * (for URLs) or filemtime (for files), so updates auto-invalidate. Also records
+     * the byte size so the admin page can warn if the file is too large for v2.
      */
     public function get_ofero_data() {
-        // Check cache first
-        if (get_option('ofero_cache_enabled', true)) {
-            $cached = get_transient('ofero_json_data');
+        list($type, $source, $file_marker) = $this->resolve_source();
+        if ($type === 'none') {
+            return null;
+        }
+
+        $cache_enabled = (bool) get_option('ofero_cache_enabled', true);
+
+        // For URLs, we don't know Last-Modified until we ask. We try a cheap HEAD
+        // first; if that gives us a marker, we can serve a fully cached parsed array.
+        $marker = $file_marker;
+        if ($type === 'url' && $cache_enabled) {
+            $head = wp_remote_head($source, array('timeout' => 5));
+            if (!is_wp_error($head)) {
+                $lm = wp_remote_retrieve_header($head, 'last-modified');
+                $etag = wp_remote_retrieve_header($head, 'etag');
+                $marker = $lm ?: $etag ?: '';
+                if ($marker !== '') {
+                    $cached = get_transient($this->cache_key($source, $marker));
+                    if ($cached !== false) {
+                        return $cached;
+                    }
+                }
+            }
+        } elseif ($type === 'file' && $cache_enabled) {
+            $cached = get_transient($this->cache_key($source, $marker));
             if ($cached !== false) {
                 return $cached;
             }
         }
 
-        $data = null;
-
-        // Try external URL first
-        $external_url = get_option('ofero_json_url', '');
-        if (!empty($external_url)) {
-            $response = wp_remote_get($external_url, array('timeout' => 10));
+        // Cache miss — fetch the body
+        $body = null;
+        if ($type === 'url') {
+            $response = wp_remote_get($source, array('timeout' => 10));
             if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
                 $body = wp_remote_retrieve_body($response);
-                $data = json_decode($body, true);
+                if ($marker === '') {
+                    $lm = wp_remote_retrieve_header($response, 'last-modified');
+                    $etag = wp_remote_retrieve_header($response, 'etag');
+                    $marker = $lm ?: $etag ?: '';
+                }
             }
+        } else {
+            $body = file_get_contents($source);
         }
 
-        // Fall back to local file
-        if (!$data) {
-            $path = get_option('ofero_json_path', '.well-known/ofero.json');
-            $full_path = ABSPATH . $path;
-
-            if (file_exists($full_path)) {
-                $content = file_get_contents($full_path);
-                $data = json_decode($content, true);
-            }
+        if ($body === null || $body === false) {
+            return null;
         }
 
-        // Cache the result
-        if ($data && get_option('ofero_cache_enabled', true)) {
-            set_transient('ofero_json_data', $data, self::CACHE_DURATION);
+        $size = strlen($body);
+        if ($size > self::SIZE_WARNING_BYTES) {
+            set_transient('ofero_size_warning', $size, DAY_IN_SECONDS);
+        } else {
+            delete_transient('ofero_size_warning');
+        }
+
+        $data = json_decode($body, true);
+        if (!is_array($data)) {
+            return null;
+        }
+
+        if ($cache_enabled && $marker !== '') {
+            set_transient($this->cache_key($source, $marker), $data, self::CACHE_DURATION);
         }
 
         return $data;
+    }
+
+    /**
+     * Get a single top-level section. Cached separately so a shortcode that only
+     * needs `organization` does not pay the cost of (de)serializing the full tree.
+     *
+     * @param string $section Top-level key (e.g., "organization", "locations")
+     * @return mixed|null
+     */
+    public function get_ofero_section($section) {
+        if (empty($section)) {
+            return null;
+        }
+
+        list($type, $source, $marker) = $this->resolve_source();
+        if ($type === 'none') {
+            return null;
+        }
+
+        $cache_enabled = (bool) get_option('ofero_cache_enabled', true);
+        if ($cache_enabled && $marker !== '') {
+            $cached = get_transient($this->cache_key($source . '|section|' . $section, $marker));
+            if ($cached !== false) {
+                return $cached === '__OFERO_NULL__' ? null : $cached;
+            }
+        }
+
+        $data = $this->get_ofero_data();
+        $value = $this->parser->get_section($data, $section);
+
+        if ($cache_enabled && $marker !== '') {
+            set_transient(
+                $this->cache_key($source . '|section|' . $section, $marker),
+                $value === null ? '__OFERO_NULL__' : $value,
+                self::CACHE_DURATION
+            );
+        }
+
+        return $value;
+    }
+
+    /**
+     * Fetch one external catalog feed (URL from catalog.feeds[]).
+     * Cached separately under its own ETag/Last-Modified so feed updates do not
+     * invalidate the ofero.json cache and vice versa.
+     *
+     * @param string $url Feed URL (HTTPS)
+     * @return string|null Raw body, or null on error
+     */
+    public function fetch_feed($url) {
+        if (empty($url) || strpos($url, 'https://') !== 0) {
+            return null;
+        }
+
+        // Cheap HEAD to get the cache marker
+        $marker = '';
+        $head = wp_remote_head($url, array('timeout' => 5));
+        if (!is_wp_error($head)) {
+            $lm = wp_remote_retrieve_header($head, 'last-modified');
+            $etag = wp_remote_retrieve_header($head, 'etag');
+            $marker = $lm ?: $etag ?: '';
+        }
+
+        $key = 'ofero_feed_' . md5($url . '|' . $marker);
+        if ($marker !== '') {
+            $cached = get_transient($key);
+            if ($cached !== false) {
+                return $cached;
+            }
+        }
+
+        $response = wp_remote_get($url, array('timeout' => 10));
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            return null;
+        }
+        $body = wp_remote_retrieve_body($response);
+        if ($body === '' || $body === false) {
+            return null;
+        }
+
+        if ($marker === '') {
+            $lm = wp_remote_retrieve_header($response, 'last-modified');
+            $etag = wp_remote_retrieve_header($response, 'etag');
+            $marker = $lm ?: $etag ?: '';
+            $key = 'ofero_feed_' . md5($url . '|' . $marker);
+        }
+
+        if ($marker !== '') {
+            set_transient($key, $body, self::CACHE_DURATION);
+        }
+
+        return $body;
     }
 
     /**
@@ -451,12 +684,10 @@ class Ofero_Shortcodes {
             'class' => 'ofero-organization',
         ), $atts, 'ofero_organization');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['organization'])) {
+        $org = $this->get_ofero_section('organization');
+        if (!is_array($org)) {
             return '';
         }
-
-        $org = $data['organization'];
         $fields = array_map('trim', explode(',', $atts['show']));
 
         $output = '<div class="' . esc_attr($atts['class']) . '">';
@@ -527,17 +758,17 @@ class Ofero_Shortcodes {
             'photo_size' => '300',
         ), $atts, 'ofero_location');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['locations'])) {
+        $locations = $this->get_ofero_section('locations');
+        if (!is_array($locations)) {
             return '';
         }
 
         $index = intval($atts['index']);
-        if (!isset($data['locations'][$index])) {
+        if (!isset($locations[$index])) {
             return '';
         }
 
-        $loc = $data['locations'][$index];
+        $loc = $locations[$index];
         $fields = array_map('trim', explode(',', $atts['show']));
 
         $output = '<div class="' . esc_attr($atts['class']) . '">';
@@ -663,12 +894,12 @@ class Ofero_Shortcodes {
             'class' => 'ofero-social',
         ), $atts, 'ofero_social');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['communications']['social'])) {
+        $communications = $this->get_ofero_section('communications');
+        if (!is_array($communications) || !isset($communications['social'])) {
             return '';
         }
 
-        $social = $data['communications']['social'];
+        $social = $communications['social'];
         $filter_platforms = !empty($atts['platforms']) ? array_map('trim', explode(',', $atts['platforms'])) : array();
 
         $output = '<div class="' . esc_attr($atts['class']) . '">';
@@ -709,17 +940,17 @@ class Ofero_Shortcodes {
             'class' => 'ofero-banking',
         ), $atts, 'ofero_banking');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['banking'])) {
+        $banking = $this->get_ofero_section('banking');
+        if (!is_array($banking)) {
             return '';
         }
 
         $index = intval($atts['index']);
-        if (!isset($data['banking'][$index])) {
+        if (!isset($banking[$index])) {
             return '';
         }
 
-        $bank = $data['banking'][$index];
+        $bank = $banking[$index];
         $fields = array_map('trim', explode(',', $atts['show']));
 
         $output = '<div class="' . esc_attr($atts['class']) . '">';
@@ -791,8 +1022,8 @@ class Ofero_Shortcodes {
             'alt' => '',
         ), $atts, 'ofero_logo');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['brandAssets'])) {
+        $brand = $this->get_ofero_section('brandAssets');
+        if (!is_array($brand)) {
             return '';
         }
 
@@ -800,8 +1031,8 @@ class Ofero_Shortcodes {
         $logo_alt = $atts['alt'];
 
         // Try to find matching logo
-        if (!empty($data['brandAssets']['logos']['vector'])) {
-            foreach ($data['brandAssets']['logos']['vector'] as $logo) {
+        if (!empty($brand['logos']['vector'])) {
+            foreach ($brand['logos']['vector'] as $logo) {
                 if (!empty($atts['variant']) && isset($logo['colorVariant']) && $logo['colorVariant'] === $atts['variant']) {
                     $logo_url = $logo['url'] ?? '';
                     $logo_alt = $logo['alt'] ?? $logo_alt;
@@ -814,8 +1045,8 @@ class Ofero_Shortcodes {
         }
 
         // Fallback to raster logos
-        if (empty($logo_url) && !empty($data['brandAssets']['logos']['raster'])) {
-            foreach ($data['brandAssets']['logos']['raster'] as $logo) {
+        if (empty($logo_url) && !empty($brand['logos']['raster'])) {
+            foreach ($brand['logos']['raster'] as $logo) {
                 if ($logo['type'] === $atts['format']) {
                     $logo_url = $logo['url'] ?? '';
                     break;
@@ -858,17 +1089,17 @@ class Ofero_Shortcodes {
             'format' => 'table',
         ), $atts, 'ofero_hours');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['locations'])) {
+        $locations = $this->get_ofero_section('locations');
+        if (!is_array($locations)) {
             return '';
         }
 
         $index = intval($atts['location']);
-        if (!isset($data['locations'][$index]) || empty($data['locations'][$index]['hours'])) {
+        if (!isset($locations[$index]) || empty($locations[$index]['hours'])) {
             return '';
         }
 
-        $hours = $data['locations'][$index]['hours'];
+        $hours = $locations[$index]['hours'];
 
         if ($atts['format'] === 'table') {
             $output = '<table class="' . esc_attr($atts['class']) . '">';
@@ -905,17 +1136,17 @@ class Ofero_Shortcodes {
             'class' => 'ofero-map',
         ), $atts, 'ofero_map');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['locations'])) {
+        $locations = $this->get_ofero_section('locations');
+        if (!is_array($locations)) {
             return '';
         }
 
         $index = intval($atts['location']);
-        if (!isset($data['locations'][$index]) || empty($data['locations'][$index]['address'])) {
+        if (!isset($locations[$index]) || empty($locations[$index]['address'])) {
             return '';
         }
 
-        $address = $data['locations'][$index]['address'];
+        $address = $locations[$index]['address'];
 
         // Build address string
         $address_parts = array_filter(array(
@@ -958,10 +1189,11 @@ class Ofero_Shortcodes {
             'columns' => '3',
         ), $atts, 'ofero_team');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['team'])) {
+        $team = $this->get_ofero_section('team');
+        if (!is_array($team)) {
             return '';
         }
+        $data = array('team' => $team); // local alias for the rest of the handler
 
         $team_data = [];
         switch ($atts['type']) {
@@ -1049,10 +1281,11 @@ class Ofero_Shortcodes {
             'columns' => '2',
         ), $atts, 'ofero_certificates');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['certificates']) || empty($data['certificates'])) {
+        $certs = $this->get_ofero_section('certificates');
+        if (!is_array($certs) || empty($certs)) {
             return '';
         }
+        $data = array('certificates' => $certs);
 
         $fields = array_map('trim', explode(',', $atts['show']));
         $columns = intval($atts['columns']);
@@ -1129,10 +1362,11 @@ class Ofero_Shortcodes {
             'active_only' => 'true',
         ), $atts, 'ofero_promo');
 
-        $data = $this->get_ofero_data();
-        if (!$data || !isset($data['promoCodes']) || empty($data['promoCodes'])) {
+        $promos = $this->get_ofero_section('promoCodes');
+        if (!is_array($promos) || empty($promos)) {
             return '';
         }
+        $data = array('promoCodes' => $promos);
 
         $fields = array_map('trim', explode(',', $atts['show']));
         $active_only = $atts['active_only'] === 'true';
@@ -1209,6 +1443,145 @@ class Ofero_Shortcodes {
     }
 
     /**
+     * External feed shortcode handler — [ofero_feed type="menu" limit="20"]
+     *
+     * Explicit, opt-in: only this shortcode ever fetches a catalog.feeds[] URL.
+     * Other shortcodes never touch external feeds. The fetched body is cached
+     * separately under its own ETag/Last-Modified marker.
+     *
+     * Supported attributes:
+     *   type     Feed type to render (matches catalog.feeds[].type). Required.
+     *   limit    Max items to render (default 20).
+     *   class    Wrapper CSS class (default "ofero-feed").
+     */
+    public function feed_shortcode($atts) {
+        $atts = shortcode_atts(array(
+            'type' => '',
+            'limit' => '20',
+            'class' => 'ofero-feed',
+        ), $atts, 'ofero_feed');
+
+        if (empty($atts['type'])) {
+            return '';
+        }
+
+        $catalog = $this->get_ofero_section('catalog');
+        if (!is_array($catalog) || empty($catalog['feeds']) || !is_array($catalog['feeds'])) {
+            return '';
+        }
+
+        $feed = null;
+        foreach ($catalog['feeds'] as $f) {
+            if (isset($f['type']) && $f['type'] === $atts['type']) {
+                $feed = $f;
+                break;
+            }
+        }
+        if (!$feed || empty($feed['url'])) {
+            return '';
+        }
+
+        $body = $this->fetch_feed($feed['url']);
+        if ($body === null) {
+            return '';
+        }
+
+        $limit = max(1, intval($atts['limit']));
+        $items = $this->extract_feed_items($body, $feed['format'] ?? 'json', $limit);
+        if (empty($items)) {
+            return '';
+        }
+
+        $output = '<ul class="' . esc_attr($atts['class']) . ' ofero-feed-' . esc_attr($atts['type']) . '">';
+        foreach ($items as $item) {
+            $name = $item['name'] ?? '';
+            $price = $item['price'] ?? '';
+            $output .= '<li class="ofero-feed-item">';
+            $output .= '<span class="ofero-feed-item-name">' . esc_html($name) . '</span>';
+            if ($price !== '') {
+                $output .= ' <span class="ofero-feed-item-price">' . esc_html($price) . '</span>';
+            }
+            $output .= '</li>';
+        }
+        $output .= '</ul>';
+
+        return $output;
+    }
+
+    /**
+     * Extract a list of {name, price} items from a feed body, depending on format.
+     * Handles JSON, Schema.org Menu JSON-LD, and Google Merchant XML at a basic level.
+     * Returns at most $limit items.
+     */
+    private function extract_feed_items($body, $format, $limit) {
+        $items = array();
+
+        if ($format === 'schema.org-jsonld' || $format === 'json' || $format === 'jsonl') {
+            $decoded = json_decode($body, true);
+            if (!is_array($decoded)) {
+                return array();
+            }
+            // Schema.org Menu
+            if (isset($decoded['@type']) && $decoded['@type'] === 'Menu' && isset($decoded['hasMenuSection'])) {
+                foreach ((array) $decoded['hasMenuSection'] as $section) {
+                    if (!isset($section['hasMenuItem'])) continue;
+                    foreach ((array) $section['hasMenuItem'] as $mi) {
+                        $items[] = array(
+                            'name' => $mi['name'] ?? '',
+                            'price' => isset($mi['offers']['price']) ? trim(($mi['offers']['price']) . ' ' . ($mi['offers']['priceCurrency'] ?? '')) : '',
+                        );
+                        if (count($items) >= $limit) return $items;
+                    }
+                }
+                return $items;
+            }
+            // Generic JSON: array at root, or {items: [...]}
+            $list = $decoded;
+            if (isset($decoded['items']) && is_array($decoded['items'])) {
+                $list = $decoded['items'];
+            }
+            if (!isset($list[0])) {
+                return array();
+            }
+            foreach ($list as $entry) {
+                if (!is_array($entry)) continue;
+                $items[] = array(
+                    'name' => $entry['name'] ?? ($entry['title'] ?? ''),
+                    'price' => $entry['priceFormatted'] ?? (isset($entry['price']) ? (string) $entry['price'] : ''),
+                );
+                if (count($items) >= $limit) return $items;
+            }
+            return $items;
+        }
+
+        if ($format === 'google-merchant-xml' || $format === 'xml' || $format === 'rss' || $format === 'atom') {
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($body);
+            if (!$xml) {
+                return array();
+            }
+            // Google Merchant: <item><title/><g:price/></item> inside <channel>
+            $entries = $xml->channel->item ?? $xml->item ?? $xml->entry ?? null;
+            if (!$entries) {
+                return array();
+            }
+            foreach ($entries as $entry) {
+                $name = (string) ($entry->title ?? '');
+                $price = '';
+                $g = $entry->children('http://base.google.com/ns/1.0');
+                if ($g && isset($g->price)) {
+                    $price = (string) $g->price;
+                }
+                $items[] = array('name' => $name, 'price' => $price);
+                if (count($items) >= $limit) return $items;
+            }
+            return $items;
+        }
+
+        return array();
+    }
+
+    /**
      * Contact form shortcode handler
      */
     public function contact_form_shortcode($atts) {
@@ -1218,8 +1591,7 @@ class Ofero_Shortcodes {
             'fields' => 'name,email,phone,message',
         ), $atts, 'ofero_contact_form');
 
-        $data = $this->get_ofero_data();
-        $org = $data['organization'] ?? [];
+        $org = $this->get_ofero_section('organization') ?? [];
 
         $fields = array_map('trim', explode(',', $atts['fields']));
 

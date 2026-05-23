@@ -1,6 +1,11 @@
 # Elementor Integration for Ofero Shortcodes
 
-Version 1.1.0 introduces native Elementor integration with 5 custom widgets.
+> **v2.0.0 notes:**
+> - The plugin requires ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files trigger a migration warning in the admin.
+> - The shortcodes and Elementor widgets read only ofero.json itself — they never fetch `catalog.feeds[]` URLs. Use the new `[ofero_feed type="..."]` shortcode for that, explicitly.
+> - **Elementor compatibility: 3.5+ (tested through Elementor 4.x).** Widgets register via the modern `elementor/widgets/register` hook. A legacy fallback covers Elementor < 3.5, but that path is going away — please upgrade.
+
+Version 1.1.0 introduced native Elementor integration with 5 custom widgets.
 
 ## Features
 
