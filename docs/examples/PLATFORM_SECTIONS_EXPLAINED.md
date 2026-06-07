@@ -221,4 +221,4 @@ A: **Yes!** Both sections are extensible. Add any platform (TikTok, Pinterest, S
 
 **Example File**: company-with-both-platforms.json
 **Last Updated**: January 15, 2025
-**Schema Version**: ofero-metadata-1.0
+**Schema Version**: ofero-metadata-2.0

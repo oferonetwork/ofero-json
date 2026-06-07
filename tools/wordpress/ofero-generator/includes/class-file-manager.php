@@ -266,8 +266,8 @@ class Ofero_File_Manager {
             'domain' => $domain,
             'canonicalUrl' => $site_url . '/.well-known/ofero.json',
             'metadata' => array(
-                'version' => '1.0.0',
-                'schemaVersion' => 'ofero-metadata-1.0',
+                'version' => '2.0.0',
+                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-2.0',
                 'lastUpdated' => current_time('c'),
                 'createdAt' => current_time('c')
             ),

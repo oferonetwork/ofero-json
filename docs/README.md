@@ -10,9 +10,15 @@ Create a file at `https://yourdomain.com/.well-known/ofero.json`:
 
 ```json
 {
-  "version": "1.0",
   "language": "en",
-  "generatedAt": "2025-01-15T10:00:00Z",
+  "domain": "yourdomain.com",
+  "canonicalUrl": "https://yourdomain.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2025-01-15T10:00:00Z",
+    "createdAt": "2025-01-15T10:00:00Z"
+  },
   "organization": {
     "legalName": "Your Company Name",
     "brandName": "Your Brand",
@@ -20,8 +26,8 @@ Create a file at `https://yourdomain.com/.well-known/ofero.json`:
     "legalForm": "LLC",
     "description": "Brief description of your organization",
     "website": "https://yourdomain.com",
-    "primaryEmail": "contact@yourdomain.com",
-    "primaryPhone": "+1234567890",
+    "contactEmail": "contact@yourdomain.com",
+    "contactPhone": "+1234567890",
     "identifiers": {
       "global": {},
       "primaryIncorporation": {
@@ -32,9 +38,6 @@ Create a file at `https://yourdomain.com/.well-known/ofero.json`:
       },
       "perCountry": []
     }
-  },
-  "extensions": {
-    "schemaVersion": "ofero-metadata-1.0"
   }
 }
 ```
@@ -159,9 +162,14 @@ Prove ownership with cryptographic signatures:
 ## Required Fields
 
 Minimum required fields:
-- `version` - Schema version (`"1.0"`)
 - `language` - ISO 639-1 code (e.g., `"en"`)
-- `generatedAt` - ISO 8601 timestamp
+- `domain` - Primary domain (e.g., `"yourdomain.com"`)
+- `canonicalUrl` - Canonical URL of the ofero.json file
+- `metadata` - File metadata
+  - `version` - Your file's content version (e.g., `"2.0.0"`)
+  - `schemaVersion` - Must be `"ofero-metadata-2.0"`
+  - `lastUpdated` - ISO 8601 timestamp
+  - `createdAt` - ISO 8601 timestamp
 - `organization` - Organization details
   - `legalName`
   - `brandName`
@@ -169,11 +177,9 @@ Minimum required fields:
   - `legalForm`
   - `description`
   - `website`
-  - `primaryEmail`
-  - `primaryPhone`
+  - `contactEmail`
+  - `contactPhone`
   - `identifiers`
-- `extensions` - Schema version
-  - `schemaVersion` - Must be `"ofero-metadata-1.0"`
 
 ## Optional Sections
 
@@ -252,8 +258,8 @@ MIT License - See [SPECIFICATION.md](SPECIFICATION.md) for details
 
 ## Version
 
-Current Version: **1.0.0**
-Schema Version: **ofero-metadata-1.0**
+Current Version: **2.0.0**
+Schema Version: **ofero-metadata-2.0**
 
 ---
 

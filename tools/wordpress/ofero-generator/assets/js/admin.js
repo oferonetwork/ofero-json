@@ -159,7 +159,7 @@
             canonicalUrl: $('#canonicalUrl').val(),
             metadata: {
                 version: $('#metadata_version').val(),
-                schemaVersion: 'ofero-metadata-1.0'
+                schemaVersion: 'ofero-metadata-2.0'
             },
             organization: {
                 legalName: $('#org_legalName').val(),

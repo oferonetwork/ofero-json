@@ -285,8 +285,8 @@ class OferoGenerator {
             'domain' => $_SERVER['HTTP_HOST'] ?? 'example.com',
             'canonicalUrl' => 'https://' . ($_SERVER['HTTP_HOST'] ?? 'example.com') . '/.well-known/ofero.json',
             'metadata' => [
-                'version' => '1.0.0',
-                'schemaVersion' => 'ofero-metadata-1.0',
+                'version' => '2.0.0',
+                'schemaVersion' => 'ofero-metadata-2.0',
                 'lastUpdated' => date('c'),
                 'createdAt' => date('c')
             ],
@@ -1637,8 +1637,8 @@ if ($view === 'editor') {
                 domain: document.getElementById('domain')?.value || '',
                 canonicalUrl: document.getElementById('canonicalUrl')?.value || '',
                 metadata: {
-                    version: document.getElementById('metadataVersion')?.value || '1.0.0',
-                    schemaVersion: 'ofero-metadata-1.0',
+                    version: document.getElementById('metadataVersion')?.value || '2.0.0',
+                    schemaVersion: 'ofero-metadata-2.0',
                     lastUpdated: new Date().toISOString(),
                     createdAt: '<?php echo htmlspecialchars($oferoData['metadata']['createdAt'] ?? date('c')); ?>'
                 },

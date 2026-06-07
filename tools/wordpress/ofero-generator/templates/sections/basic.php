@@ -175,7 +175,7 @@ if (!defined('ABSPATH')) {
         <tr>
             <th scope="row"><?php esc_html_e('Schema Version', 'ofero-generator'); ?></th>
             <td>
-                <code>ofero-metadata-1.0</code>
+                <code>ofero-metadata-2.0</code>
                 <p class="description">
                     <?php esc_html_e('This is set automatically.', 'ofero-generator'); ?>
                 </p>
