@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $locations = $data['locations'] ?? array();
 ?>
 <div class="ofero-card">
@@ -21,10 +25,13 @@ $locations = $data['locations'] ?? array();
     <div id="locations-container">
         <?php if (!empty($locations)): ?>
             <?php foreach ($locations as $i => $location): ?>
-                <div class="ofero-repeater-item" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-repeater-header">
                         <span class="ofero-repeater-title">
-                            <?php echo esc_html($location['name'] ?? sprintf(__('Location %d', 'ofero-generator'), $i + 1)); ?>
+                            <?php
+                            /* translators: %d: position of the location in the list, starting at 1. */
+                            echo esc_html($location['name'] ?? sprintf(__('Location %d', 'ofero-generator'), $i + 1));
+                            ?>
                         </span>
                         <button type="button" class="button ofero-repeater-remove">
                             <span class="dashicons dashicons-trash"></span>
@@ -134,13 +141,13 @@ $locations = $data['locations'] ?? array();
                                     <?php esc_html_e('Special Hours', 'ofero-generator'); ?>
                                     <span style="font-weight: 400; color: #646970; font-size: 12px;"><?php esc_html_e('(optional — overrides regular hours for holidays or seasonal schedules)', 'ofero-generator'); ?></span>
                                 </div>
-                                <button type="button" class="button ofero-add-special-hour" data-location-index="<?php echo $i; ?>"
+                                <button type="button" class="button ofero-add-special-hour" data-location-index="<?php echo esc_attr($i); ?>"
                                         style="border-color: #7986cb; color: #7986cb; background: #fff;">
                                     <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
                                     <?php esc_html_e('Add Entry', 'ofero-generator'); ?>
                                 </button>
                             </div>
-                            <div class="location-special-hours-container" data-location-index="<?php echo $i; ?>">
+                            <div class="location-special-hours-container" data-location-index="<?php echo esc_attr($i); ?>">
                                 <?php if (empty($location['specialHours'])): ?>
                                 <div class="ofero-special-hours-empty" style="text-align: center; padding: 12px 0 6px; color: #8c8f94; font-size: 12px; font-style: italic;">
                                     <?php esc_html_e('No special hours added yet.', 'ofero-generator'); ?>
@@ -209,13 +216,13 @@ $locations = $data['locations'] ?? array();
                                     <?php esc_html_e('Contact Persons', 'ofero-generator'); ?>
                                     <span style="font-weight: 400; color: #646970; font-size: 12px;"><?php esc_html_e('(optional — who to contact at this location)', 'ofero-generator'); ?></span>
                                 </div>
-                                <button type="button" class="button ofero-add-contact" data-location-index="<?php echo $i; ?>"
+                                <button type="button" class="button ofero-add-contact" data-location-index="<?php echo esc_attr($i); ?>"
                                         style="border-color: #7986cb; color: #7986cb; background: #fff;">
                                     <span class="dashicons dashicons-plus-alt2" style="margin-top: 3px;"></span>
                                     <?php esc_html_e('Add Contact Person', 'ofero-generator'); ?>
                                 </button>
                             </div>
-                            <div class="location-contacts-container" data-location-index="<?php echo $i; ?>">
+                            <div class="location-contacts-container" data-location-index="<?php echo esc_attr($i); ?>">
                                 <?php if (empty($location['contacts'])): ?>
                                 <div class="ofero-contacts-empty" style="text-align: center; padding: 16px 0 8px; color: #8c8f94; font-size: 12px; font-style: italic;">
                                     <span class="dashicons dashicons-groups" style="font-size: 24px; width: 24px; height: 24px; display: block; margin: 0 auto 6px; color: #c3d0e8;"></span>
@@ -237,13 +244,13 @@ $locations = $data['locations'] ?? array();
                                     <div class="ofero-field-row">
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Name', 'ofero-generator'); ?></label>
-                                            <input type="text" name="location_contact_name[<?php echo $i; ?>][]"
+                                            <input type="text" name="location_contact_name[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['name'] ?? ''); ?>"
                                                    class="regular-text">
                                         </div>
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
-                                            <input type="text" name="location_contact_role[<?php echo $i; ?>][]"
+                                            <input type="text" name="location_contact_role[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['role'] ?? ''); ?>"
                                                    class="regular-text" placeholder="<?php esc_attr_e('e.g. Store Manager', 'ofero-generator'); ?>">
                                         </div>
@@ -251,13 +258,13 @@ $locations = $data['locations'] ?? array();
                                     <div class="ofero-field-row">
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Email', 'ofero-generator'); ?></label>
-                                            <input type="email" name="location_contact_email[<?php echo $i; ?>][]"
+                                            <input type="email" name="location_contact_email[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['email'] ?? ''); ?>"
                                                    class="regular-text">
                                         </div>
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Phone', 'ofero-generator'); ?></label>
-                                            <input type="tel" name="location_contact_phone[<?php echo $i; ?>][]"
+                                            <input type="tel" name="location_contact_phone[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['phone'] ?? ''); ?>"
                                                    class="regular-text" placeholder="+1234567890">
                                         </div>
@@ -265,14 +272,14 @@ $locations = $data['locations'] ?? array();
                                     <div class="ofero-field-row">
                                         <div class="ofero-field ofero-field-wide">
                                             <label><?php esc_html_e('Photo URL', 'ofero-generator'); ?></label>
-                                            <input type="url" name="location_contact_photo[<?php echo $i; ?>][]"
+                                            <input type="url" name="location_contact_photo[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['photo'] ?? ''); ?>"
                                                    class="large-text" placeholder="https://example.com/photo.jpg">
                                         </div>
                                     </div>
                                     <div style="margin-top: 8px;">
                                         <label style="font-size: 12px; color: #646970;">
-                                            <input type="checkbox" name="location_contact_public[<?php echo $i; ?>][]"
+                                            <input type="checkbox" name="location_contact_public[<?php echo esc_attr($i); ?>][]"
                                                    value="1" <?php checked(isset($contact['public']) ? $contact['public'] : true); ?>>
                                             <?php esc_html_e('Show this contact publicly', 'ofero-generator'); ?>
                                         </label>

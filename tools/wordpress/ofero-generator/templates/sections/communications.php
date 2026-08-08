@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $communications = $data['communications'] ?? array();
 $social = $communications['social'] ?? array();
 $support = $communications['support'] ?? array();
@@ -33,7 +37,7 @@ $support = $communications['support'] ?? array();
     <div id="social-container">
         <?php if (!empty($social)): ?>
             <?php foreach ($social as $i => $item): ?>
-                <div class="ofero-repeater-item ofero-repeater-inline" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item ofero-repeater-inline" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-field">
                         <select name="social_platform[]">
                             <?php
@@ -90,7 +94,7 @@ $support = $communications['support'] ?? array();
     <div id="support-container">
         <?php if (!empty($support)): ?>
             <?php foreach ($support as $i => $item): ?>
-                <div class="ofero-repeater-item ofero-repeater-inline" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item ofero-repeater-inline" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-field">
                         <select name="support_type[]">
                             <?php

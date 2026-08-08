@@ -1,18 +1,18 @@
 === Ofero Generator ===
 Contributors: Ofero Network
-Tags: ofero, json, business info, structured data, generator, editor
+Tags: ofero, json, business info, structured data, generator
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 2.0.0
+Tested up to: 7.0
+Stable tag: 2.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A complete admin interface for generating and managing ofero.json files with validation, auto-save, and backup functionality.
-
-**v2.0.0 writes ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** Inline catalog data (menus, products, services, packages, portfolios) is no longer allowed — those move to external feeds referenced via `catalog.feeds[]`. WooCommerce products are now served from a built-in REST endpoint and added automatically to the feeds list. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
+Generate and manage your ofero.json file from the WordPress admin, with validation, auto-save and backups.
 
 == Description ==
+
+**v2.0.0 writes ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** Inline catalog data (menus, products, services, packages, portfolios) is no longer allowed — those move to external feeds referenced via `catalog.feeds[]`. WooCommerce products are now served from a built-in REST endpoint and added automatically to the feeds list. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
 
 Ofero Generator provides a full-featured WordPress admin interface for creating and managing your ofero.json file - the universal standard for representing business and organization information.
 
@@ -105,6 +105,14 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 
 == Changelog ==
 
+= 2.0.1 =
+* FIX: `catalog.signature[].priceFormatted` no longer contains literal HTML entities. WooCommerce `get_price_html()` returns markup with `&nbsp;` between amount and currency; the value was tag-stripped but not entity-decoded, so consumers that escape it rendered "8.66&nbsp;lei". Entities are now decoded, non-breaking spaces normalised and whitespace collapsed.
+* FIX: product names and descriptions pass through `wp_check_invalid_utf8()` before JSON encoding, so invalid byte sequences no longer make `wp_json_encode()` drop the whole value. (Text that is already mojibake in the database — latin1 collations, double-encoded imports — still needs fixing at the database level.)
+* HARDENING: all `$_POST`/`$_GET`/`$_FILES` reads are unslashed with `wp_unslash()` before sanitizing; admin redirects use `wp_safe_redirect()`; `wp_die()` messages are escaped; template output (`$license_badge`, validation counts, repeater indexes, business-type icons) is escaped.
+* CHANGE: `is_writable()` → `wp_is_writable()`, `unlink()` → `wp_delete_file()`, `parse_url()` → `wp_parse_url()`, `date()` → `gmdate()`, uploaded-file reads go through `WP_Filesystem`.
+* CHANGE: added `translators:` comments to every translatable string with placeholders; dropped the unused `Domain Path` header; readme tags trimmed to 5 and short description shortened.
+* CHANGE: Tested up to bumped to WordPress 7.0.
+
 = 2.0.0 =
 * BREAKING: writes ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files (`ofero-metadata-1.0`) are flagged by the validator with a migration pointer; the next save migrates the file to v2 and drops inline catalog fields.
 * BREAKING: inline catalog data (`catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio`, `catalog.productFeeds`, `catalog.serviceFeeds`) is no longer written. v2 requires those to live in external feeds referenced via `catalog.feeds[]`.
@@ -136,6 +144,9 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 * Preview with JSON highlighting
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+Fixes literal HTML entities (&nbsp;) in catalog.signature[].priceFormatted for WooCommerce sites, and guards product text against invalid UTF-8. Re-save or re-sync to regenerate ofero.json.
 
 = 2.0.0 =
 Breaking: writes ofero.json v2. Inline catalog data is dropped on save — full menus/products/services must live in external feeds referenced from catalog.feeds[]. Migrate before saving.

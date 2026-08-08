@@ -77,7 +77,7 @@ class Ofero_File_Manager {
         }
 
         // Check if directory is writable
-        if (!is_writable($dir)) {
+        if (!wp_is_writable($dir)) {
             return new WP_Error('dir_not_writable', __('Directory is not writable.', 'ofero-generator'));
         }
 
@@ -179,7 +179,7 @@ class Ofero_File_Manager {
             wp_mkdir_p($backup_dir);
         }
 
-        $backup_path = $backup_dir . '/ofero-' . date('Y-m-d-H-i-s') . '.json';
+        $backup_path = $backup_dir . '/ofero-' . gmdate('Y-m-d-H-i-s') . '.json';
         return copy($path, $backup_path);
     }
 
@@ -250,7 +250,8 @@ class Ofero_File_Manager {
             return new WP_Error('backup_not_found', __('Backup file not found.', 'ofero-generator'));
         }
 
-        return unlink($backup_path);
+        wp_delete_file($backup_path);
+        return !file_exists($backup_path);
     }
 
     /**
@@ -258,7 +259,7 @@ class Ofero_File_Manager {
      */
     public function get_default_data() {
         $site_url = get_site_url();
-        $parsed = parse_url($site_url);
+        $parsed = wp_parse_url($site_url);
         $domain = $parsed['host'] ?? 'example.com';
 
         return array(
@@ -315,7 +316,14 @@ class Ofero_File_Manager {
 
         $code = wp_remote_retrieve_response_code($response);
         if ($code !== 200) {
-            return new WP_Error('fetch_failed', sprintf(__('Failed to fetch URL. HTTP code: %d', 'ofero-generator'), $code));
+            return new WP_Error(
+                'fetch_failed',
+                sprintf(
+                    /* translators: %d: HTTP response status code returned by the remote server. */
+                    __('Failed to fetch URL. HTTP code: %d', 'ofero-generator'),
+                    $code
+                )
+            );
         }
 
         $body = wp_remote_retrieve_body($response);

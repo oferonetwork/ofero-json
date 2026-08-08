@@ -67,8 +67,8 @@ class Ofero_WooCommerce_Sync {
 
         $ofero_product = array(
             'id' => strval($product->get_id()),
-            'name' => $product->get_name(),
-            'description' => wp_strip_all_tags($product->get_description() ?: $product->get_short_description()),
+            'name' => $this->clean_text($product->get_name()),
+            'description' => $this->clean_text(wp_strip_all_tags($product->get_description() ?: $product->get_short_description())),
         );
 
         // Price
@@ -250,7 +250,7 @@ class Ofero_WooCommerce_Sync {
             }
             $preview = array(
                 'id' => (string) $product->get_id(),
-                'name' => array('default' => $product->get_name()),
+                'name' => array('default' => $this->clean_text($product->get_name())),
             );
             $img_id = $product->get_image_id();
             if ($img_id) {
@@ -261,12 +261,47 @@ class Ofero_WooCommerce_Sync {
             }
             $price = $product->get_price();
             if ($price !== '') {
-                $preview['priceFormatted'] = wp_strip_all_tags($product->get_price_html());
+                $formatted = $this->clean_price_html($product->get_price_html());
+                if ($formatted !== '') {
+                    $preview['priceFormatted'] = $formatted;
+                }
             }
             $preview['url'] = get_permalink($product->get_id());
             $signature[] = $preview;
         }
         return $signature;
+    }
+
+    /**
+     * Turn WooCommerce price HTML into a plain formatted price string.
+     *
+     * get_price_html() returns markup (<del>/<ins> for sales, <bdi>, currency
+     * spans) and HTML entities such as &nbsp; between amount and currency.
+     * Stripping tags alone leaves those entities literal in the JSON, so
+     * consumers that correctly escape the value render "8.66&nbsp;lei".
+     * Decode entities, normalise non-breaking spaces, collapse whitespace.
+     */
+    private function clean_price_html($price_html) {
+        $text = html_entity_decode(
+            wp_strip_all_tags($price_html),
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        );
+        $text = str_replace("\xC2\xA0", ' ', $text);
+        $text = preg_replace('/\s+/u', ' ', $text);
+        return trim((string) $text);
+    }
+
+    /**
+     * Ensure a string is valid UTF-8 before it reaches wp_json_encode().
+     *
+     * wp_json_encode() drops the whole value on invalid UTF-8, which silently
+     * removes fields. Stripping invalid sequences keeps the rest of the text.
+     * Genuinely mojibake source data (latin1 collations, double-encoded
+     * imports) is a database-side problem this cannot repair.
+     */
+    private function clean_text($text) {
+        return wp_check_invalid_utf8((string) $text, true);
     }
 
     /**

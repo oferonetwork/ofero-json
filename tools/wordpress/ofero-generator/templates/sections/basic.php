@@ -9,6 +9,10 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 ?>
 <div class="ofero-card">
     <h2><?php esc_html_e('Business Type', 'ofero-generator'); ?></h2>
@@ -35,7 +39,7 @@ if (!defined('ABSPATH')) {
             <label class="ofero-business-type-card <?php echo $businessType === $value ? 'selected' : ''; ?>">
                 <input type="radio" name="ofero_business_type" value="<?php echo esc_attr($value); ?>"
                        <?php checked($businessType, $value); ?> class="ofero-business-type-radio">
-                <span class="ofero-business-type-icon"><?php echo $info['icon']; ?></span>
+                <span class="ofero-business-type-icon"><?php echo esc_html($info['icon']); ?></span>
                 <span class="ofero-business-type-label"><?php echo esc_html($info['label']); ?></span>
             </label>
         <?php endforeach; ?>

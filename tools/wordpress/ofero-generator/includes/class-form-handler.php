@@ -13,6 +13,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Every $_POST read in this file happens downstream of handle_form_submission(), which verifies
+// the ofero_generator_save nonce and the manage_options capability before dispatching, or of an
+// AJAX handler that calls check_ajax_referer(). PHPCS cannot follow the nonce check across those
+// call boundaries, so it reports each read individually.
+// phpcs:disable WordPress.Security.NonceVerification.Missing
+
 class Ofero_Form_Handler {
 
     /**
@@ -42,16 +48,19 @@ class Ofero_Form_Handler {
         }
 
         // Verify nonce
-        if (!wp_verify_nonce($_POST['ofero_generator_nonce'] ?? '', 'ofero_generator_save')) {
-            wp_die(__('Security check failed.', 'ofero-generator'));
+        $nonce = isset($_POST['ofero_generator_nonce'])
+            ? sanitize_text_field(wp_unslash($_POST['ofero_generator_nonce']))
+            : '';
+        if (!wp_verify_nonce($nonce, 'ofero_generator_save')) {
+            wp_die(esc_html__('Security check failed.', 'ofero-generator'));
         }
 
         // Check permissions
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'ofero-generator'));
+            wp_die(esc_html__('You do not have permission to perform this action.', 'ofero-generator'));
         }
 
-        $action = sanitize_text_field($_POST['ofero_generator_action']);
+        $action = sanitize_text_field(wp_unslash($_POST['ofero_generator_action']));
 
         switch ($action) {
             case 'save':
@@ -86,13 +95,16 @@ class Ofero_Form_Handler {
     private function handle_save() {
         // Save business type (UI preference, stored in wp_options, not in ofero.json)
         $allowed_types = array('general', 'restaurant', 'hotel', 'hotel_restaurant', 'online_store', 'clinic', 'auto_service', 'services');
-        if (isset($_POST['ofero_business_type']) && in_array($_POST['ofero_business_type'], $allowed_types, true)) {
-            update_option('ofero_generator_business_type', sanitize_text_field($_POST['ofero_business_type']));
+        $business_type = isset($_POST['ofero_business_type'])
+            ? sanitize_text_field(wp_unslash($_POST['ofero_business_type']))
+            : '';
+        if (in_array($business_type, $allowed_types, true)) {
+            update_option('ofero_generator_business_type', $business_type);
         }
 
         // If this was only a business type change, redirect without saving ofero.json
         if (!empty($_POST['ofero_change_business_type'])) {
-            wp_redirect(admin_url('admin.php?page=ofero-generator'));
+            wp_safe_redirect(admin_url('admin.php?page=ofero-generator'));
             exit;
         }
 
@@ -105,7 +117,7 @@ class Ofero_Form_Handler {
             $this->add_admin_notice('success', __('ofero.json saved successfully.', 'ofero-generator'));
         }
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator&saved=1'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator&saved=1'));
         exit;
     }
 
@@ -113,11 +125,11 @@ class Ofero_Form_Handler {
      * Handle restore backup
      */
     private function handle_restore_backup() {
-        $backup_file = sanitize_file_name($_POST['backup_file'] ?? '');
+        $backup_file = sanitize_file_name(wp_unslash($_POST['backup_file'] ?? ''));
 
         if (empty($backup_file)) {
             $this->add_admin_notice('error', __('No backup file specified.', 'ofero-generator'));
-            wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+            wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
             exit;
         }
 
@@ -129,7 +141,7 @@ class Ofero_Form_Handler {
             $this->add_admin_notice('success', __('Backup restored successfully.', 'ofero-generator'));
         }
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
         exit;
     }
 
@@ -137,11 +149,11 @@ class Ofero_Form_Handler {
      * Handle delete backup
      */
     private function handle_delete_backup() {
-        $backup_file = sanitize_file_name($_POST['backup_file'] ?? '');
+        $backup_file = sanitize_file_name(wp_unslash($_POST['backup_file'] ?? ''));
 
         if (empty($backup_file)) {
             $this->add_admin_notice('error', __('No backup file specified.', 'ofero-generator'));
-            wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+            wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
             exit;
         }
 
@@ -153,7 +165,7 @@ class Ofero_Form_Handler {
             $this->add_admin_notice('success', __('Backup deleted.', 'ofero-generator'));
         }
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
         exit;
     }
 
@@ -161,22 +173,31 @@ class Ofero_Form_Handler {
      * Handle import
      */
     private function handle_import() {
-        $import_url = esc_url_raw($_POST['import_url'] ?? '');
+        $import_url = esc_url_raw(wp_unslash($_POST['import_url'] ?? ''));
 
         if (empty($import_url)) {
             // Check for file upload
             if (!empty($_FILES['import_file']['tmp_name'])) {
-                $content = file_get_contents($_FILES['import_file']['tmp_name']);
-                $data = json_decode($content, true);
+                $tmp_name = sanitize_text_field(wp_unslash($_FILES['import_file']['tmp_name']));
+                $content = '';
+                if (is_uploaded_file($tmp_name)) {
+                    global $wp_filesystem;
+                    if (!$wp_filesystem) {
+                        require_once ABSPATH . 'wp-admin/includes/file.php';
+                        WP_Filesystem();
+                    }
+                    $content = $wp_filesystem->get_contents($tmp_name);
+                }
+                $data = json_decode((string) $content, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     $this->add_admin_notice('error', __('Uploaded file contains invalid JSON.', 'ofero-generator'));
-                    wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+                    wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
                     exit;
                 }
             } else {
                 $this->add_admin_notice('error', __('Please provide a URL or file to import.', 'ofero-generator'));
-                wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+                wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
                 exit;
             }
         } else {
@@ -184,7 +205,7 @@ class Ofero_Form_Handler {
 
             if (is_wp_error($data)) {
                 $this->add_admin_notice('error', $data->get_error_message());
-                wp_redirect(admin_url('admin.php?page=ofero-generator-settings'));
+                wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings'));
                 exit;
             }
         }
@@ -205,7 +226,7 @@ class Ofero_Form_Handler {
             $this->add_admin_notice('success', __('Data imported successfully.', 'ofero-generator'));
         }
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator'));
         exit;
     }
 
@@ -213,13 +234,13 @@ class Ofero_Form_Handler {
      * Handle settings save
      */
     private function handle_settings() {
-        update_option('ofero_generator_output_path', sanitize_text_field($_POST['output_path'] ?? '.well-known/ofero.json'));
+        update_option('ofero_generator_output_path', sanitize_text_field(wp_unslash($_POST['output_path'] ?? '.well-known/ofero.json')));
         update_option('ofero_generator_backup_enabled', isset($_POST['backup_enabled']));
         update_option('ofero_generator_auto_save', isset($_POST['auto_save']));
 
         $this->add_admin_notice('success', __('Settings saved.', 'ofero-generator'));
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator-settings&saved=1'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings&saved=1'));
         exit;
     }
 
@@ -242,7 +263,7 @@ class Ofero_Form_Handler {
 
         $this->add_admin_notice('success', __('Emergency reset completed successfully. All plugin settings have been reset to defaults.', 'ofero-generator'));
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator-settings&reset=1'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator-settings&reset=1'));
         exit;
     }
 
@@ -250,7 +271,7 @@ class Ofero_Form_Handler {
      * Collect form data from POST
      */
     private function collect_form_data() {
-        $primary_language = sanitize_text_field($_POST['language'] ?? 'en');
+        $primary_language = sanitize_text_field(wp_unslash($_POST['language'] ?? 'en'));
         $enabled_languages = $this->collect_enabled_languages();
 
         // Collect translations for translatable fields
@@ -260,36 +281,36 @@ class Ofero_Form_Handler {
 
         $data = array(
             'language' => $primary_language,
-            'domain' => sanitize_text_field($_POST['domain'] ?? ''),
-            'canonicalUrl' => esc_url_raw($_POST['canonicalUrl'] ?? ''),
+            'domain' => sanitize_text_field(wp_unslash($_POST['domain'] ?? '')),
+            'canonicalUrl' => esc_url_raw(wp_unslash($_POST['canonicalUrl'] ?? '')),
             'metadata' => array(
-                'version' => sanitize_text_field($_POST['metadata_version'] ?? '2.0.0'),
+                'version' => sanitize_text_field(wp_unslash($_POST['metadata_version'] ?? '2.0.0')),
                 'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-2.0',
                 'lastUpdated' => current_time('c'),
-                'createdAt' => sanitize_text_field($_POST['metadata_createdAt'] ?? current_time('c'))
+                'createdAt' => sanitize_text_field(wp_unslash($_POST['metadata_createdAt'] ?? current_time('c')))
             ),
             'organization' => array(
-                'legalName' => sanitize_text_field($_POST['org_legalName'] ?? ''),
+                'legalName' => sanitize_text_field(wp_unslash($_POST['org_legalName'] ?? '')),
                 'brandName' => $this->build_translatable_string(
-                    sanitize_text_field($_POST['org_brandName'] ?? ''),
+                    sanitize_text_field(wp_unslash($_POST['org_brandName'] ?? '')),
                     $brand_name_translations
                 ),
-                'entityType' => sanitize_text_field($_POST['org_entityType'] ?? 'company'),
-                'legalForm' => sanitize_text_field($_POST['org_legalForm'] ?? ''),
+                'entityType' => sanitize_text_field(wp_unslash($_POST['org_entityType'] ?? 'company')),
+                'legalForm' => sanitize_text_field(wp_unslash($_POST['org_legalForm'] ?? '')),
                 'description' => $this->build_translatable_string(
-                    sanitize_textarea_field($_POST['org_description'] ?? ''),
+                    sanitize_textarea_field(wp_unslash($_POST['org_description'] ?? '')),
                     $description_translations
                 ),
-                'website' => esc_url_raw($_POST['org_website'] ?? ''),
-                'contactEmail' => sanitize_email($_POST['org_contactEmail'] ?? ''),
-                'contactPhone' => sanitize_text_field($_POST['org_contactPhone'] ?? ''),
+                'website' => esc_url_raw(wp_unslash($_POST['org_website'] ?? '')),
+                'contactEmail' => sanitize_email(wp_unslash($_POST['org_contactEmail'] ?? '')),
+                'contactPhone' => sanitize_text_field(wp_unslash($_POST['org_contactPhone'] ?? '')),
                 'identifiers' => array(
                     'global' => array(),
                     'primaryIncorporation' => array(
-                        'country' => strtoupper(sanitize_text_field($_POST['inc_country'] ?? '')),
-                        'registrationNumber' => sanitize_text_field($_POST['inc_registrationNumber'] ?? ''),
-                        'taxId' => sanitize_text_field($_POST['inc_taxId'] ?? ''),
-                        'vatNumber' => sanitize_text_field($_POST['inc_vatNumber'] ?? '')
+                        'country' => strtoupper(sanitize_text_field(wp_unslash($_POST['inc_country'] ?? ''))),
+                        'registrationNumber' => sanitize_text_field(wp_unslash($_POST['inc_registrationNumber'] ?? '')),
+                        'taxId' => sanitize_text_field(wp_unslash($_POST['inc_taxId'] ?? '')),
+                        'vatNumber' => sanitize_text_field(wp_unslash($_POST['inc_vatNumber'] ?? ''))
                     ),
                     'perCountry' => array()
                 )
@@ -306,7 +327,7 @@ class Ofero_Form_Handler {
         );
 
         // Add keywords if provided
-        $keywords_default = sanitize_text_field($_POST['keywords'] ?? '');
+        $keywords_default = sanitize_text_field(wp_unslash($_POST['keywords'] ?? ''));
         if (!empty($keywords_default) || !empty($keywords_translations)) {
             $data['keywords'] = $this->build_translatable_string($keywords_default, $keywords_translations);
         }
@@ -327,8 +348,8 @@ class Ofero_Form_Handler {
             return array();
         }
 
-        $primary_language = sanitize_text_field($_POST['language'] ?? 'en');
-        $enabled_languages = array_map('sanitize_text_field', $_POST['translation_languages']);
+        $primary_language = sanitize_text_field(wp_unslash($_POST['language'] ?? 'en'));
+        $enabled_languages = array_map('sanitize_text_field', wp_unslash((array) $_POST['translation_languages']));
 
         // Remove primary language from translation languages (if accidentally included)
         $enabled_languages = array_filter($enabled_languages, function($lang) use ($primary_language) {
@@ -347,7 +368,7 @@ class Ofero_Form_Handler {
         foreach ($enabled_languages as $lang) {
             $post_key = 'translation_' . $field_key . '_' . $lang;
             if (isset($_POST[$post_key]) && !empty($_POST[$post_key])) {
-                $translations[$lang] = sanitize_textarea_field($_POST[$post_key]);
+                $translations[$lang] = sanitize_textarea_field(wp_unslash($_POST[$post_key]));
             }
         }
 
@@ -389,21 +410,21 @@ class Ofero_Form_Handler {
             }
 
             $location = array(
-                'name' => sanitize_text_field($_POST['location_name'][$i]),
-                'type' => sanitize_text_field($_POST['location_type'][$i] ?? 'headquarters'),
+                'name' => sanitize_text_field(wp_unslash($_POST['location_name'][$i] ?? '')),
+                'type' => sanitize_text_field(wp_unslash($_POST['location_type'][$i] ?? 'headquarters')),
                 'address' => array(
-                    'street' => sanitize_text_field($_POST['location_street'][$i] ?? ''),
-                    'city' => sanitize_text_field($_POST['location_city'][$i] ?? ''),
-                    'region' => sanitize_text_field($_POST['location_region'][$i] ?? ''),
-                    'postalCode' => sanitize_text_field($_POST['location_postal'][$i] ?? ''),
-                    'country' => strtoupper(sanitize_text_field($_POST['location_country'][$i] ?? ''))
+                    'street' => sanitize_text_field(wp_unslash($_POST['location_street'][$i] ?? '')),
+                    'city' => sanitize_text_field(wp_unslash($_POST['location_city'][$i] ?? '')),
+                    'region' => sanitize_text_field(wp_unslash($_POST['location_region'][$i] ?? '')),
+                    'postalCode' => sanitize_text_field(wp_unslash($_POST['location_postal'][$i] ?? '')),
+                    'country' => strtoupper(sanitize_text_field(wp_unslash($_POST['location_country'][$i] ?? '')))
                 ),
-                'phone' => sanitize_text_field($_POST['location_phone'][$i] ?? ''),
-                'email' => sanitize_email($_POST['location_email'][$i] ?? '')
+                'phone' => sanitize_text_field(wp_unslash($_POST['location_phone'][$i] ?? '')),
+                'email' => sanitize_email(wp_unslash($_POST['location_email'][$i] ?? ''))
             );
 
             // Collect location photos
-            $photos_raw = sanitize_textarea_field($_POST['location_photos'][$i] ?? '');
+            $photos_raw = sanitize_textarea_field(wp_unslash($_POST['location_photos'][$i] ?? ''));
             if (!empty($photos_raw)) {
                 $photos = array_filter(array_map('esc_url_raw', array_map('trim', explode("\n", $photos_raw))));
                 if (!empty($photos)) {
@@ -412,7 +433,7 @@ class Ofero_Form_Handler {
             }
 
             // Collect special hours for this location
-            $special_hours_raw = sanitize_textarea_field($_POST['location_special_hours'][$i] ?? '');
+            $special_hours_raw = sanitize_textarea_field(wp_unslash($_POST['location_special_hours'][$i] ?? ''));
             if (!empty($special_hours_raw)) {
                 $decoded = json_decode(wp_unslash($special_hours_raw), true);
                 if (is_array($decoded) && !empty($decoded)) {
@@ -442,7 +463,9 @@ class Ofero_Form_Handler {
             }
 
             // Collect contact persons for this location
-            $contact_names = $_POST['location_contact_name'][$i] ?? array();
+            $contact_names = isset($_POST['location_contact_name'][$i])
+                ? array_map('sanitize_text_field', wp_unslash((array) $_POST['location_contact_name'][$i]))
+                : array();
             if (!empty($contact_names) && is_array($contact_names)) {
                 $contacts = array();
                 foreach ($contact_names as $ci => $contact_name) {
@@ -450,16 +473,16 @@ class Ofero_Form_Handler {
                         continue;
                     }
                     $contact = array(
-                        'name' => sanitize_text_field($contact_name),
-                        'role' => sanitize_text_field($_POST['location_contact_role'][$i][$ci] ?? ''),
-                        'email' => sanitize_email($_POST['location_contact_email'][$i][$ci] ?? ''),
+                        'name' => $contact_name,
+                        'role' => sanitize_text_field(wp_unslash($_POST['location_contact_role'][$i][$ci] ?? '')),
+                        'email' => sanitize_email(wp_unslash($_POST['location_contact_email'][$i][$ci] ?? '')),
                         'public' => !empty($_POST['location_contact_public'][$i][$ci])
                     );
-                    $contact_phone = sanitize_text_field($_POST['location_contact_phone'][$i][$ci] ?? '');
+                    $contact_phone = sanitize_text_field(wp_unslash($_POST['location_contact_phone'][$i][$ci] ?? ''));
                     if (!empty($contact_phone)) {
                         $contact['phone'] = $contact_phone;
                     }
-                    $contact_photo = esc_url_raw($_POST['location_contact_photo'][$i][$ci] ?? '');
+                    $contact_photo = esc_url_raw(wp_unslash($_POST['location_contact_photo'][$i][$ci] ?? ''));
                     if (!empty($contact_photo)) {
                         $contact['photo'] = $contact_photo;
                     }
@@ -494,11 +517,11 @@ class Ofero_Form_Handler {
             }
 
             $banking[] = array(
-                'accountName' => sanitize_text_field($_POST['bank_accountName'][$i] ?? ''),
-                'bankName' => sanitize_text_field($_POST['bank_name'][$i]),
-                'iban' => sanitize_text_field($_POST['bank_iban'][$i]),
-                'bic' => sanitize_text_field($_POST['bank_bic'][$i] ?? ''),
-                'currency' => strtoupper(sanitize_text_field($_POST['bank_currency'][$i] ?? ''))
+                'accountName' => sanitize_text_field(wp_unslash($_POST['bank_accountName'][$i] ?? '')),
+                'bankName' => sanitize_text_field(wp_unslash($_POST['bank_name'][$i] ?? '')),
+                'iban' => sanitize_text_field(wp_unslash($_POST['bank_iban'][$i] ?? '')),
+                'bic' => sanitize_text_field(wp_unslash($_POST['bank_bic'][$i] ?? '')),
+                'currency' => strtoupper(sanitize_text_field(wp_unslash($_POST['bank_currency'][$i] ?? '')))
             );
         }
 
@@ -523,10 +546,10 @@ class Ofero_Form_Handler {
             }
 
             $wallets[] = array(
-                'blockchain' => sanitize_text_field($_POST['wallet_blockchain'][$i] ?? ''),
-                'network' => sanitize_text_field($_POST['wallet_network'][$i] ?? 'mainnet'),
-                'address' => sanitize_text_field($_POST['wallet_address'][$i]),
-                'label' => sanitize_text_field($_POST['wallet_label'][$i] ?? '')
+                'blockchain' => sanitize_text_field(wp_unslash($_POST['wallet_blockchain'][$i] ?? '')),
+                'network' => sanitize_text_field(wp_unslash($_POST['wallet_network'][$i] ?? 'mainnet')),
+                'address' => sanitize_text_field(wp_unslash($_POST['wallet_address'][$i] ?? '')),
+                'label' => sanitize_text_field(wp_unslash($_POST['wallet_label'][$i] ?? ''))
             );
         }
 
@@ -551,10 +574,10 @@ class Ofero_Form_Handler {
             }
 
             $assets[] = array(
-                'type' => sanitize_text_field($_POST['brand_type'][$i] ?? 'logo'),
-                'variant' => sanitize_text_field($_POST['brand_variant'][$i] ?? 'primary'),
-                'url' => esc_url_raw($_POST['brand_url'][$i]),
-                'format' => sanitize_text_field($_POST['brand_format'][$i] ?? '')
+                'type' => sanitize_text_field(wp_unslash($_POST['brand_type'][$i] ?? 'logo')),
+                'variant' => sanitize_text_field(wp_unslash($_POST['brand_variant'][$i] ?? 'primary')),
+                'url' => esc_url_raw(wp_unslash($_POST['brand_url'][$i] ?? '')),
+                'format' => sanitize_text_field(wp_unslash($_POST['brand_format'][$i] ?? ''))
             );
         }
 
@@ -579,8 +602,8 @@ class Ofero_Form_Handler {
             }
 
             $social[] = array(
-                'platform' => sanitize_text_field($_POST['social_platform'][$i]),
-                'url' => esc_url_raw($_POST['social_url'][$i])
+                'platform' => sanitize_text_field(wp_unslash($_POST['social_platform'][$i] ?? '')),
+                'url' => esc_url_raw(wp_unslash($_POST['social_url'][$i] ?? ''))
             );
         }
 
@@ -605,8 +628,8 @@ class Ofero_Form_Handler {
             }
 
             $support[] = array(
-                'type' => sanitize_text_field($_POST['support_type'][$i]),
-                'contact' => sanitize_text_field($_POST['support_contact'][$i])
+                'type' => sanitize_text_field(wp_unslash($_POST['support_type'][$i] ?? '')),
+                'contact' => sanitize_text_field(wp_unslash($_POST['support_contact'][$i] ?? ''))
             );
         }
 
@@ -628,10 +651,10 @@ class Ofero_Form_Handler {
      */
     private function collect_catalog() {
         $catalog = array(
-            'defaultCurrency' => strtoupper(sanitize_text_field($_POST['menu_currency'] ?? 'USD')),
+            'defaultCurrency' => strtoupper(sanitize_text_field(wp_unslash($_POST['menu_currency'] ?? 'USD'))),
         );
 
-        $price_list_url = esc_url_raw($_POST['catalog_price_list_url'] ?? '');
+        $price_list_url = esc_url_raw(wp_unslash($_POST['catalog_price_list_url'] ?? ''));
         if (!empty($price_list_url)) {
             $catalog['priceListUrl'] = $price_list_url;
         }
@@ -641,7 +664,7 @@ class Ofero_Form_Handler {
         // WooCommerce sync: if active, persist selection and append a REST feed reference
         if (Ofero_WooCommerce_Sync::is_woocommerce_active()) {
             if (isset($_POST['selected_products']) && is_array($_POST['selected_products'])) {
-                $selected_ids = array_map('intval', $_POST['selected_products']);
+                $selected_ids = array_map('intval', wp_unslash((array) $_POST['selected_products']));
                 $woo_sync = new Ofero_WooCommerce_Sync();
                 $woo_sync->save_selected_product_ids($selected_ids);
             }
@@ -688,30 +711,32 @@ class Ofero_Form_Handler {
         $valid_formats = array('json','jsonl','xml','csv','rss','atom','schema.org-jsonld','google-merchant-xml','gtfs','ical','other');
         $count = count($_POST['catalog_feed_url']);
         for ($i = 0; $i < $count; $i++) {
-            $url = esc_url_raw($_POST['catalog_feed_url'][$i] ?? '');
+            $url = esc_url_raw(wp_unslash($_POST['catalog_feed_url'][$i] ?? ''));
             if (empty($url)) {
                 continue;
             }
-            $type = sanitize_text_field($_POST['catalog_feed_type'][$i] ?? 'other');
-            $format = sanitize_text_field($_POST['catalog_feed_format'][$i] ?? 'json');
+            $type = sanitize_text_field(wp_unslash($_POST['catalog_feed_type'][$i] ?? 'other'));
+            $format = sanitize_text_field(wp_unslash($_POST['catalog_feed_format'][$i] ?? 'json'));
             $entry = array(
                 'type' => in_array($type, $valid_types, true) ? $type : 'other',
                 'format' => in_array($format, $valid_formats, true) ? $format : 'json',
                 'url' => $url,
             );
-            $name = sanitize_text_field($_POST['catalog_feed_name'][$i] ?? '');
+            $name = sanitize_text_field(wp_unslash($_POST['catalog_feed_name'][$i] ?? ''));
             if (!empty($name)) {
                 $entry['name'] = array('default' => $name);
             }
-            $lang = sanitize_text_field($_POST['catalog_feed_language'][$i] ?? '');
+            $lang = sanitize_text_field(wp_unslash($_POST['catalog_feed_language'][$i] ?? ''));
             if (!empty($lang) && preg_match('/^[a-z]{2}$/', $lang)) {
                 $entry['language'] = $lang;
             }
-            $standard = sanitize_text_field($_POST['catalog_feed_standard'][$i] ?? '');
+            $standard = sanitize_text_field(wp_unslash($_POST['catalog_feed_standard'][$i] ?? ''));
             if (!empty($standard)) {
                 $entry['standard'] = $standard;
             }
-            $item_count = intval($_POST['catalog_feed_item_count'][$i] ?? 0);
+            $item_count = isset($_POST['catalog_feed_item_count'][$i])
+                ? intval(wp_unslash($_POST['catalog_feed_item_count'][$i]))
+                : 0;
             if ($item_count > 0) {
                 $entry['itemCount'] = $item_count;
             }
@@ -732,32 +757,32 @@ class Ofero_Form_Handler {
         }
         $count = min(count($_POST[$name_key]), $limit);
         for ($i = 0; $i < $count; $i++) {
-            $name = sanitize_text_field($_POST[$name_key][$i] ?? '');
+            $name = sanitize_text_field(wp_unslash($_POST[$name_key][$i] ?? ''));
             if (empty($name)) {
                 continue;
             }
             $entry = array('name' => array('default' => $name));
-            $id = sanitize_text_field($_POST[$prefix . '_id'][$i] ?? '');
+            $id = sanitize_text_field(wp_unslash($_POST[$prefix . '_id'][$i] ?? ''));
             if (!empty($id)) {
                 $entry['id'] = $id;
             }
-            $desc = sanitize_text_field($_POST[$prefix . '_description'][$i] ?? '');
+            $desc = sanitize_text_field(wp_unslash($_POST[$prefix . '_description'][$i] ?? ''));
             if (!empty($desc)) {
                 $entry['description'] = array('default' => $desc);
             }
-            $cat = sanitize_text_field($_POST[$prefix . '_category'][$i] ?? '');
+            $cat = sanitize_text_field(wp_unslash($_POST[$prefix . '_category'][$i] ?? ''));
             if (!empty($cat)) {
                 $entry['category'] = $cat;
             }
-            $image = esc_url_raw($_POST[$prefix . '_image_url'][$i] ?? '');
+            $image = esc_url_raw(wp_unslash($_POST[$prefix . '_image_url'][$i] ?? ''));
             if (!empty($image)) {
                 $entry['imageUrl'] = $image;
             }
-            $url = esc_url_raw($_POST[$prefix . '_url'][$i] ?? '');
+            $url = esc_url_raw(wp_unslash($_POST[$prefix . '_url'][$i] ?? ''));
             if (!empty($url)) {
                 $entry['url'] = $url;
             }
-            $price = sanitize_text_field($_POST[$prefix . '_price_formatted'][$i] ?? '');
+            $price = sanitize_text_field(wp_unslash($_POST[$prefix . '_price_formatted'][$i] ?? ''));
             if (!empty($price)) {
                 $entry['priceFormatted'] = $price;
             }
@@ -776,7 +801,8 @@ class Ofero_Form_Handler {
             wp_send_json_error(__('Permission denied.', 'ofero-generator'));
         }
 
-        $data = json_decode(stripslashes($_POST['data'] ?? '{}'), true);
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- raw JSON payload, validated by json_decode() below and sanitized field by field on save.
+        $data = json_decode(wp_unslash($_POST['data'] ?? '{}'), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             wp_send_json_error(__('Invalid JSON data.', 'ofero-generator'));
@@ -798,8 +824,9 @@ class Ofero_Form_Handler {
             wp_send_json_error(__('Permission denied.', 'ofero-generator'));
         }
 
-        $data = json_decode(stripslashes($_POST['data'] ?? '{}'), true);
-        $level = sanitize_text_field($_POST['level'] ?? 'moderate');
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- raw JSON payload, validated by json_decode() below and sanitized field by field on save.
+        $data = json_decode(wp_unslash($_POST['data'] ?? '{}'), true);
+        $level = sanitize_text_field(wp_unslash($_POST['level'] ?? 'moderate'));
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             wp_send_json_error(__('Invalid JSON data.', 'ofero-generator'));
@@ -835,7 +862,7 @@ class Ofero_Form_Handler {
             wp_send_json_error(__('Permission denied.', 'ofero-generator'));
         }
 
-        $url = esc_url_raw($_POST['url'] ?? '');
+        $url = esc_url_raw(wp_unslash($_POST['url'] ?? ''));
 
         if (empty($url)) {
             wp_send_json_error(__('URL is required.', 'ofero-generator'));

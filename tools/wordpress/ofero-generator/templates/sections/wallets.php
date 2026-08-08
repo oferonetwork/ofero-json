@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $wallets = $data['wallets'] ?? array();
 ?>
 <div class="ofero-card">
@@ -21,10 +25,14 @@ $wallets = $data['wallets'] ?? array();
     <div id="wallets-container">
         <?php if (!empty($wallets)): ?>
             <?php foreach ($wallets as $i => $wallet): ?>
-                <div class="ofero-repeater-item" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-repeater-header">
                         <span class="ofero-repeater-title">
-                            <?php echo esc_html(ucfirst($wallet['blockchain'] ?? 'Wallet') . ' - ' . ($wallet['label'] ?? sprintf(__('Wallet %d', 'ofero-generator'), $i + 1))); ?>
+                            <?php
+                            /* translators: %d: position of the wallet in the list, starting at 1. */
+                            $ofero_wallet_fallback = sprintf(__('Wallet %d', 'ofero-generator'), $i + 1);
+                            echo esc_html(ucfirst($wallet['blockchain'] ?? 'Wallet') . ' - ' . ($wallet['label'] ?? $ofero_wallet_fallback));
+                            ?>
                         </span>
                         <button type="button" class="button ofero-repeater-remove">
                             <span class="dashicons dashicons-trash"></span>

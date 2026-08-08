@@ -158,6 +158,7 @@ class Ofero_Validator {
                 $errors[] = array(
                     'field' => 'metadata.schemaVersion',
                     'message' => sprintf(
+                        /* translators: %s: schema version string found in the file. */
                         __('Schema version must be "ofero-metadata-2.0", got "%s".', 'ofero-generator'),
                         $data['metadata']['schemaVersion']
                     )
@@ -173,6 +174,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => 'catalog.' . $key,
                         'message' => sprintf(
+                            /* translators: %s: name of the removed catalog key, e.g. "menu". */
                             __('catalog.%s was removed in v2.0. Move this data to catalog.feeds[] (see docs/MIGRATION-v1-to-v2.md).', 'ofero-generator'),
                             $key
                         )
@@ -201,6 +203,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => 'featured.' . $f,
                         'message' => sprintf(
+                            /* translators: %s: name of the featured sub-key, e.g. "products". */
                             __('featured.%s is capped at 12 items in v2.0. Move the rest to catalog.feeds[].', 'ofero-generator'),
                             $f
                         )
@@ -260,6 +263,7 @@ class Ofero_Validator {
             $errors[] = array(
                 'field' => 'organization.entityType',
                 'message' => sprintf(
+                    /* translators: %s: comma-separated list of allowed entity types. */
                     __('Invalid entity type. Must be one of: %s', 'ofero-generator'),
                     implode(', ', self::ENTITY_TYPES)
                 )
@@ -289,6 +293,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "locations.{$i}.type",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the location in the locations array. */
                             __('Invalid location type at index %d.', 'ofero-generator'),
                             $i
                         )
@@ -299,6 +304,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "locations.{$i}.email",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the location in the locations array. */
                             __('Invalid email at location index %d.', 'ofero-generator'),
                             $i
                         )
@@ -314,6 +320,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "communications.social.{$i}.url",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the entry in the social array. */
                             __('Invalid URL at social index %d.', 'ofero-generator'),
                             $i
                         )
@@ -351,6 +358,7 @@ class Ofero_Validator {
                         $errors[] = array(
                             'field' => "banking.{$i}.iban",
                             'message' => sprintf(
+                                /* translators: %d: zero-based position of the account in the banking array. */
                                 __('Invalid IBAN format at banking index %d.', 'ofero-generator'),
                                 $i
                             )
@@ -363,6 +371,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "banking.{$i}.currency",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the account in the banking array. */
                             __('Currency must be a 3-letter ISO code (e.g., "EUR") at index %d.', 'ofero-generator'),
                             $i
                         )
@@ -378,6 +387,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "brandAssets.{$i}.url",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the asset in the brandAssets array. */
                             __('Invalid URL at brand asset index %d.', 'ofero-generator'),
                             $i
                         )
@@ -393,6 +403,7 @@ class Ofero_Validator {
                     $errors[] = array(
                         'field' => "wallets.{$i}.address",
                         'message' => sprintf(
+                            /* translators: %d: zero-based position of the wallet in the wallets array. */
                             __('Wallet address seems too short at index %d.', 'ofero-generator'),
                             $i
                         )

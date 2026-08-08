@@ -5,6 +5,12 @@ All notable changes to the ofero.json metadata standard will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Documentation
+
+- `catalog.feeds[]` reference now states explicitly that the domain of a catalog is determined by `feeds[].type` (with `business.category`), never by the presence of `catalog.signature[]`. `signature[]` and `highlights[]` are domain-agnostic "show these first" previews — valid for dishes, services, packages or products alike. Added consumer rules for picking a presentation and for the no-feeds case. Reported by an external consumer whose renderer treated `signature[]` as restaurant-only. No schema change.
+
 ## [2.0.0] - 2026-05-22
 
 ### BREAKING CHANGES

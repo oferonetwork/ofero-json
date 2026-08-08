@@ -130,10 +130,11 @@ class Ofero_Admin_Page {
                     <?php esc_html_e('Valid ofero.json', 'ofero-generator'); ?>
                 <?php else: ?>
                     <span class="dashicons dashicons-warning"></span>
-                    <?php echo sprintf(
+                    <?php echo esc_html(sprintf(
+                        /* translators: %d: number of validation errors found in the ofero.json file. */
                         esc_html__('%d validation error(s) found', 'ofero-generator'),
                         count($validation['errors'])
-                    ); ?>
+                    )); ?>
                 <?php endif; ?>
             </div>
 

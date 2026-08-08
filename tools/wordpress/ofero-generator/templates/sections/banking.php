@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $banking = $data['banking'] ?? array();
 ?>
 <div class="ofero-card">
@@ -21,10 +25,13 @@ $banking = $data['banking'] ?? array();
     <div id="banking-container">
         <?php if (!empty($banking)): ?>
             <?php foreach ($banking as $i => $account): ?>
-                <div class="ofero-repeater-item" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-repeater-header">
                         <span class="ofero-repeater-title">
-                            <?php echo esc_html($account['bankName'] ?? sprintf(__('Account %d', 'ofero-generator'), $i + 1)); ?>
+                            <?php
+                            /* translators: %d: position of the bank account in the list, starting at 1. */
+                            echo esc_html($account['bankName'] ?? sprintf(__('Account %d', 'ofero-generator'), $i + 1));
+                            ?>
                         </span>
                         <button type="button" class="button ofero-repeater-remove">
                             <span class="dashicons dashicons-trash"></span>

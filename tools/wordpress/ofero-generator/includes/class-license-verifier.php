@@ -65,7 +65,7 @@ class Ofero_License_Verifier {
      * @return string Normalized domain
      */
     public function get_current_domain() {
-        $domain = parse_url(home_url(), PHP_URL_HOST);
+        $domain = wp_parse_url(home_url(), PHP_URL_HOST);
         $domain = preg_replace('/^www\./', '', $domain);
         return strtolower($domain);
     }
@@ -106,7 +106,11 @@ class Ofero_License_Verifier {
             return array(
                 'valid' => false,
                 'error' => 'api_error',
-                'message' => sprintf(__('API returned status code %d', 'ofero-generator'), $status_code),
+                'message' => sprintf(
+                    /* translators: %d: HTTP response status code returned by the licensing API. */
+                    __('API returned status code %d', 'ofero-generator'),
+                    $status_code
+                ),
                 'cached' => false,
                 'checked_at' => current_time('c'),
             );

@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $brandAssets = $data['brandAssets'] ?? array();
 ?>
 <div class="ofero-card">
@@ -30,7 +34,7 @@ $brandAssets = $data['brandAssets'] ?? array();
     <div id="branding-container">
         <?php if (!empty($brandAssets)): ?>
             <?php foreach ($brandAssets as $i => $asset): ?>
-                <div class="ofero-repeater-item" data-index="<?php echo $i; ?>">
+                <div class="ofero-repeater-item" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-repeater-header">
                         <span class="ofero-repeater-title">
                             <?php echo esc_html(ucfirst($asset['type'] ?? 'Asset') . ' - ' . ucfirst($asset['variant'] ?? 'Primary')); ?>

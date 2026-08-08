@@ -9,6 +9,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $ad       = $data['accommodationDetails'] ?? array();
 $amenities = $ad['amenities'] ?? array();
 $languages = $ad['languages'] ?? array();
@@ -53,8 +57,16 @@ $languages = $ad['languages'] ?? array();
                 <select id="acc_star_rating" name="acc_star_rating">
                     <option value=""><?php esc_html_e('— Select —', 'ofero-generator'); ?></option>
                     <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <option value="<?php echo $i; ?>" <?php selected($ad['starRating'] ?? '', $i); ?>>
-                            <?php echo str_repeat('★', $i) . ' ' . sprintf(_n('%d star', '%d stars', $i, 'ofero-generator'), $i); ?>
+                        <option value="<?php echo esc_attr($i); ?>" <?php selected($ad['starRating'] ?? '', $i); ?>>
+                            <?php
+                            echo esc_html(
+                                str_repeat('★', $i) . ' ' . sprintf(
+                                    /* translators: %d: number of stars in the accommodation star rating. */
+                                    _n('%d star', '%d stars', $i, 'ofero-generator'),
+                                    $i
+                                )
+                            );
+                            ?>
                         </option>
                     <?php endfor; ?>
                 </select>

@@ -9,6 +9,10 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 ?>
 <div class="wrap ofero-generator-wrap">
     <div class="ofero-header">
@@ -16,7 +20,7 @@ if (!defined('ABSPATH')) {
 
         <?php if (!empty($license_badge)): ?>
             <div class="ofero-license-section">
-                <?php echo $license_badge; ?>
+                <?php echo wp_kses_post($license_badge); ?>
                 <button type="button" class="button button-small ofero-refresh-license" title="<?php esc_attr_e('Refresh license status', 'ofero-generator'); ?>">
                     <span class="dashicons dashicons-update"></span>
                 </button>
@@ -38,10 +42,11 @@ if (!defined('ABSPATH')) {
                 <?php esc_html_e('ofero.json is valid', 'ofero-generator'); ?>
             <?php else: ?>
                 <span class="dashicons dashicons-warning"></span>
-                <?php echo sprintf(
+                <?php echo esc_html(sprintf(
+                    /* translators: %d: total number of validation issues found. */
                     esc_html__('%d validation issue(s)', 'ofero-generator'),
                     $validation['total_errors']
-                ); ?>
+                )); ?>
             <?php endif; ?>
         </div>
     </div>
@@ -65,43 +70,43 @@ if (!defined('ABSPATH')) {
             <a href="#tab-basic" class="nav-tab nav-tab-active" data-tab="basic">
                 <?php esc_html_e('Basic Info', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['basic']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['basic']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['basic']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-organization" class="nav-tab" data-tab="organization">
                 <?php esc_html_e('Organization', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['organization']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['organization']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['organization']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-locations" class="nav-tab" data-tab="locations">
                 <?php esc_html_e('Locations', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['locations']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['locations']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['locations']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-banking" class="nav-tab" data-tab="banking">
                 <?php esc_html_e('Banking', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['banking']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['banking']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['banking']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-wallets" class="nav-tab" data-tab="wallets">
                 <?php esc_html_e('Wallets', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['wallets']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['wallets']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['wallets']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-branding" class="nav-tab" data-tab="branding">
                 <?php esc_html_e('Branding', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['branding']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['branding']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['branding']['errors']); ?></span>
                 <?php endif; ?>
             </a>
             <a href="#tab-communications" class="nav-tab" data-tab="communications">
                 <?php esc_html_e('Communications', 'ofero-generator'); ?>
                 <?php if (!$validation['sections']['communications']['valid']): ?>
-                    <span class="ofero-tab-error"><?php echo $validation['sections']['communications']['errors']; ?></span>
+                    <span class="ofero-tab-error"><?php echo esc_html($validation['sections']['communications']['errors']); ?></span>
                 <?php endif; ?>
             </a>
 

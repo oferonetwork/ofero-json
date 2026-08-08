@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 // Available languages (ISO 639-1 codes) - comprehensive list
 $available_languages = array(
     // Major European Languages
@@ -277,6 +281,7 @@ $translatable_fields = array(
                 <p class="description">
                     <?php
                     printf(
+                        /* translators: %d: number of languages available for translation. */
                         esc_html__('Select the languages you want to provide translations for. %d languages available.', 'ofero-generator'),
                         count($available_languages) - 1
                     );
@@ -341,7 +346,10 @@ $translatable_fields = array(
                                                   name="<?php echo esc_attr($field_name); ?>"
                                                   rows="3"
                                                   class="large-text"
-                                                  placeholder="<?php echo esc_attr(sprintf(__('Enter %s translation...', 'ofero-generator'), $name)); ?>"
+                                                  placeholder="<?php
+                                            /* translators: %s: name of the language being translated into. */
+                                            echo esc_attr(sprintf(__('Enter %s translation...', 'ofero-generator'), $name));
+                                            ?>"
                                         ><?php echo esc_textarea($current_value); ?></textarea>
                                     <?php else: ?>
                                         <input type="text"
@@ -349,7 +357,10 @@ $translatable_fields = array(
                                                name="<?php echo esc_attr($field_name); ?>"
                                                value="<?php echo esc_attr($current_value); ?>"
                                                class="regular-text"
-                                               placeholder="<?php echo esc_attr(sprintf(__('Enter %s translation...', 'ofero-generator'), $name)); ?>">
+                                               placeholder="<?php
+                                            /* translators: %s: name of the language being translated into. */
+                                            echo esc_attr(sprintf(__('Enter %s translation...', 'ofero-generator'), $name));
+                                            ?>">
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>

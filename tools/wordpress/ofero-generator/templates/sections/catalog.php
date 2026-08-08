@@ -15,6 +15,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $existing = is_array($existing ?? null) ? $existing : array();
 $catalog = is_array($existing['catalog'] ?? null) ? $existing['catalog'] : array();
 $feeds = isset($catalog['feeds']) && is_array($catalog['feeds']) ? $catalog['feeds'] : array();

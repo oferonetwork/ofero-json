@@ -9,6 +9,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// These templates are included from inside Ofero_Generator_Admin_Page::render(), so every
+// variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+
 $rd           = $data['restaurantDetails'] ?? array();
 $serviceTypes = $rd['serviceTypes'] ?? array();
 $reservations = $rd['reservations'] ?? array();

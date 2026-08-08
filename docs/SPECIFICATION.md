@@ -329,6 +329,19 @@ A `Feed` is an external reference to operational data hosted at a separate URL. 
 | `itemCount` | no | Approximate number of items in the feed |
 | `standard` | no | Identifier of the standard the feed conforms to (e.g. `"schema.org/Menu"`, `"google-merchant"`) |
 
+### `type` determines the domain — `signature[]` never does
+
+Consumers MUST derive the domain of a catalog from `catalog.feeds[].type` (in combination with `business.category`), and MUST NOT infer it from the presence, absence, or naming of `catalog.signature[]`.
+
+`signature[]` is domain-agnostic: it means "the few items this business wants shown first", nothing more. It is equally valid for a restaurant's signature dishes, a law firm's flagship services, a tour operator's most popular packages, or a hardware store's best-selling products. A renderer that treats `signature[]` as a menu-only or restaurant-only field will mis-render every non-hospitality site.
+
+Practical rules for consumers:
+
+- Render `signature[]` items using the presentation appropriate to `feeds[].type` (e.g. `menu` → dish cards, `products` → product cards, `packages` → package tiles).
+- If several feeds are present, the first feed whose `type` is not `other` is the primary domain signal.
+- If `signature[]` is present with no feeds at all, render it as generic items — do not guess a domain.
+- `highlights[]` follows the same rule; it is the non-priced counterpart of `signature[]`, not a portfolio-only field.
+
 ### Example: restaurant menu as Schema.org Menu JSON-LD
 
 ```json

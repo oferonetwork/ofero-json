@@ -3,13 +3,12 @@
  * Plugin Name: Ofero Generator
  * Plugin URI: https://ofero.me/ofero-json
  * Description: A complete admin interface for generating and managing ofero.json files with all sections, validation, and auto-save.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: ofero-generator
- * Domain Path: /languages
  */
 
 // Prevent direct access
@@ -18,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_GENERATOR_VERSION', '2.0.0');
+define('OFERO_GENERATOR_VERSION', '2.0.1');
 define('OFERO_GENERATOR_SCHEMA_VERSION', 'ofero-metadata-2.0');
 define('OFERO_GENERATOR_PATH', plugin_dir_path(__FILE__));
 define('OFERO_GENERATOR_URL', plugin_dir_url(__FILE__));
@@ -270,16 +269,18 @@ class Ofero_Generator {
      * Handle clear shortcode cache request
      */
     public function handle_clear_shortcode_cache() {
-        if (!isset($_GET['clear_shortcode_cache']) || $_GET['page'] !== 'ofero-generator') {
+        $page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
+        if (!isset($_GET['clear_shortcode_cache']) || $page !== 'ofero-generator') {
             return;
         }
 
-        if (!wp_verify_nonce($_GET['_wpnonce'] ?? '', 'ofero_clear_cache')) {
-            wp_die(__('Security check failed.', 'ofero-generator'));
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'ofero_clear_cache')) {
+            wp_die(esc_html__('Security check failed.', 'ofero-generator'));
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have permission to perform this action.', 'ofero-generator'));
+            wp_die(esc_html__('You do not have permission to perform this action.', 'ofero-generator'));
         }
 
         delete_transient('ofero_json_data');
@@ -289,7 +290,7 @@ class Ofero_Generator {
             'message' => __('Shortcode cache cleared successfully.', 'ofero-generator')
         ), 30);
 
-        wp_redirect(admin_url('admin.php?page=ofero-generator'));
+        wp_safe_redirect(admin_url('admin.php?page=ofero-generator'));
         exit;
     }
 
