@@ -247,7 +247,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"tokenomics": {
 		/* Token information */
 	},
-	"apis": {
+	"apiEndpoints": {
 		/* Public APIs */
 	},
 	"integrations": {
@@ -568,7 +568,7 @@ Organizations with `entityType` of `"protocol"` or `"project"` **SHOULD** includ
 			"purpose": "treasury"
 		}
 	],
-	"apis": {
+	"apiEndpoints": {
 		"public": [
 			{
 				"name": "Protocol API",
@@ -2864,7 +2864,7 @@ All moderate validation plus:
 			"explorerUrl": "https://etherscan.io/token/0xABCDEF0123456789ABCDEF0123456789ABCDEF01"
 		}
 	},
-	"apis": {
+	"apiEndpoints": {
 		"public": [
 			{
 				"name": "DefiPro API",

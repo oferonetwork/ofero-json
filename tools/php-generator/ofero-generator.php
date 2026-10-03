@@ -471,6 +471,43 @@ if (!$isPasswordSet) {
 }
 
 // Load ofero.json data for editor
+const OFERO_LOCATION_ROLES = [
+    'headquarters' => 'Headquarters',
+    'branch' => 'Branch',
+    'international-branch' => 'International branch',
+    'representative-office' => 'Representative office',
+];
+const OFERO_LOCATION_FACILITIES = [
+    '' => '— Not specified —',
+    'office' => 'Office',
+    'store' => 'Store / shop',
+    'venue' => 'Venue (restaurant, hotel, clinic, gym, studio)',
+    'workshop' => 'Workshop / service point',
+    'warehouse' => 'Warehouse',
+    'factory' => 'Factory',
+    'distribution-center' => 'Distribution center',
+];
+
+/**
+ * Role (locations[].type) and kind of space (locations[].facility) for the editor.
+ * Earlier versions stored store/warehouse/office in `type`, which the schema rejects;
+ * those are shown as Branch + the matching facility and fixed on the next save.
+ */
+function oferoLocationRoleAndFacility(array $location): array {
+    $type = $location['type'] ?? 'headquarters';
+    $facility = $location['facility'] ?? '';
+    $legacy = ['store' => 'store', 'warehouse' => 'warehouse', 'office' => 'office',
+               'factory' => 'factory', 'distribution_center' => 'distribution-center'];
+    if (isset($legacy[$type])) {
+        $facility = $facility ?: $legacy[$type];
+        $type = 'branch';
+    }
+    if (!isset(OFERO_LOCATION_ROLES[$type])) {
+        $type = 'branch';
+    }
+    return [$type, $facility];
+}
+
 /**
  * Rows for the Branding tab editor, built from the schema's `branding` object.
  * Files written by earlier versions used a top-level `brandAssets` list (never part
@@ -1079,14 +1116,21 @@ if ($view === 'editor') {
                                     <label class="form-label">Name</label>
                                     <input type="text" class="form-input loc-name" value="<?php echo htmlspecialchars($location['name'] ?? ''); ?>">
                                 </div>
+                                <?php [$locRole, $locFacility] = oferoLocationRoleAndFacility($location); ?>
                                 <div class="form-group">
-                                    <label class="form-label">Type</label>
+                                    <label class="form-label">Role</label>
                                     <select class="form-select loc-type">
-                                        <option value="headquarters" <?php echo ($location['type'] ?? '') === 'headquarters' ? 'selected' : ''; ?>>Headquarters</option>
-                                        <option value="branch" <?php echo ($location['type'] ?? '') === 'branch' ? 'selected' : ''; ?>>Branch</option>
-                                        <option value="store" <?php echo ($location['type'] ?? '') === 'store' ? 'selected' : ''; ?>>Store</option>
-                                        <option value="warehouse" <?php echo ($location['type'] ?? '') === 'warehouse' ? 'selected' : ''; ?>>Warehouse</option>
-                                        <option value="office" <?php echo ($location['type'] ?? '') === 'office' ? 'selected' : ''; ?>>Office</option>
+                                        <?php foreach (OFERO_LOCATION_ROLES as $value => $label): ?>
+                                        <option value="<?php echo $value; ?>" <?php echo $locRole === $value ? 'selected' : ''; ?>><?php echo htmlspecialchars($label); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Kind of space</label>
+                                    <select class="form-select loc-facility">
+                                        <?php foreach (OFERO_LOCATION_FACILITIES as $value => $label): ?>
+                                        <option value="<?php echo $value; ?>" <?php echo $locFacility === $value ? 'selected' : ''; ?>><?php echo htmlspecialchars($label); ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -1729,6 +1773,7 @@ if ($view === 'editor') {
                 const loc = {
                     name: item.querySelector('.loc-name')?.value || '',
                     type: item.querySelector('.loc-type')?.value || 'headquarters',
+                    facility: item.querySelector('.loc-facility')?.value || undefined,
                     address: {
                         street: item.querySelector('.loc-street')?.value || '',
                         city: item.querySelector('.loc-city')?.value || '',
@@ -1932,13 +1977,25 @@ if ($view === 'editor') {
                             <input type="text" class="form-input loc-name">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Type</label>
+                            <label class="form-label">Role</label>
                             <select class="form-select loc-type">
                                 <option value="headquarters">Headquarters</option>
                                 <option value="branch">Branch</option>
-                                <option value="store">Store</option>
-                                <option value="warehouse">Warehouse</option>
+                                <option value="international-branch">International branch</option>
+                                <option value="representative-office">Representative office</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kind of space</label>
+                            <select class="form-select loc-facility">
+                                <option value="">— Not specified —</option>
                                 <option value="office">Office</option>
+                                <option value="store">Store / shop</option>
+                                <option value="venue">Venue (restaurant, hotel, clinic, gym, studio)</option>
+                                <option value="workshop">Workshop / service point</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="factory">Factory</option>
+                                <option value="distribution-center">Distribution center</option>
                             </select>
                         </div>
                         <div class="form-group">

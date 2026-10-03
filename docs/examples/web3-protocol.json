@@ -169,10 +169,20 @@
       }
     ]
   },
-  "apis": {
-    "rpc": "https://api.defiprotocol.xyz/v1/rpc",
-    "graphql": "https://api.defiprotocol.xyz/graphql",
-    "documentation": "https://docs.defiprotocol.xyz"
+  "apiEndpoints": {
+    "public": [
+      {
+        "name": "JSON-RPC API",
+        "version": "v1",
+        "baseUrl": "https://api.defiprotocol.xyz/v1/rpc",
+        "docsUrl": "https://docs.defiprotocol.xyz"
+      },
+      {
+        "name": "GraphQL API",
+        "baseUrl": "https://api.defiprotocol.xyz/graphql",
+        "docsUrl": "https://docs.defiprotocol.xyz"
+      }
+    ]
   },
   "security": {
     "securityEmail": "security@defiprotocol.xyz",

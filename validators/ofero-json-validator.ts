@@ -668,6 +668,15 @@ function getRecommendedFieldWarnings(data: any): ValidationWarning[] {
 		});
 	}
 
+	// apis was used by early docs and examples but the schema key is apiEndpoints
+	if (data.apis !== undefined) {
+		warnings.push({
+			path: 'apis',
+			message: '"apis" is not part of the schema and is ignored by consumers; rename it to "apiEndpoints" (same structure: public[] with name, baseUrl, docsUrl…)',
+			type: 'deprecated'
+		});
+	}
+
 	// Recommend verification section
 	if (!data.verification) {
 		warnings.push({
