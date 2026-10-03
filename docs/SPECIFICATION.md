@@ -907,21 +907,22 @@ The `businessClassification` section provides structured information about your 
 | `primaryProducts`   | array  | Yes      | Main product/service categories                                             |
 | `secondaryProducts` | array  | No       | Additional offerings                                                        |
 | `targetMarket`      | array  | Yes      | One or more of: "B2C", "B2B", "B2G", "C2C"                                  |
+| `serviceArea`       | object | No       | Where and how customers are served (see [Service Area](#service-area))      |
 | `operationalStatus` | enum   | Yes      | One of: "active", "suspended", "closed", "pending"                          |
 
 #### Industry Taxonomy
 
-The `industry` field uses a hierarchical taxonomy with 158 industries across 4 levels:
+The `industry` field uses a hierarchical taxonomy with 234 industries across 4 levels:
 
-**Level 1 - Sectors** (23 total)
+**Level 1 - Sectors** (30 total)
 
 - Examples: `"technology"`, `"fintech"`, `"healthcare"`, `"retail"`
 
-**Level 2 - Sub-categories** (48 total)
+**Level 2 - Sub-categories** (75 total)
 
 - Examples: `"software"`, `"blockchain"`, `"ecommerce"`, `"restaurant"`
 
-**Level 3 - Specific Types** (69 total)
+**Level 3 - Specific Types** (108 total)
 
 - Examples: `"saas"`, `"defi"`, `"marketplace"`, `"fast-food"`
 
@@ -940,6 +941,59 @@ The `industry` field uses a hierarchical taxonomy with 158 industries across 4 l
 The industry path must be valid (each item must be a child of the previous). You can use 1-4 levels depending on specificity.
 
 **Full taxonomy:** Available at `/schemas/ofero-json-industries.json`
+
+The taxonomy is maintained as part of the standard. Use only IDs from the published list; if no entry fits, use the closest parent and describe the specifics in `primaryProducts`, then propose the missing entry through the project repository.
+
+#### Service Area
+
+`serviceArea` describes where and how the organization serves customers, independently of `locations`. It answers "can this business serve me where I am?" — which `locations` alone cannot answer for remote agencies, online services, mobile trades or nationwide providers.
+
+| Field        | Type    | Description                                                                                      |
+| ------------ | ------- | ------------------------------------------------------------------------------------------------ |
+| `modes`      | array   | One or more of: `"on-premises"` (customer comes to a location), `"at-customer"` (staff travels to the customer), `"remote"` (online, phone, email or shipped deliverables) |
+| `worldwide`  | boolean | `true` if customers in any country are served                                                    |
+| `countries`  | array   | ISO 3166-1 alpha-2 codes. A listed country is served in full unless narrowed by `regions`        |
+| `regions`    | array   | Sub-national areas: `country` (required) plus `subdivision` (ISO 3166-2, e.g. `"US-CA"`) and/or `name` (city or area) |
+| `radius`     | array   | `{ "locationId", "km" }` — area within a distance of one of your `locations`                     |
+
+**Example: remote audio-ad agency serving one whole country, no public venue**
+
+```json
+{
+	"businessClassification": {
+		"industry": ["creative-services", "audio-production", "commercial-audio"],
+		"primaryProducts": ["radio ad spots", "jingles", "voice-over"],
+		"targetMarket": ["B2B"],
+		"operationalStatus": "active",
+		"serviceArea": {
+			"modes": ["remote"],
+			"countries": ["US"]
+		}
+	}
+}
+```
+
+No `locations` entry is needed. If you do list an office, it does not limit who you serve — `serviceArea` does.
+
+**Example: mobile service within a region and around the workshop**
+
+```json
+{
+	"serviceArea": {
+		"modes": ["at-customer", "on-premises"],
+		"countries": ["US"],
+		"regions": [{ "country": "US", "subdivision": "US-CA" }],
+		"radius": [{ "locationId": "workshop", "km": 30 }]
+	}
+}
+```
+
+**Consumer rules:**
+
+1. If `serviceArea` is present, use it to decide whether a user's location is served; do not infer reach from `locations`.
+2. `worldwide: true` matches every country. Otherwise a country matches if it is in `countries` or has `regions` entries; if it has `regions` entries, only those areas match. `radius` entries add areas on top.
+3. If `serviceArea` is absent, fall back to `locations` (on-premises, near each location) and treat reach as unknown, not as "nowhere".
+4. When `modes` includes `"remote"`, distance to the user should not be used to rank or exclude the organization.
 
 #### MCC/NAICS/SIC Codes
 
@@ -1133,6 +1187,7 @@ Physical locations, offices, and branches.
 		{
 			"id": "hq-ro-bucharest", // Unique identifier
 			"type": "headquarters", // headquarters | branch | international-branch | representative-office
+			"facility": "office", // Optional: office | store | venue | workshop | warehouse | factory | distribution-center
 			"name": "Ofero Headquarters", // Location name (translatable)
 			"address": {
 				"street": "123 Main Street",
@@ -1203,6 +1258,29 @@ Physical locations, offices, and branches.
 	]
 }
 ```
+
+#### Location role (`type`) vs. kind of space (`facility`)
+
+These are two independent questions. A shop in another city is `"type": "branch"` + `"facility": "store"`; a head office that is also the factory is `"type": "headquarters"` + `"facility": "factory"`.
+
+| `type` | Meaning |
+|---|---|
+| `headquarters` | Main registered/management location |
+| `branch` | Secondary location in the same country |
+| `international-branch` | Location in another country |
+| `representative-office` | Representation only, no commercial activity |
+
+| `facility` (optional) | Meaning | Usually open to the public |
+|---|---|---|
+| `office` | Administrative work, client meetings | By appointment |
+| `store` | Retail — customers buy on site | Yes |
+| `venue` | Customers are served on site: restaurant, hotel, clinic, gym, studio | Yes |
+| `workshop` | Repairs or services on customers' goods (auto service, tailor) | Yes |
+| `warehouse` | Storage | No |
+| `factory` | Production | No |
+| `distribution-center` | Logistics, order fulfillment | No |
+
+Consumers should not show `warehouse`, `factory` or `distribution-center` locations as places a customer can visit unless `businessHours` say otherwise.
 
 #### Special Hours (`specialHours`)
 

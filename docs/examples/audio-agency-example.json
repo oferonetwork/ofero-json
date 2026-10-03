@@ -1,0 +1,121 @@
+{
+  "language": "en",
+  "domain": "example.com",
+  "canonicalUrl": "https://example.com/.well-known/ofero.json",
+  "metadata": {
+    "version": "2.0.0",
+    "schemaVersion": "ofero-metadata-2.0",
+    "lastUpdated": "2026-10-03T10:00:00Z",
+    "createdAt": "2026-10-03T10:00:00Z",
+    "updateFrequency": "monthly"
+  },
+  "organization": {
+    "legalName": "Example Audio LLC",
+    "brandName": {
+      "default": "Example Audio"
+    },
+    "entityType": "company",
+    "legalForm": "LLC",
+    "industry": "creative-services",
+    "description": {
+      "default": "Remote audio advertising agency. We write, voice and produce radio and streaming ad spots, jingles and audio logos for brands anywhere in the country. No walk-in studio — briefs, reviews and delivery happen online."
+    },
+    "tagline": {
+      "default": "Radio and streaming ads, produced remotely"
+    },
+    "foundedDate": "2019-04-01",
+    "employees": 5,
+    "website": "https://example.com",
+    "contactEmail": "hello@example.com",
+    "contactPhone": "+12025550147",
+    "identifiers": {
+      "global": {},
+      "primaryIncorporation": {
+        "country": "US",
+        "registrationNumber": "7654321",
+        "taxId": "98-7654321",
+        "vatNumber": ""
+      },
+      "perCountry": []
+    }
+  },
+  "businessClassification": {
+    "industry": [
+      "creative-services",
+      "audio-production",
+      "commercial-audio"
+    ],
+    "primaryProducts": [
+      "radio ad spots",
+      "streaming audio ads",
+      "jingles",
+      "voice-over"
+    ],
+    "secondaryProducts": [
+      "audio logos",
+      "podcast ad reads",
+      "media buying"
+    ],
+    "targetMarket": [
+      "B2B"
+    ],
+    "serviceArea": {
+      "modes": [
+        "remote"
+      ],
+      "countries": [
+        "US"
+      ]
+    },
+    "operationalStatus": "active"
+  },
+  "catalog": {
+    "defaultCurrency": "USD",
+    "feeds": [
+      {
+        "type": "services",
+        "format": "json",
+        "url": "https://example.com/feeds/services.json",
+        "name": {
+          "default": "Services and packages"
+        },
+        "lastUpdated": "2026-10-03T10:00:00Z",
+        "itemCount": 6
+      },
+      {
+        "type": "portfolio",
+        "format": "json",
+        "url": "https://example.com/feeds/portfolio.json",
+        "name": {
+          "default": "Audio samples"
+        },
+        "lastUpdated": "2026-10-03T10:00:00Z",
+        "itemCount": 24
+      }
+    ]
+  },
+  "communications": {
+    "social": {
+      "linkedin": "https://linkedin.com/company/example-audio",
+      "instagram": "https://instagram.com/exampleaudio"
+    },
+    "support": {
+      "email": "hello@example.com",
+      "phone": "+12025550147",
+      "languages": [
+        "en",
+        "es"
+      ]
+    }
+  },
+  "ai": {
+    "indexing": {
+      "allow": true,
+      "allowTraining": false
+    },
+    "contentNotes": "Fully remote agency with no public studio address. Serves clients anywhere in the US; distance to the client is irrelevant."
+  },
+  "keywords": {
+    "default": "audio advertising agency, radio ads, radio spots, streaming audio ads, jingles, voice-over, audio logo, remote"
+  }
+}

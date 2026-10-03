@@ -13,11 +13,18 @@
   },
   "organization": {
     "legalName": "TechCorp Software Solutions Inc.",
-    "brandName": "TechCorp",
+    "brandName": {
+      "default": "TechCorp"
+    },
     "entityType": "company",
     "legalForm": "C-Corp",
-    "description": "Leading provider of enterprise cloud software solutions",
-    "tagline": "Empowering businesses with cutting-edge cloud technology",
+    "industry": "technology",
+    "description": {
+      "default": "Leading provider of enterprise cloud software solutions"
+    },
+    "tagline": {
+      "default": "Empowering businesses with cutting-edge cloud technology"
+    },
     "website": "https://techcorp.example.com",
     "contactEmail": "contact@techcorp.example.com",
     "contactPhone": "+14155551234",
@@ -60,6 +67,12 @@
     "targetMarket": [
       "B2B"
     ],
+    "serviceArea": {
+      "modes": [
+        "remote"
+      ],
+      "worldwide": true
+    },
     "operationalStatus": "active"
   },
   "platformAccounts": {
@@ -85,6 +98,7 @@
     {
       "id": "hq-sf",
       "type": "headquarters",
+      "facility": "office",
       "name": "TechCorp Headquarters",
       "address": {
         "street": "123 Mission Street",
@@ -143,7 +157,9 @@
     "securityEmail": "security@techcorp.example.com"
   },
   "ai": {
-    "allowIndexing": true,
-    "preferredSummary": "TechCorp provides enterprise-grade cloud software solutions for businesses of all sizes."
+    "indexing": {
+      "allow": true,
+      "allowTraining": false
+    }
   }
 }

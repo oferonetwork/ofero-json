@@ -10,11 +10,18 @@
   },
   "organization": {
     "legalName": "Global Fashion Boutique LLC",
-    "brandName": "GlobalFashion",
+    "brandName": {
+      "default": "GlobalFashion"
+    },
     "entityType": "company",
     "legalForm": "LLC",
-    "description": "Premium fashion retailer with global online presence",
-    "tagline": "Style that speaks to the world",
+    "industry": "retail",
+    "description": {
+      "default": "Premium fashion retailer with global online presence"
+    },
+    "tagline": {
+      "default": "Style that speaks to the world"
+    },
     "website": "https://globalfashion.example.com",
     "contactEmail": "contact@globalfashion.example.com",
     "contactPhone": "+14155551234",

@@ -80,6 +80,7 @@
     {
       "id": "loc-1",
       "type": "headquarters",
+      "facility": "workshop",
       "name": "Expert Auto Service - Downtown",
       "address": {
         "street": "456 El Camino Real",

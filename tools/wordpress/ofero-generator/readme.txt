@@ -3,7 +3,7 @@ Contributors: Ofero Network
 Tags: ofero, json, business info, structured data, generator
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -104,6 +104,15 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 5. Settings and backup management
 
 == Changelog ==
+
+= 2.1.0 =
+* NEW: Organization tab has a Business Classification card (industry path, main products/services, target market, operational status), written to `businessClassification`.
+* NEW: Service Area card writes `businessClassification.serviceArea` — how you serve customers (at your location, at the customer, remotely), worldwide, countries, and regions/cities. Lets businesses without a public address (remote agencies, online services) say where they serve.
+* FIX: `organization.industry` is now written (first item of the industry path). The schema requires it for companies, so saved files for companies were failing schema validation.
+* FIX: `organization.brandName`, `organization.description` and `keywords` are always written as TranslatableString objects (`{"default": …}`). Without translations they were written as plain strings, which the v2 schema rejects.
+* FIX: the Organization tab reads brand name and description correctly when they are stored as TranslatableString objects (previously it printed "Array" once translations were added).
+* FIX: location types. The Type dropdown offered store, warehouse, office, factory and distribution_center, which the schema rejects in `locations[].type`. It is now split into "Role" (`type`: headquarters, branch, international-branch, representative-office) and "Kind of space" (`facility`: office, store, venue, workshop, warehouse, factory, distribution-center). Locations saved with an old type are shown as Branch with the matching kind of space; re-saving converts them.
+* NEW: validator flags companies without an industry, invalid service-area country codes and invalid location facilities.
 
 = 2.0.1 =
 * FIX: `catalog.signature[].priceFormatted` no longer contains literal HTML entities. WooCommerce `get_price_html()` returns markup with `&nbsp;` between amount and currency; the value was tag-stripped but not entity-decoded, so consumers that escape it rendered "8.66&nbsp;lei". Entities are now decoded, non-breaking spaces normalised and whitespace collapsed.

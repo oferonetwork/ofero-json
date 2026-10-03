@@ -1,6 +1,6 @@
 {
-	"version": "1.0.0",
-	"lastUpdated": "2025-01-15",
+	"version": "1.1.0",
+	"lastUpdated": "2026-10-03",
 	"description": "Hierarchical industry taxonomy for ofero.json business classification",
 	"industries": [
 		{
@@ -823,6 +823,13 @@
 			"description": "Search engine optimization"
 		},
 		{
+			"id": "advertising-agency",
+			"label": "Advertising Agency",
+			"level": 3,
+			"parent": "marketing",
+			"description": "Advertising campaigns, media planning and ad production"
+		},
+		{
 			"id": "real-estate",
 			"label": "Real Estate",
 			"level": 1,
@@ -1348,6 +1355,27 @@
 			"description": "Film and documentary production"
 		},
 		{
+			"id": "audio-production",
+			"label": "Audio Production",
+			"level": 2,
+			"parent": "creative-services",
+			"description": "Audio recording, sound design and post-production"
+		},
+		{
+			"id": "commercial-audio",
+			"label": "Commercial Audio",
+			"level": 3,
+			"parent": "audio-production",
+			"description": "Radio and audio advertising spots, jingles and audio branding"
+		},
+		{
+			"id": "voice-over",
+			"label": "Voice-Over",
+			"level": 3,
+			"parent": "audio-production",
+			"description": "Voice-over and narration services"
+		},
+		{
 			"id": "architecture",
 			"label": "Architecture",
 			"level": 1,
@@ -1614,6 +1642,6 @@
 			"description": "Pet boarding and daycare"
 		}
 	],
-	"totalIndustries": 232,
+	"totalIndustries": 234,
 	"levels": [1, 2, 3, 4]
 }

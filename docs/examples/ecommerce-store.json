@@ -11,11 +11,17 @@
   },
   "organization": {
     "legalName": "Fashion Boutique Ltd.",
-    "brandName": "FashionBoutique",
+    "brandName": {
+      "default": "FashionBoutique"
+    },
     "entityType": "store",
     "legalForm": "LLC",
-    "description": "Premium online fashion retailer specializing in sustainable clothing and accessories",
-    "tagline": "Sustainable fashion for the conscious consumer",
+    "description": {
+      "default": "Premium online fashion retailer specializing in sustainable clothing and accessories"
+    },
+    "tagline": {
+      "default": "Sustainable fashion for the conscious consumer"
+    },
     "website": "https://fashionboutique.com",
     "contactEmail": "hello@fashionboutique.com",
     "contactPhone": "+442071234567",
@@ -53,6 +59,16 @@
     "targetMarket": [
       "B2C"
     ],
+    "serviceArea": {
+      "modes": [
+        "remote",
+        "on-premises"
+      ],
+      "countries": [
+        "GB",
+        "IE"
+      ]
+    },
     "operationalStatus": "active"
   },
   "platformAccounts": {
@@ -78,7 +94,8 @@
   "locations": [
     {
       "id": "store-london",
-      "type": "retail",
+      "type": "branch",
+      "facility": "store",
       "name": "Fashion Boutique London Flagship",
       "address": {
         "street": "45 King's Road",
@@ -164,7 +181,9 @@
     }
   },
   "ai": {
-    "allowIndexing": true,
-    "preferredSummary": "FashionBoutique is a sustainable online fashion retailer offering premium eco-friendly clothing and accessories."
+    "indexing": {
+      "allow": true,
+      "allowTraining": false
+    }
   }
 }

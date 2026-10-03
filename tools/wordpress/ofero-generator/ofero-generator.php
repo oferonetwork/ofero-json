@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Generator
  * Plugin URI: https://ofero.me/ofero-json
  * Description: A complete admin interface for generating and managing ofero.json files with all sections, validation, and auto-save.
- * Version: 2.0.1
+ * Version: 2.1.0
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_GENERATOR_VERSION', '2.0.1');
+define('OFERO_GENERATOR_VERSION', '2.1.0');
 define('OFERO_GENERATOR_SCHEMA_VERSION', 'ofero-metadata-2.0');
 define('OFERO_GENERATOR_PATH', plugin_dir_path(__FILE__));
 define('OFERO_GENERATOR_URL', plugin_dir_url(__FILE__));

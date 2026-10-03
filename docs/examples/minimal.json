@@ -10,10 +10,15 @@
   },
   "organization": {
     "legalName": "Example Company LLC",
-    "brandName": "Example",
+    "brandName": {
+      "default": "Example"
+    },
     "entityType": "company",
     "legalForm": "LLC",
-    "description": "A minimal example ofero.json file with only required fields",
+    "industry": "technology",
+    "description": {
+      "default": "A minimal example ofero.json file with only required fields"
+    },
     "website": "https://example.com",
     "contactEmail": "contact@example.com",
     "contactPhone": "+1234567890",

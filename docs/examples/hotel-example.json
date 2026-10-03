@@ -16,10 +16,15 @@
   },
   "organization": {
     "legalName": "Grand Hotel SRL",
-    "brandName": "Grand Hotel",
+    "brandName": {
+      "default": "Grand Hotel"
+    },
     "entityType": "company",
     "legalForm": "SRL",
-    "description": "A 4-star hotel in the heart of Bucharest with 120 rooms, spa, and conference facilities.",
+    "industry": "hospitality",
+    "description": {
+      "default": "A 4-star hotel in the heart of Bucharest with 120 rooms, spa, and conference facilities."
+    },
     "website": "https://grandhotel.com",
     "contactEmail": "info@grandhotel.com",
     "contactPhone": "+40212345678",
@@ -57,6 +62,7 @@
     {
       "id": "loc-main",
       "type": "headquarters",
+      "facility": "venue",
       "name": "Grand Hotel Bucharest",
       "address": {
         "street": "Calea Victoriei 100",

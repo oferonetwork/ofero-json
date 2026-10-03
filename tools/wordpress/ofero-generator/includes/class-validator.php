@@ -31,16 +31,26 @@ class Ofero_Validator {
     );
 
     /**
-     * Valid location types
+     * Valid location types (organizational role)
      */
     const LOCATION_TYPES = array(
         'headquarters',
         'branch',
-        'store',
-        'warehouse',
+        'international-branch',
+        'representative-office'
+    );
+
+    /**
+     * Valid location facilities (kind of space)
+     */
+    const LOCATION_FACILITIES = array(
         'office',
+        'store',
+        'venue',
+        'workshop',
+        'warehouse',
         'factory',
-        'distribution_center'
+        'distribution-center'
     );
 
     /**
@@ -270,6 +280,29 @@ class Ofero_Validator {
             );
         }
 
+        // Schema requires organization.industry for companies
+        if (($data['organization']['entityType'] ?? '') === 'company' && empty($data['organization']['industry'])) {
+            $errors[] = array(
+                'field' => 'organization.industry',
+                'message' => __('Industry is required for companies. Fill in Business Classification → Industry.', 'ofero-generator')
+            );
+        }
+
+        // Service area country codes
+        $service_area = $data['businessClassification']['serviceArea'] ?? array();
+        foreach ((array) ($service_area['countries'] ?? array()) as $code) {
+            if (!preg_match('/^[A-Z]{2}$/', (string) $code)) {
+                $errors[] = array(
+                    'field' => 'organization.serviceArea.countries',
+                    'message' => sprintf(
+                        /* translators: %s: the invalid country code. */
+                        __('Service area country "%s" must be a 2-letter ISO code (e.g., US).', 'ofero-generator'),
+                        $code
+                    )
+                );
+            }
+        }
+
         // Email format
         if (!empty($data['organization']['contactEmail']) && !is_email($data['organization']['contactEmail'])) {
             $errors[] = array(
@@ -294,7 +327,18 @@ class Ofero_Validator {
                         'field' => "locations.{$i}.type",
                         'message' => sprintf(
                             /* translators: %d: zero-based position of the location in the locations array. */
-                            __('Invalid location type at index %d.', 'ofero-generator'),
+                            __('Invalid location type at index %d. Use headquarters, branch, international-branch or representative-office; store, office, warehouse etc. now go in "Kind of space". Re-save the Locations tab to convert.', 'ofero-generator'),
+                            $i
+                        )
+                    );
+                }
+
+                if (!empty($location['facility']) && !in_array($location['facility'], self::LOCATION_FACILITIES, true)) {
+                    $errors[] = array(
+                        'field' => "locations.{$i}.facility",
+                        'message' => sprintf(
+                            /* translators: %d: zero-based position of the location in the locations array. */
+                            __('Invalid kind of space at location index %d.', 'ofero-generator'),
                             $i
                         )
                     );

@@ -279,6 +279,8 @@ class Ofero_Form_Handler {
         $description_translations = $this->collect_field_translations('organization_description', $enabled_languages);
         $keywords_translations = $this->collect_field_translations('keywords', $enabled_languages);
 
+        $classification = $this->collect_business_classification();
+
         $data = array(
             'language' => $primary_language,
             'domain' => sanitize_text_field(wp_unslash($_POST['domain'] ?? '')),
@@ -297,6 +299,8 @@ class Ofero_Form_Handler {
                 ),
                 'entityType' => sanitize_text_field(wp_unslash($_POST['org_entityType'] ?? 'company')),
                 'legalForm' => sanitize_text_field(wp_unslash($_POST['org_legalForm'] ?? '')),
+                // Schema requires organization.industry for companies; use the most general taxonomy level.
+                'industry' => $classification['industry'][0] ?? '',
                 'description' => $this->build_translatable_string(
                     sanitize_textarea_field(wp_unslash($_POST['org_description'] ?? '')),
                     $description_translations
@@ -315,6 +319,7 @@ class Ofero_Form_Handler {
                     'perCountry' => array()
                 )
             ),
+            'businessClassification' => $classification,
             'locations' => $this->collect_locations(),
             'banking' => $this->collect_banking(),
             'wallets' => $this->collect_wallets(),
@@ -377,19 +382,88 @@ class Ofero_Form_Handler {
 
     /**
      * Build a TranslatableString structure
-     * Returns plain string if no translations, or structured object if translations exist
+     * Always an object: the v2 schema rejects plain strings for translatable fields.
      */
     private function build_translatable_string($default_value, $translations) {
-        // If no translations, return plain string
-        if (empty($translations)) {
-            return $default_value;
+        $value = array('default' => $default_value);
+        if (!empty($translations)) {
+            $value['translations'] = $translations;
+        }
+        return $value;
+    }
+
+    /**
+     * Collect businessClassification (including serviceArea) from POST
+     */
+    private function collect_business_classification() {
+        $split = function ($raw) {
+            $items = array_map('trim', explode(',', $raw));
+            return array_values(array_unique(array_filter($items, 'strlen')));
+        };
+
+        $industry = array_values(array_filter(array_map(
+            'sanitize_title',
+            $split(sanitize_text_field(wp_unslash($_POST['bc_industry'] ?? '')))
+        )));
+        $products = $split(sanitize_text_field(wp_unslash($_POST['bc_primaryProducts'] ?? '')));
+
+        $markets = isset($_POST['bc_targetMarket']) ? array_map('sanitize_text_field', wp_unslash((array) $_POST['bc_targetMarket'])) : array();
+        $markets = array_values(array_intersect(array('B2C', 'B2B', 'B2G', 'C2C'), $markets));
+
+        $status = sanitize_text_field(wp_unslash($_POST['bc_operationalStatus'] ?? ''));
+        if (!in_array($status, array('active', 'suspended', 'closed', 'pending'), true)) {
+            $status = '';
         }
 
-        // Build TranslatableString structure
         return array(
-            'default' => $default_value,
-            'translations' => $translations
+            'industry' => $industry,
+            'primaryProducts' => $products,
+            'targetMarket' => $markets,
+            'serviceArea' => $this->collect_service_area($split),
+            'operationalStatus' => $status
         );
+    }
+
+    /**
+     * Collect businessClassification.serviceArea from POST
+     */
+    private function collect_service_area($split) {
+        $modes = isset($_POST['sa_modes']) ? array_map('sanitize_text_field', wp_unslash((array) $_POST['sa_modes'])) : array();
+        $modes = array_values(array_intersect(array('on-premises', 'at-customer', 'remote'), $modes));
+
+        $countries = array_map('strtoupper', $split(sanitize_text_field(wp_unslash($_POST['sa_countries'] ?? ''))));
+        $countries = array_values(array_unique(array_filter($countries, function ($code) {
+            return (bool) preg_match('/^[A-Z]{2}$/', $code);
+        })));
+
+        // One region per line: "US-CA" (ISO 3166-2) or "US, Austin" (country, city/area)
+        $regions = array();
+        $lines = preg_split('/\r\n|\r|\n/', sanitize_textarea_field(wp_unslash($_POST['sa_regions'] ?? '')));
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (preg_match('/^([A-Za-z]{2})-([A-Za-z0-9]{1,3})$/', $line, $m)) {
+                $country = strtoupper($m[1]);
+                $regions[] = array('country' => $country, 'subdivision' => $country . '-' . strtoupper($m[2]));
+            } elseif (preg_match('/^([A-Za-z]{2})\s*,\s*(.+)$/', $line, $m)) {
+                $regions[] = array('country' => strtoupper($m[1]), 'name' => trim($m[2]));
+            }
+        }
+        foreach ($regions as $region) {
+            if (!in_array($region['country'], $countries, true)) {
+                $countries[] = $region['country'];
+            }
+        }
+
+        $area = array(
+            'modes' => $modes,
+            'countries' => $countries,
+            'regions' => $regions
+        );
+        if (!empty($_POST['sa_worldwide'])) {
+            $area = array('modes' => $modes, 'worldwide' => true) + $area;
+        }
+
+        return $area;
     }
 
     /**
@@ -409,9 +483,19 @@ class Ofero_Form_Handler {
                 continue;
             }
 
+            $type = sanitize_text_field(wp_unslash($_POST['location_type'][$i] ?? 'headquarters'));
+            if (!in_array($type, array('headquarters', 'branch', 'international-branch', 'representative-office'), true)) {
+                $type = 'branch';
+            }
+            $facility = sanitize_text_field(wp_unslash($_POST['location_facility'][$i] ?? ''));
+            if (!in_array($facility, array('office', 'store', 'venue', 'workshop', 'warehouse', 'factory', 'distribution-center'), true)) {
+                $facility = '';
+            }
+
             $location = array(
                 'name' => sanitize_text_field(wp_unslash($_POST['location_name'][$i] ?? '')),
-                'type' => sanitize_text_field(wp_unslash($_POST['location_type'][$i] ?? 'headquarters')),
+                'type' => $type,
+                'facility' => $facility,
                 'address' => array(
                     'street' => sanitize_text_field(wp_unslash($_POST['location_street'][$i] ?? '')),
                     'city' => sanitize_text_field(wp_unslash($_POST['location_city'][$i] ?? '')),

@@ -15,6 +15,33 @@ if (!defined('ABSPATH')) {
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
 $locations = $data['locations'] ?? array();
+
+// "Role" = locations[].type (where the location sits in the company)
+$locationTypes = array(
+    'headquarters' => __('Headquarters', 'ofero-generator'),
+    'branch' => __('Branch', 'ofero-generator'),
+    'international-branch' => __('International branch', 'ofero-generator'),
+    'representative-office' => __('Representative office', 'ofero-generator')
+);
+// "Kind of space" = locations[].facility
+$facilityTypes = array(
+    '' => __('— Not specified —', 'ofero-generator'),
+    'office' => __('Office', 'ofero-generator'),
+    'store' => __('Store / shop', 'ofero-generator'),
+    'venue' => __('Venue (restaurant, hotel, clinic, gym, studio)', 'ofero-generator'),
+    'workshop' => __('Workshop / service point', 'ofero-generator'),
+    'warehouse' => __('Warehouse', 'ofero-generator'),
+    'factory' => __('Factory', 'ofero-generator'),
+    'distribution-center' => __('Distribution center', 'ofero-generator')
+);
+// Location types written by plugin versions before 2.1.0, mapped to facility
+$legacyFacility = array(
+    'store' => 'store',
+    'warehouse' => 'warehouse',
+    'office' => 'office',
+    'factory' => 'factory',
+    'distribution_center' => 'distribution-center'
+);
 ?>
 <div class="ofero-card">
     <h2><?php esc_html_e('Locations', 'ofero-generator'); ?></h2>
@@ -47,23 +74,30 @@ $locations = $data['locations'] ?? array();
                                        value="<?php echo esc_attr($location['name'] ?? ''); ?>"
                                        class="regular-text">
                             </div>
+                            <?php
+                            $currentType = $location['type'] ?? 'headquarters';
+                            $currentFacility = $location['facility'] ?? '';
+                            // Before 2.1.0 the plugin stored the kind of space in "type"
+                            if (isset($legacyFacility[$currentType])) {
+                                $currentFacility = $currentFacility ?: $legacyFacility[$currentType];
+                                $currentType = 'branch';
+                            }
+                            ?>
                             <div class="ofero-field">
-                                <label><?php esc_html_e('Type', 'ofero-generator'); ?></label>
+                                <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
                                 <select name="location_type[]">
-                                    <?php
-                                    $locationTypes = array(
-                                        'headquarters' => __('Headquarters', 'ofero-generator'),
-                                        'branch' => __('Branch', 'ofero-generator'),
-                                        'store' => __('Store', 'ofero-generator'),
-                                        'warehouse' => __('Warehouse', 'ofero-generator'),
-                                        'office' => __('Office', 'ofero-generator'),
-                                        'factory' => __('Factory', 'ofero-generator'),
-                                        'distribution_center' => __('Distribution Center', 'ofero-generator')
-                                    );
-                                    $currentType = $location['type'] ?? 'headquarters';
-                                    foreach ($locationTypes as $value => $label):
-                                    ?>
+                                    <?php foreach ($locationTypes as $value => $label): ?>
                                         <option value="<?php echo esc_attr($value); ?>" <?php selected($currentType, $value); ?>>
+                                            <?php echo esc_html($label); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="ofero-field">
+                                <label><?php esc_html_e('Kind of space', 'ofero-generator'); ?></label>
+                                <select name="location_facility[]">
+                                    <?php foreach ($facilityTypes as $value => $label): ?>
+                                        <option value="<?php echo esc_attr($value); ?>" <?php selected($currentFacility, $value); ?>>
                                             <?php echo esc_html($label); ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -318,15 +352,19 @@ $locations = $data['locations'] ?? array();
                     <input type="text" name="location_name[]" class="regular-text">
                 </div>
                 <div class="ofero-field">
-                    <label><?php esc_html_e('Type', 'ofero-generator'); ?></label>
+                    <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
                     <select name="location_type[]">
-                        <option value="headquarters"><?php esc_html_e('Headquarters', 'ofero-generator'); ?></option>
-                        <option value="branch"><?php esc_html_e('Branch', 'ofero-generator'); ?></option>
-                        <option value="store"><?php esc_html_e('Store', 'ofero-generator'); ?></option>
-                        <option value="warehouse"><?php esc_html_e('Warehouse', 'ofero-generator'); ?></option>
-                        <option value="office"><?php esc_html_e('Office', 'ofero-generator'); ?></option>
-                        <option value="factory"><?php esc_html_e('Factory', 'ofero-generator'); ?></option>
-                        <option value="distribution_center"><?php esc_html_e('Distribution Center', 'ofero-generator'); ?></option>
+                        <?php foreach ($locationTypes as $value => $label): ?>
+                            <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="ofero-field">
+                    <label><?php esc_html_e('Kind of space', 'ofero-generator'); ?></label>
+                    <select name="location_facility[]">
+                        <?php foreach ($facilityTypes as $value => $label): ?>
+                            <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>

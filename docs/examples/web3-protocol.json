@@ -11,11 +11,17 @@
   },
   "organization": {
     "legalName": "DeFi Protocol Foundation",
-    "brandName": "DeFiProtocol",
+    "brandName": {
+      "default": "DeFiProtocol"
+    },
     "entityType": "protocol",
     "legalForm": "Foundation",
-    "description": "Decentralized lending protocol enabling permissionless borrowing and lending of digital assets",
-    "tagline": "Decentralized lending for the next generation of finance",
+    "description": {
+      "default": "Decentralized lending protocol enabling permissionless borrowing and lending of digital assets"
+    },
+    "tagline": {
+      "default": "Decentralized lending for the next generation of finance"
+    },
     "website": "https://defiprotocol.xyz",
     "contactEmail": "team@defiprotocol.xyz",
     "contactPhone": "+41445551234",
@@ -111,13 +117,28 @@
         }
       ]
     },
-    "distribution": {
-      "team": 20,
-      "investors": 15,
-      "community": 40,
-      "treasury": 15,
-      "ecosystem": 10
-    },
+    "distribution": [
+      {
+        "category": "team",
+        "allocation": 20
+      },
+      {
+        "category": "investors",
+        "allocation": 15
+      },
+      {
+        "category": "community",
+        "allocation": 40
+      },
+      {
+        "category": "treasury",
+        "allocation": 15
+      },
+      {
+        "category": "ecosystem",
+        "allocation": 10
+      }
+    ],
     "vestingSchedule": {
       "team": "4 years linear vesting with 1 year cliff",
       "investors": "3 years linear vesting with 6 month cliff"
@@ -172,10 +193,13 @@
     ]
   },
   "verification": {
-    "domainProof": {
-      "method": "dns-txt",
-      "record": "_ofero-verification=abc123def456"
-    }
+    "domain": "defiprotocol.xyz",
+    "dns": [
+      {
+        "record": "_ofero-verification",
+        "value": "abc123def456"
+      }
+    ]
   },
   "communications": {
     "social": {
@@ -212,7 +236,9 @@
     ]
   },
   "ai": {
-    "allowIndexing": true,
-    "preferredSummary": "DeFiProtocol is a decentralized lending protocol enabling permissionless borrowing and lending of digital assets across multiple blockchains."
+    "indexing": {
+      "allow": true,
+      "allowTraining": false
+    }
   }
 }

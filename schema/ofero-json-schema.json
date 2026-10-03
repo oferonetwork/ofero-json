@@ -592,7 +592,20 @@
 						"international-branch",
 						"representative-office"
 					],
-					"description": "Type of location"
+					"description": "Organizational role of the location: headquarters, branch (domestic), international-branch, or representative-office (no commercial activity). Says where the location sits in the company, not what kind of space it is — use 'facility' for that."
+				},
+				"facility": {
+					"type": "string",
+					"enum": [
+						"office",
+						"store",
+						"venue",
+						"workshop",
+						"warehouse",
+						"factory",
+						"distribution-center"
+					],
+					"description": "What kind of space this is: office (administrative/client meetings), store (retail, customers buy on site), venue (customers are served on site: restaurant, hotel, clinic, gym, studio), workshop (repairs or services on customer goods), warehouse, factory, distribution-center. warehouse, factory and distribution-center are usually not open to the public."
 				},
 				"name": {
 					"type": "string",
@@ -3521,6 +3534,9 @@
 					"minItems": 1,
 					"uniqueItems": true
 				},
+				"serviceArea": {
+					"$ref": "#/$defs/ServiceArea"
+				},
 				"operationalStatus": {
 					"type": "string",
 					"enum": [
@@ -3530,6 +3546,112 @@
 						"pending"
 					],
 					"description": "Current operational status: active (operating), suspended (temporarily not operating), closed (permanently closed), pending (pending approval/launch)"
+				}
+			},
+			"additionalProperties": false
+		},
+		"ServiceArea": {
+			"type": "object",
+			"description": "Where and how the organization serves its customers, independent of its physical locations. Use it for businesses without a public venue (remote agencies, online services) or whose reach extends beyond their locations (mobile services, nationwide delivery). A country listed in 'countries' with no matching 'regions' entry means the whole country is served.",
+			"properties": {
+				"modes": {
+					"type": "array",
+					"description": "How the service is delivered: on-premises (customer comes to a location), at-customer (staff travels to the customer), remote (online, phone, email or shipped deliverables)",
+					"items": {
+						"type": "string",
+						"enum": [
+							"on-premises",
+							"at-customer",
+							"remote"
+						]
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				},
+				"worldwide": {
+					"type": "boolean",
+					"description": "True if customers in any country are served. When true, 'countries' and 'regions' are not needed."
+				},
+				"countries": {
+					"type": "array",
+					"description": "Countries served (ISO 3166-1 alpha-2). Each listed country is served in full unless narrowed by 'regions'.",
+					"items": {
+						"type": "string",
+						"pattern": "^[A-Z]{2}$"
+					},
+					"uniqueItems": true,
+					"examples": [
+						[
+							"US",
+							"CA"
+						]
+					]
+				},
+				"regions": {
+					"type": "array",
+					"description": "Sub-national areas served. When a country has one or more entries here, only those areas of that country are served.",
+					"items": {
+						"$ref": "#/$defs/ServiceRegion"
+					}
+				},
+				"radius": {
+					"type": "array",
+					"description": "Area within a distance of a location, typically for at-customer services (e.g., 'within 30 km of our workshop')",
+					"items": {
+						"type": "object",
+						"required": [
+							"locationId",
+							"km"
+						],
+						"properties": {
+							"locationId": {
+								"type": "string",
+								"description": "Must match a locations[].id"
+							},
+							"km": {
+								"type": "number",
+								"exclusiveMinimum": 0,
+								"description": "Radius in kilometers"
+							}
+						},
+						"additionalProperties": false
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"ServiceRegion": {
+			"type": "object",
+			"description": "A sub-national area served. Provide 'subdivision' when an ISO 3166-2 code exists; use 'name' for cities or informal areas.",
+			"required": [
+				"country"
+			],
+			"anyOf": [
+				{
+					"required": [
+						"subdivision"
+					]
+				},
+				{
+					"required": [
+						"name"
+					]
+				}
+			],
+			"properties": {
+				"country": {
+					"type": "string",
+					"description": "ISO 3166-1 alpha-2 country code",
+					"pattern": "^[A-Z]{2}$"
+				},
+				"subdivision": {
+					"type": "string",
+					"description": "ISO 3166-2 subdivision code (e.g., 'US-CA')",
+					"pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$"
+				},
+				"name": {
+					"type": "string",
+					"description": "City or area name (e.g., 'San Francisco Bay Area')"
 				}
 			},
 			"additionalProperties": false

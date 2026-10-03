@@ -78,6 +78,7 @@
     {
       "id": "loc-1",
       "type": "headquarters",
+      "facility": "venue",
       "name": "Speed Karting Arena",
       "address": {
         "street": "Industriestraße 100",

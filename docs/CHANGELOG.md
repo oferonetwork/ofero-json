@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `businessClassification.serviceArea` (optional) — where and how customers are served, independent of `locations`: `modes` (`on-premises | at-customer | remote`), `worldwide`, `countries` (ISO 3166-1), `regions` (ISO 3166-2 `subdivision` and/or `name`), `radius` (`locationId` + `km`). Covers businesses with no public venue (remote agencies, online services) and those whose reach goes beyond their locations. New `$defs.ServiceArea` and `$defs.ServiceRegion`. Consumer rules documented in SPECIFICATION.md → "Service Area". Backward compatible; `schemaVersion` unchanged.
+- Industry taxonomy 1.1.0: `advertising-agency` (under `marketing`), `audio-production` (under `creative-services`) with `commercial-audio` and `voice-over`.
+
+- `locations[].facility` (optional) — kind of space: `office | store | venue | workshop | warehouse | factory | distribution-center`. Independent of `locations[].type`, which stays the organizational role (`headquarters | branch | international-branch | representative-office`); the description of `type` now says so. Documented in SPECIFICATION.md → "Location role (`type`) vs. kind of space (`facility`)". All examples with locations now set `facility`.
+- New example: [`docs/examples/audio-agency-example.json`](examples/audio-agency-example.json) — remote audio advertising agency with no `locations`, using `serviceArea`.
+
+### Fixed
+
+- Six examples (`minimal`, `company-full`, `company-with-both-platforms`, `ecommerce-store`, `hotel-example`, `web3-protocol`) failed schema validation: translatable fields as plain strings, missing `organization.industry`, legacy `ai` / `verification` / `tokenomics.distribution` shapes, invalid location `type`. All examples now validate; `company-full` and `ecommerce-store` also show `serviceArea`.
+- `totalIndustries` in `ofero-json-industries.json` and the per-level counts in SPECIFICATION.md were out of date; they now match the list (234 industries).
+
 ### Documentation
 
 - `catalog.feeds[]` reference now states explicitly that the domain of a catalog is determined by `feeds[].type` (with `business.category`), never by the presence of `catalog.signature[]`. `signature[]` and `highlights[]` are domain-agnostic "show these first" previews — valid for dishes, services, packages or products alike. Added consumer rules for picking a presentation and for the no-feeds case. Reported by an external consumer whose renderer treated `signature[]` as restaurant-only. No schema change.
