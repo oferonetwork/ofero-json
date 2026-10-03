@@ -152,12 +152,29 @@
       }
     ]
   },
-  "brandAssets": {
+  "branding": {
     "logos": {
-      "primary": {
-        "svg": "https://fashionboutique.com/assets/logo.svg",
-        "png": "https://fashionboutique.com/assets/logo-1200x1200.png"
-      }
+      "vector": [
+        {
+          "type": "svg",
+          "url": "https://fashionboutique.com/assets/logo.svg",
+          "primary": true,
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "FashionBoutique logo"
+        }
+      ],
+      "raster": [
+        {
+          "type": "png",
+          "url": "https://fashionboutique.com/assets/logo-1200x1200.png",
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "FashionBoutique logo"
+        }
+      ]
     },
     "guidelines": {
       "colorPalette": {

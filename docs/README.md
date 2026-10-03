@@ -187,7 +187,7 @@ Enhance your file with:
 - `locations` - Physical locations
 - `banking` - Bank accounts
 - `wallets` - Blockchain wallets
-- `brandAssets` - Logos and brand guidelines
+- `branding` - Logos, icons, cover image and brand guidelines
 - `team` - Leadership and advisors
 - `tokenomics` - Token information
 - `apis` - Public APIs

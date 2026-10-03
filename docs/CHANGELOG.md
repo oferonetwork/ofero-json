@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`brandAssets` → `branding`.** The schema has always defined the branding section as top-level `branding` (`$defs.Branding`), but since the initial release SPECIFICATION.md, docs/README.md, three examples, the TypeScript validator and the reference tools used `brandAssets`. Because the schema allows unknown top-level keys, those files validated while their logos were ignored by schema-following consumers. Docs, examples and tools now use `branding`; the three examples were also converted from an ad-hoc `logos.primary.svg` shape to the schema's `logos.vector[]` / `logos.raster[]` / `icons`. SPECIFICATION.md documents the mistake and lets consumers read `brandAssets` as a fallback. The TypeScript validator warns when `brandAssets` is present. No schema change.
 - Six examples (`minimal`, `company-full`, `company-with-both-platforms`, `ecommerce-store`, `hotel-example`, `web3-protocol`) failed schema validation: translatable fields as plain strings, missing `organization.industry`, legacy `ai` / `verification` / `tokenomics.distribution` shapes, invalid location `type`. All examples now validate; `company-full` and `ecommerce-store` also show `serviceArea`.
 - `totalIndustries` in `ofero-json-industries.json` and the per-level counts in SPECIFICATION.md were out of date; they now match the list (234 industries).
 

@@ -323,7 +323,7 @@ class Ofero_Form_Handler {
             'locations' => $this->collect_locations(),
             'banking' => $this->collect_banking(),
             'wallets' => $this->collect_wallets(),
-            'brandAssets' => $this->collect_brand_assets(),
+            'branding' => $this->collect_branding(),
             'catalog' => $this->collect_catalog(),
             'communications' => array(
                 'social' => $this->collect_social(),
@@ -641,13 +641,16 @@ class Ofero_Form_Handler {
     }
 
     /**
-     * Collect brand assets from POST
+     * Collect the Branding tab rows from POST and convert them to the schema `branding` object
      */
-    private function collect_brand_assets() {
+    private function collect_branding() {
         $assets = array();
 
+        // guidelines, brandingKeywords etc. are not edited by the form; keep them from the saved file
+        $existing = $this->file_manager ? ($this->file_manager->load()['branding'] ?? array()) : array();
+
         if (!isset($_POST['brand_url']) || !is_array($_POST['brand_url'])) {
-            return $assets;
+            return Ofero_Branding_Mapper::rows_to_branding($assets, $existing);
         }
 
         $count = count($_POST['brand_url']);
@@ -665,7 +668,7 @@ class Ofero_Form_Handler {
             );
         }
 
-        return $assets;
+        return Ofero_Branding_Mapper::rows_to_branding($assets, $existing);
     }
 
     /**

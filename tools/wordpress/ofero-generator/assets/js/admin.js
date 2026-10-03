@@ -184,7 +184,7 @@
             locations: collectArrayData('location'),
             banking: collectBankingData(),
             wallets: collectWalletsData(),
-            brandAssets: collectBrandData(),
+            brandingRows: collectBrandData(),
             communications: {
                 social: collectSocialData(),
                 support: collectSupportData()

@@ -14,7 +14,8 @@ if (!defined('ABSPATH')) {
 // variable below is a method local, not a global. PHPCS cannot see the enclosing scope.
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 
-$brandAssets = $data['brandAssets'] ?? array();
+// Rows for the repeater, built from `branding` (or the pre-2.1.0 `brandAssets` list)
+$brandRows = Ofero_Branding_Mapper::data_to_rows($data);
 ?>
 <div class="ofero-card">
     <h2><?php esc_html_e('Brand Assets', 'ofero-generator'); ?></h2>
@@ -32,8 +33,8 @@ $brandAssets = $data['brandAssets'] ?? array();
     </div>
 
     <div id="branding-container">
-        <?php if (!empty($brandAssets)): ?>
-            <?php foreach ($brandAssets as $i => $asset): ?>
+        <?php if (!empty($brandRows)): ?>
+            <?php foreach ($brandRows as $i => $asset): ?>
                 <div class="ofero-repeater-item" data-index="<?php echo esc_attr($i); ?>">
                     <div class="ofero-repeater-header">
                         <span class="ofero-repeater-title">

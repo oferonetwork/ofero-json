@@ -3,7 +3,7 @@ Contributors: oferome
 Tags: ofero, shortcodes, business info, structured data, json
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -133,6 +133,11 @@ Yes. Enter the full URL in the "External URL" setting. The plugin will fetch and
 3. Organization card output
 
 == Changelog ==
+
+= 2.0.1 =
+* FIX: `[ofero_logo]` reads the schema's `branding` section. It previously read only `brandAssets`, a key that was never part of the ofero.json schema, so files following the schema showed no logo. `brandAssets` is still read as a fallback, including the flat list written by Ofero Generator before 2.1.0.
+* FIX: logo selection now applies the same rules to vector and raster logos: requested `variant`, then the primary logo, then requested `format`, then the first logo. Raster-only files (e.g. a single JPG) now render.
+* CHANGE: an `alt` attribute passed to the shortcode now takes precedence over the logo's own `alt`.
 
 = 2.0.0 =
 * BREAKING: requires ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files trigger a migration warning in the admin and may not render catalog data correctly.

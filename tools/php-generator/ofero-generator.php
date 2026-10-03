@@ -313,7 +313,7 @@ class OferoGenerator {
             'locations' => [],
             'banking' => [],
             'wallets' => [],
-            'brandAssets' => [],
+            'branding' => [],
             'catalog' => [],
             'communications' => [
                 'social' => [],
@@ -471,6 +471,43 @@ if (!$isPasswordSet) {
 }
 
 // Load ofero.json data for editor
+/**
+ * Rows for the Branding tab editor, built from the schema's `branding` object.
+ * Files written by earlier versions used a top-level `brandAssets` list (never part
+ * of the schema); it is read as a fallback and converted on the next save.
+ */
+function oferoBrandRows(array $data): array {
+    $branding = $data['branding'] ?? [];
+    $rows = [];
+    foreach (['vector', 'raster'] as $bucket) {
+        foreach ($branding['logos'][$bucket] ?? [] as $logo) {
+            if (empty($logo['url'])) continue;
+            $color = $logo['colorVariant'] ?? 'color';
+            $variant = !empty($logo['primary']) ? 'primary'
+                : (in_array($color, ['dark', 'light', 'monochrome'], true) ? $color : 'primary');
+            $rows[] = ['type' => 'logo', 'variant' => $variant, 'url' => $logo['url'], 'format' => $logo['type'] ?? ''];
+        }
+    }
+    foreach (['ico' => 'ico', 'png32x32' => 'png', 'png192x192' => 'png'] as $key => $format) {
+        if (!empty($branding['icons']['favicon'][$key])) {
+            $rows[] = ['type' => 'favicon', 'variant' => 'primary', 'url' => $branding['icons']['favicon'][$key], 'format' => $format];
+        }
+    }
+    foreach ($branding['icons']['appIcons'] ?? [] as $icon) {
+        if (!empty($icon['url'])) {
+            $rows[] = ['type' => 'icon', 'variant' => 'primary', 'url' => $icon['url'], 'format' => ''];
+        }
+    }
+    if (empty($rows) && !empty($data['brandAssets']) && isset($data['brandAssets'][0])) {
+        foreach ($data['brandAssets'] as $asset) {
+            if (is_array($asset) && !empty($asset['url'])) {
+                $rows[] = $asset;
+            }
+        }
+    }
+    return $rows;
+}
+
 $oferoData = [];
 if ($view === 'editor') {
     $oferoData = $app->loadOferoJson();
@@ -1267,8 +1304,8 @@ if ($view === 'editor') {
                     </div>
                     <div id="brandingContainer">
                         <?php
-                        $brandAssets = $oferoData['brandAssets'] ?? [];
-                        foreach ($brandAssets as $index => $asset):
+                        $brandRows = oferoBrandRows($oferoData);
+                        foreach ($brandRows as $index => $asset):
                         ?>
                         <div class="array-item brand-item" data-index="<?php echo $index; ?>">
                             <button type="button" class="array-item-remove" onclick="removeBrandAsset(this)">&times;</button>
@@ -1671,7 +1708,6 @@ if ($view === 'editor') {
                 locations: collectLocations(),
                 banking: collectBanking(),
                 wallets: collectWallets(),
-                brandAssets: collectBrandAssets(),
                 branding: collectBranding(),
                 communications: {
                     social: collectSocial(),
@@ -1780,30 +1816,76 @@ if ($view === 'editor') {
             return items;
         }
 
-        function collectBrandAssets() {
-            const items = [];
-            document.querySelectorAll('.brand-item').forEach(item => {
-                items.push({
-                    type: item.querySelector('.brand-type')?.value || '',
-                    variant: item.querySelector('.brand-variant')?.value || '',
-                    url: item.querySelector('.brand-url')?.value || '',
-                    format: item.querySelector('.brand-format')?.value || ''
-                });
-            });
-            return items;
-        }
+        // Builds the schema's `branding` object (logos.vector/raster, icons, coverImage) from the
+        // Branding tab. Keys the editor does not manage (guidelines, brandingKeywords) are kept.
+        const existingBranding = <?php echo json_encode((object) ($oferoData['branding'] ?? []), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
 
         function collectBranding() {
-            const coverUrl = document.getElementById('coverImageUrl')?.value?.trim() || '';
-            if (!coverUrl) return null;
-            const branding = { coverImage: { url: coverUrl } };
-            const alt = document.getElementById('coverImageAlt')?.value?.trim() || '';
-            if (alt) branding.coverImage.alt = alt;
-            const width = parseInt(document.getElementById('coverImageWidth')?.value || '');
-            if (!isNaN(width) && width > 0) branding.coverImage.width = width;
-            const height = parseInt(document.getElementById('coverImageHeight')?.value || '');
-            if (!isNaN(height) && height > 0) branding.coverImage.height = height;
-            return branding;
+            const branding = Object.assign({}, existingBranding);
+            delete branding.logos;
+            delete branding.icons;
+            delete branding.coverImage;
+
+            const logos = { vector: [], raster: [] };
+            const favicon = {};
+            const appIcons = [];
+            const colors = { dark: 'dark', light: 'light', monochrome: 'monochrome', primary: 'color' };
+            let hasPrimary = false;
+
+            document.querySelectorAll('.brand-item').forEach(item => {
+                const url = item.querySelector('.brand-url')?.value?.trim() || '';
+                if (!url) return;
+                const type = item.querySelector('.brand-type')?.value || 'logo';
+                const variant = item.querySelector('.brand-variant')?.value || 'primary';
+                let format = (item.querySelector('.brand-format')?.value || '').trim().toLowerCase();
+                if (!format) {
+                    const m = url.split('?')[0].match(/\.([a-z0-9]+)$/i);
+                    format = m ? m[1].toLowerCase() : '';
+                }
+
+                if (type === 'favicon') {
+                    favicon[format === 'ico' ? 'ico' : 'png32x32'] = url;
+                } else if (type === 'icon') {
+                    appIcons.push({ url });
+                } else if (type === 'banner') {
+                    // No banner slot in the schema; used as cover image when none is set below
+                    branding._banner = branding._banner || url;
+                } else {
+                    const logo = { type: ['svg', 'pdf', 'png', 'jpeg', 'jpg'].includes(format) ? format : 'png', url };
+                    if (variant === 'primary' && !hasPrimary) {
+                        logo.primary = true;
+                        hasPrimary = true;
+                    }
+                    if (colors[variant]) logo.colorVariant = colors[variant];
+                    logos[logo.type === 'svg' || logo.type === 'pdf' ? 'vector' : 'raster'].push(logo);
+                }
+            });
+
+            if (logos.vector.length || logos.raster.length) {
+                if (!logos.vector.length) delete logos.vector;
+                if (!logos.raster.length) delete logos.raster;
+                branding.logos = logos;
+            }
+            if (Object.keys(favicon).length || appIcons.length) {
+                branding.icons = {};
+                if (Object.keys(favicon).length) branding.icons.favicon = favicon;
+                if (appIcons.length) branding.icons.appIcons = appIcons;
+            }
+
+            const coverUrl = document.getElementById('coverImageUrl')?.value?.trim() || branding._banner || '';
+            delete branding._banner;
+            if (coverUrl) {
+                branding.coverImage = { url: coverUrl };
+                const alt = document.getElementById('coverImageAlt')?.value?.trim() || '';
+                if (alt) branding.coverImage.alt = alt;
+                const width = parseInt(document.getElementById('coverImageWidth')?.value || '');
+                if (!isNaN(width) && width > 0) branding.coverImage.width = width;
+                const height = parseInt(document.getElementById('coverImageHeight')?.value || '');
+                if (!isNaN(height) && height > 0) branding.coverImage.height = height;
+            }
+
+            // undefined drops the key from JSON.stringify; the schema rejects "branding": null
+            return Object.keys(branding).length ? branding : undefined;
         }
 
         function collectSocial() {

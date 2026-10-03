@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Shortcodes
  * Plugin URI: https://ofero.me/ofero-json
  * Description: Display data from your ofero.json file using simple shortcodes. Compatible with Elementor, WPBakery, Gutenberg, and any theme.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_SHORTCODES_VERSION', '2.0.0');
+define('OFERO_SHORTCODES_VERSION', '2.0.1');
 define('OFERO_SHORTCODES_PATH', plugin_dir_path(__FILE__));
 define('OFERO_SHORTCODES_URL', plugin_dir_url(__FILE__));
 
@@ -343,7 +343,7 @@ class Ofero_Shortcodes {
             <pre>[ofero_banking index="0" show="bank,iban,bic"]</pre>
 
             <h3>Logo Shortcode</h3>
-            <p>Use <code>[ofero_logo]</code> to display your logo from brand assets.</p>
+            <p>Use <code>[ofero_logo]</code> to display your logo from the <code>branding</code> section.</p>
             <pre>[ofero_logo variant="light" width="200px"]</pre>
             <p class="description">Attributes: <code>variant</code> (light/dark/color), <code>width</code>, <code>height</code>, <code>alt</code></p>
 
@@ -1022,41 +1022,32 @@ class Ofero_Shortcodes {
             'alt' => '',
         ), $atts, 'ofero_logo');
 
-        $brand = $this->get_ofero_section('brandAssets');
-        if (!is_array($brand)) {
+        $logos = $this->get_logo_candidates();
+        if (empty($logos)) {
             return '';
         }
 
-        $logo_url = '';
-        $logo_alt = $atts['alt'];
-
-        // Try to find matching logo
-        if (!empty($brand['logos']['vector'])) {
-            foreach ($brand['logos']['vector'] as $logo) {
-                if (!empty($atts['variant']) && isset($logo['colorVariant']) && $logo['colorVariant'] === $atts['variant']) {
-                    $logo_url = $logo['url'] ?? '';
-                    $logo_alt = $logo['alt'] ?? $logo_alt;
-                    break;
-                } elseif (isset($logo['primary']) && $logo['primary']) {
-                    $logo_url = $logo['url'] ?? '';
-                    $logo_alt = $logo['alt'] ?? $logo_alt;
+        // Preference: requested colorVariant, then the primary logo, then requested format, then the first logo
+        $pick = null;
+        $rules = array(
+            function ($logo) use ($atts) { return $atts['variant'] !== '' && ($logo['colorVariant'] ?? '') === $atts['variant']; },
+            function ($logo) { return !empty($logo['primary']); },
+            function ($logo) use ($atts) { return ($logo['type'] ?? '') === $atts['format']; },
+        );
+        foreach ($rules as $rule) {
+            foreach ($logos as $logo) {
+                if ($rule($logo)) {
+                    $pick = $logo;
+                    break 2;
                 }
             }
         }
-
-        // Fallback to raster logos
-        if (empty($logo_url) && !empty($brand['logos']['raster'])) {
-            foreach ($brand['logos']['raster'] as $logo) {
-                if ($logo['type'] === $atts['format']) {
-                    $logo_url = $logo['url'] ?? '';
-                    break;
-                }
-            }
+        if ($pick === null) {
+            $pick = $logos[0];
         }
 
-        if (empty($logo_url)) {
-            return '';
-        }
+        $logo_url = $pick['url'];
+        $logo_alt = $atts['alt'] !== '' ? $atts['alt'] : ($pick['alt'] ?? '');
 
         $style = '';
         if (!empty($atts['width'])) {
@@ -1077,6 +1068,52 @@ class Ofero_Shortcodes {
         $output .= '/>';
 
         return $output;
+    }
+
+    /**
+     * Logos from `branding.logos` (vector first, then raster), each with a non-empty url.
+     *
+     * Falls back to `brandAssets`, which was never part of the schema but was written by
+     * older generators: either the same logos.vector/raster shape, or the flat
+     * [{type, variant, url, format}] list from Ofero Generator before 2.1.0.
+     */
+    private function get_logo_candidates() {
+        $brand = $this->get_ofero_section('branding');
+        if (!is_array($brand) || empty($brand['logos'])) {
+            $brand = $this->get_ofero_section('brandAssets');
+        }
+        if (!is_array($brand)) {
+            return array();
+        }
+
+        $logos = array();
+
+        if (isset($brand[0])) {
+            $colors = array('primary' => 'color', 'full-color' => 'color', 'dark' => 'dark', 'light' => 'light', 'monochrome' => 'monochrome');
+            foreach ($brand as $asset) {
+                if (!is_array($asset) || ($asset['type'] ?? 'logo') !== 'logo' || empty($asset['url'])) {
+                    continue;
+                }
+                $variant = $asset['variant'] ?? 'primary';
+                $logos[] = array(
+                    'url' => $asset['url'],
+                    'type' => strtolower($asset['format'] ?? ''),
+                    'primary' => $variant === 'primary',
+                    'colorVariant' => $colors[$variant] ?? '',
+                );
+            }
+            return $logos;
+        }
+
+        foreach (array('vector', 'raster') as $bucket) {
+            foreach ($brand['logos'][$bucket] ?? array() as $logo) {
+                if (is_array($logo) && !empty($logo['url'])) {
+                    $logos[] = $logo;
+                }
+            }
+        }
+
+        return $logos;
     }
 
     /**

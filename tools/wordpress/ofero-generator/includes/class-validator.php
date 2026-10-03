@@ -424,20 +424,42 @@ class Ofero_Validator {
             }
         }
 
-        // Brand asset URL validation
-        if (!empty($data['brandAssets']) && is_array($data['brandAssets'])) {
-            foreach ($data['brandAssets'] as $i => $asset) {
-                if (!empty($asset['url']) && !filter_var($asset['url'], FILTER_VALIDATE_URL)) {
+        // Branding URLs (schema: all must be HTTPS)
+        if (!empty($data['branding']) && is_array($data['branding'])) {
+            $brand_urls = array();
+            foreach (array('vector', 'raster') as $bucket) {
+                foreach ($data['branding']['logos'][$bucket] ?? array() as $i => $logo) {
+                    $brand_urls["branding.logos.{$bucket}.{$i}.url"] = $logo['url'] ?? '';
+                }
+            }
+            foreach ($data['branding']['icons']['favicon'] ?? array() as $key => $url) {
+                $brand_urls["branding.icons.favicon.{$key}"] = $url;
+            }
+            foreach ($data['branding']['icons']['appIcons'] ?? array() as $i => $icon) {
+                $brand_urls["branding.icons.appIcons.{$i}.url"] = $icon['url'] ?? '';
+            }
+            $brand_urls['branding.coverImage.url'] = $data['branding']['coverImage']['url'] ?? '';
+
+            foreach ($brand_urls as $field => $url) {
+                if ($url !== '' && (!filter_var($url, FILTER_VALIDATE_URL) || stripos($url, 'https://') !== 0)) {
                     $errors[] = array(
-                        'field' => "brandAssets.{$i}.url",
+                        'field' => $field,
                         'message' => sprintf(
-                            /* translators: %d: zero-based position of the asset in the brandAssets array. */
-                            __('Invalid URL at brand asset index %d.', 'ofero-generator'),
-                            $i
+                            /* translators: %s: path of the invalid URL inside the branding section. */
+                            __('Invalid branding URL at %s (must be a valid https:// URL).', 'ofero-generator'),
+                            $field
                         )
                     );
                 }
             }
+        }
+
+        // Pre-2.1.0 files used a top-level brandAssets key that is not in the schema
+        if (isset($data['brandAssets'])) {
+            $errors[] = array(
+                'field' => 'branding',
+                'message' => __('This file uses "brandAssets", which is not part of the ofero.json schema. Open the Branding tab and save to convert it to "branding".', 'ofero-generator')
+            );
         }
 
         // Wallet address validation (basic format check)
@@ -512,7 +534,7 @@ class Ofero_Validator {
             } elseif (strpos($field, 'wallets') === 0) {
                 $summary['sections']['wallets']['errors']++;
                 $summary['sections']['wallets']['valid'] = false;
-            } elseif (strpos($field, 'brandAssets') === 0) {
+            } elseif (strpos($field, 'branding') === 0) {
                 $summary['sections']['branding']['errors']++;
                 $summary['sections']['branding']['valid'] = false;
             } elseif (strpos($field, 'communications') === 0) {

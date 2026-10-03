@@ -206,7 +206,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"wallets": [
 		/* Blockchain wallets */
 	],
-	"brandAssets": {
+	"branding": {
 		/* Logos, icons, brand guidelines */
 	},
 	"catalog": {
@@ -1437,9 +1437,21 @@ Blockchain wallet addresses with extensions for web3-specific metadata.
 }
 ```
 
-### Brand Assets Section
+### Branding Section
 
-Logos, icons, and brand guidelines.
+Logos, icons, cover image and brand guidelines, under the top-level `branding` key.
+
+> **`brandAssets` is not a valid key.** Earlier versions of this document, the examples and the reference tools used `brandAssets` for this section, but the schema has always defined it as `branding`. Because the schema allows unknown top-level keys, files using `brandAssets` still validate — and their logos are silently ignored by consumers that follow the schema. Publishers should rename the key to `branding` (the structure is the same). Consumers may read `brandAssets` as a fallback when `branding` is absent.
+
+`branding` contains:
+
+| Field | Description |
+|---|---|
+| `logos.vector[]` / `logos.raster[]` | Logo files (SVG/PDF vs PNG/JPG), each with `url`, `type`, optional `primary`, `aspectRatio`, `logoType`, `colorVariant`, `width`, `height`, `alt` |
+| `icons.favicon` | `ico`, `png32x32`, `png192x192` URLs |
+| `icons.appIcons[]` | `url`, `resolution`, `purpose` |
+| `coverImage` | Cover/header image: `url` (required), `alt`, `width`, `height`. Recommended 1200×628 (Open Graph) |
+| `guidelines` | `brandBook` URL and `colorPalette` (`primary`, `secondary`, `accent` as `#RRGGBB`) |
 
 #### Logo Best Practices
 
@@ -1474,7 +1486,7 @@ For maximum portal compatibility, provide multiple logo variants:
 
 ```json
 {
-	"brandAssets": {
+	"branding": {
 		"logos": {
 			"vector": [
 				{
@@ -1528,7 +1540,7 @@ For maximum portal compatibility, provide multiple logo variants:
 
 ```json
 {
-	"brandAssets": {
+	"branding": {
 		"logos": {
 			"vector": [
 				{
@@ -2494,7 +2506,7 @@ Only these fields use the TranslatableString structure:
 
 - `name` - Location name
 
-**Brand Assets:**
+**Branding:**
 
 - `brandingKeywords` - Branding keywords (deprecated, use top-level `keywords` instead)
 

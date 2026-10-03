@@ -295,7 +295,7 @@ class Ofero_File_Manager {
             'locations' => array(),
             'banking' => array(),
             'wallets' => array(),
-            'brandAssets' => array(),
+            'branding' => array(),
             'catalog' => array(),
             'communications' => array(
                 'social' => array(),

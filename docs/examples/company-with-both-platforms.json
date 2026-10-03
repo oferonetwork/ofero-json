@@ -102,16 +102,40 @@
       ]
     }
   },
-  "brandAssets": {
+  "branding": {
     "logos": {
-      "primary": {
-        "svg": "https://globalfashion.example.com/assets/logo.svg",
-        "png": "https://globalfashion.example.com/assets/logo-1024.png"
-      },
-      "icon": {
-        "png": "https://globalfashion.example.com/assets/icon-512.png",
+      "vector": [
+        {
+          "type": "svg",
+          "url": "https://globalfashion.example.com/assets/logo.svg",
+          "primary": true,
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "GlobalFashion logo"
+        }
+      ],
+      "raster": [
+        {
+          "type": "png",
+          "url": "https://globalfashion.example.com/assets/logo-1024.png",
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "GlobalFashion logo"
+        }
+      ]
+    },
+    "icons": {
+      "favicon": {
         "ico": "https://globalfashion.example.com/favicon.ico"
-      }
+      },
+      "appIcons": [
+        {
+          "url": "https://globalfashion.example.com/assets/icon-512.png",
+          "purpose": "webapp"
+        }
+      ]
     }
   }
 }

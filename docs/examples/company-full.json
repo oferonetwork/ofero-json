@@ -122,16 +122,40 @@
       }
     }
   ],
-  "brandAssets": {
+  "branding": {
     "logos": {
-      "primary": {
-        "svg": "https://techcorp.example.com/assets/logo.svg",
-        "png": "https://techcorp.example.com/assets/logo.png"
-      },
-      "icon": {
-        "png": "https://techcorp.example.com/assets/icon.png",
+      "vector": [
+        {
+          "type": "svg",
+          "url": "https://techcorp.example.com/assets/logo.svg",
+          "primary": true,
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "TechCorp logo"
+        }
+      ],
+      "raster": [
+        {
+          "type": "png",
+          "url": "https://techcorp.example.com/assets/logo.png",
+          "aspectRatio": "square",
+          "logoType": "full",
+          "colorVariant": "color",
+          "alt": "TechCorp logo"
+        }
+      ]
+    },
+    "icons": {
+      "favicon": {
         "ico": "https://techcorp.example.com/favicon.ico"
-      }
+      },
+      "appIcons": [
+        {
+          "url": "https://techcorp.example.com/assets/icon.png",
+          "purpose": "webapp"
+        }
+      ]
     },
     "guidelines": {
       "colorPalette": {

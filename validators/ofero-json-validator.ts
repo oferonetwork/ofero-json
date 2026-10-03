@@ -168,7 +168,7 @@ export function validateOverlay(overlay: any): ValidationResult {
 		'generatedAt',
 		'organization',
 		'locations',
-		'brandAssets',
+		'branding',
 		'featured',
 		'team',
 		'tokenomics',
@@ -458,12 +458,12 @@ function validateStrict(data: any): ValidationError[] {
 
 	// Validate hex colors
 	const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
-	if (data.brandAssets?.guidelines?.colorPalette) {
-		const palette = data.brandAssets.guidelines.colorPalette;
+	if (data.branding?.guidelines?.colorPalette) {
+		const palette = data.branding.guidelines.colorPalette;
 		['primary', 'secondary', 'accent'].forEach((color) => {
 			if (palette[color] && !hexColorRegex.test(palette[color])) {
 				errors.push({
-					path: `brandAssets.guidelines.colorPalette.${color}`,
+					path: `branding.guidelines.colorPalette.${color}`,
 					message: 'Color must be a valid hex color (e.g., #FFD530)'
 				});
 			}
@@ -656,6 +656,15 @@ function getRecommendedFieldWarnings(data: any): ValidationWarning[] {
 			path: 'organization.website',
 			message: 'HTTPS is recommended for website URL',
 			type: 'security'
+		});
+	}
+
+	// brandAssets was used by early docs and tools but was never part of the schema
+	if (data.brandAssets !== undefined) {
+		warnings.push({
+			path: 'brandAssets',
+			message: '"brandAssets" is not part of the schema and is ignored by consumers; rename it to "branding" (same structure: logos.vector/raster, icons, guidelines)',
+			type: 'deprecated'
 		});
 	}
 

@@ -28,6 +28,7 @@ require_once OFERO_GENERATOR_PATH . 'includes/class-admin-page.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-form-handler.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-validator.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-file-manager.php';
+require_once OFERO_GENERATOR_PATH . 'includes/class-branding-mapper.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-license-verifier.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-woocommerce-sync.php';
 
