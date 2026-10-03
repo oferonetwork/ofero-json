@@ -369,7 +369,7 @@ class Ofero_Shortcodes {
 
             <h3>Promo Codes Shortcode</h3>
             <p>Use <code>[ofero_promo]</code> to display promotional codes.</p>
-            <pre>[ofero_promo show="code,description,discount,expiry" active_only="true"]</pre>
+            <pre>[ofero_promo show="code,description,discount,products,expiry,terms" active_only="true"]</pre>
             <p class="description">Automatically filters expired and inactive codes when <code>active_only="true"</code></p>
 
             <h3>Contact Form Shortcode</h3>
@@ -1399,27 +1399,37 @@ class Ofero_Shortcodes {
             'active_only' => 'true',
         ), $atts, 'ofero_promo');
 
-        $promos = $this->get_ofero_section('promoCodes');
+        // Schema key is `promotions`; `promoCodes` was used by early docs and is read as a fallback
+        $promos = $this->get_ofero_section('promotions');
+        if (!is_array($promos) || empty($promos)) {
+            $promos = $this->get_ofero_section('promoCodes');
+        }
         if (!is_array($promos) || empty($promos)) {
             return '';
         }
-        $data = array('promoCodes' => $promos);
 
         $fields = array_map('trim', explode(',', $atts['show']));
         $active_only = $atts['active_only'] === 'true';
+        $today = gmdate('Y-m-d');
 
         $output = '<div class="' . esc_attr($atts['class']) . '">';
 
-        foreach ($data['promoCodes'] as $promo) {
-            // Skip inactive promos if active_only is true
-            if ($active_only && isset($promo['active']) && !$promo['active']) {
+        foreach ($promos as $promo) {
+            if (!is_array($promo)) {
                 continue;
             }
+            // validTo / validFrom are the schema fields; validUntil and active are legacy
+            $valid_to = $promo['validTo'] ?? ($promo['validUntil'] ?? '');
+            $valid_from = $promo['validFrom'] ?? '';
 
-            // Check expiry date
-            if ($active_only && !empty($promo['validUntil'])) {
-                $expiry = strtotime($promo['validUntil']);
-                if ($expiry && $expiry < time()) {
+            if ($active_only) {
+                if (isset($promo['active']) && !$promo['active']) {
+                    continue;
+                }
+                if ($valid_to !== '' && substr($valid_to, 0, 10) < $today) {
+                    continue;
+                }
+                if ($valid_from !== '' && substr($valid_from, 0, 10) > $today) {
                     continue;
                 }
             }
@@ -1443,27 +1453,46 @@ class Ofero_Shortcodes {
                         break;
 
                     case 'discount':
-                        if (!empty($promo['discountPercentage'])) {
-                            $output .= '<p class="ofero-promo-discount">';
-                            $output .= '<strong>' . esc_html($promo['discountPercentage']) . '%</strong> OFF';
-                            $output .= '</p>';
+                        $discount = '';
+                        if (!empty($promo['discountValue'])) {
+                            $discount = $promo['discountValue'];
+                        } elseif (($promo['discountType'] ?? '') === 'free-shipping') {
+                            $discount = 'Free shipping';
+                        } elseif (!empty($promo['discountPercentage'])) {
+                            $discount = $promo['discountPercentage'] . '%';
                         } elseif (!empty($promo['discountAmount'])) {
+                            $discount = trim($promo['discountAmount'] . ' ' . ($promo['currency'] ?? ''));
+                        }
+                        if ($discount !== '') {
                             $output .= '<p class="ofero-promo-discount">';
-                            $output .= '<strong>' . esc_html($promo['discountAmount']) . ' ' . esc_html($promo['currency'] ?? '') . '</strong> OFF';
+                            $output .= '<strong>' . esc_html($discount) . '</strong>';
+                            if (($promo['discountType'] ?? '') !== 'free-shipping') {
+                                $output .= ' OFF';
+                            }
                             $output .= '</p>';
                         }
                         break;
 
+                    case 'products':
+                        if (!empty($promo['applicableProducts'])) {
+                            $output .= '<p class="ofero-promo-products"><small>' . esc_html($promo['applicableProducts']) . '</small></p>';
+                        }
+                        break;
+
                     case 'expiry':
-                        if (!empty($promo['validUntil'])) {
+                        if ($valid_to !== '') {
                             $output .= '<p class="ofero-promo-expiry">';
-                            $output .= '<small>Valid until: ' . esc_html($promo['validUntil']) . '</small>';
+                            $output .= '<small>Valid until: ' . esc_html($valid_to) . '</small>';
                             $output .= '</p>';
                         }
                         break;
 
                     case 'terms':
-                        if (!empty($promo['terms'])) {
+                        if (!empty($promo['termsUrl'])) {
+                            $output .= '<p class="ofero-promo-terms">';
+                            $output .= '<small><a href="' . esc_url($promo['termsUrl']) . '" target="_blank" rel="noopener">Terms and conditions</a></small>';
+                            $output .= '</p>';
+                        } elseif (!empty($promo['terms'])) {
                             $output .= '<p class="ofero-promo-terms">';
                             $output .= '<small>' . esc_html($promo['terms']) . '</small>';
                             $output .= '</p>';

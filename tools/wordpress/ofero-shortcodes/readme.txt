@@ -138,6 +138,9 @@ Yes. Enter the full URL in the "External URL" setting. The plugin will fetch and
 * FIX: `[ofero_logo]` reads the schema's `branding` section. It previously read only `brandAssets`, a key that was never part of the ofero.json schema, so files following the schema showed no logo. `brandAssets` is still read as a fallback, including the flat list written by Ofero Generator before 2.1.0.
 * FIX: logo selection now applies the same rules to vector and raster logos: requested `variant`, then the primary logo, then requested `format`, then the first logo. Raster-only files (e.g. a single JPG) now render.
 * CHANGE: an `alt` attribute passed to the shortcode now takes precedence over the logo's own `alt`.
+* FIX: `[ofero_promo]` reads the schema's `promotions` array and its fields (`discountType`, `discountValue`, `validFrom`, `validTo`, `termsUrl`, `applicableProducts`). It previously read only `promoCodes` with `discountPercentage` / `discountAmount` / `validUntil`, none of which are in the schema, so it rendered nothing for valid files. The old key and fields are still read as a fallback.
+* FIX: with `active_only="true"`, promotions whose `validFrom` is in the future are hidden too.
+* NEW: `[ofero_promo]` fields `products` (applicableProducts) and `terms` now links `termsUrl`.
 
 = 2.0.0 =
 * BREAKING: requires ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files trigger a migration warning in the admin and may not render catalog data correctly.

@@ -659,23 +659,23 @@ function getRecommendedFieldWarnings(data: any): ValidationWarning[] {
 		});
 	}
 
-	// brandAssets was used by early docs and tools but was never part of the schema
-	if (data.brandAssets !== undefined) {
-		warnings.push({
-			path: 'brandAssets',
-			message: '"brandAssets" is not part of the schema and is ignored by consumers; rename it to "branding" (same structure: logos.vector/raster, icons, guidelines)',
-			type: 'deprecated'
-		});
-	}
-
-	// apis was used by early docs and examples but the schema key is apiEndpoints
-	if (data.apis !== undefined) {
-		warnings.push({
-			path: 'apis',
-			message: '"apis" is not part of the schema and is ignored by consumers; rename it to "apiEndpoints" (same structure: public[] with name, baseUrl, docsUrl…)',
-			type: 'deprecated'
-		});
-	}
+	// Top-level keys used by early docs, examples and tools that were never in the schema.
+	// Unknown keys pass schema validation, so without this warning they are silently ignored.
+	const legacyKeys: Record<string, string> = {
+		brandAssets: 'branding',
+		apis: 'apiEndpoints',
+		promoCodes: 'promotions',
+		mutualPartnerships: 'partnerships'
+	};
+	Object.entries(legacyKeys).forEach(([legacy, current]) => {
+		if (data[legacy] !== undefined) {
+			warnings.push({
+				path: legacy,
+				message: `"${legacy}" is not part of the schema and is ignored by consumers; rename it to "${current}" (same structure)`,
+				type: 'deprecated'
+			});
+		}
+	});
 
 	// Recommend verification section
 	if (!data.verification) {

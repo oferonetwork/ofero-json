@@ -238,7 +238,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"certificates": [
 		/* Certifications */
 	],
-	"promoCodes": [
+	"promotions": [
 		/* Promotional offers */
 	],
 	"team": {
@@ -253,7 +253,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"integrations": {
 		/* Partner integrations */
 	},
-	"mutualPartnerships": [
+	"partnerships": [
 		/* Verified partnerships */
 	],
 	"analytics": {
@@ -1903,17 +1903,17 @@ Information about NFT collections owned or operated by the organization.
 }
 ```
 
-### Mutual Partnerships Section
+### Partnerships Section
 
-Verified partnerships with other organizations that also have ofero.json files.
+Verified partnerships with other organizations that also have ofero.json files, under the top-level `partnerships` key. (Earlier versions of this document called it `mutualPartnerships`; the schema key has always been `partnerships`.)
 
 ```json
 {
-	"mutualPartnerships": [
+	"partnerships": [
 		{
 			"name": "Partner Organization Name",
 			"website": "https://partner.com",
-			"oferoJson": "https://partner.com/.well-known/ofero.json", // MUST match partner's fileLocation exactly
+			"oferoJson": "https://partner.com/.well-known/ofero.json", // MUST match partner's canonicalUrl exactly
 			"description": "Strategic partnership for...",
 			"status": "verified" // pending-verification | verified | unreciprocated-invalid
 		}
@@ -1923,9 +1923,9 @@ Verified partnerships with other organizations that also have ofero.json files.
 
 **Partnership Verification Rules:**
 
-1. **URL Matching Requirement**: The `oferoJson` URL you specify **must exactly match** the partner's `fileLocation` field in their ofero.json file.
+1. **URL Matching Requirement**: The `oferoJson` URL you specify **must exactly match** the partner's `canonicalUrl` field in their ofero.json file.
 
-2. **Reciprocal Listing**: For a partnership to be `"verified"`, both organizations must list each other in their respective `mutualPartnerships` arrays.
+2. **Reciprocal Listing**: For a partnership to be `"verified"`, both organizations must list each other in their respective `partnerships` arrays.
 
 3. **Status Values**:
    - `"pending-verification"`: Partnership not yet verified (default status). Waiting for reciprocal listing or validation.
@@ -1940,8 +1940,8 @@ Organization A (`https://company-a.com/.well-known/ofero.json`):
 
 ```json
 {
-	"fileLocation": "https://company-a.com/.well-known/ofero.json",
-	"mutualPartnerships": [
+	"canonicalUrl": "https://company-a.com/.well-known/ofero.json",
+	"partnerships": [
 		{
 			"name": "Company B",
 			"oferoJson": "https://company-b.com/.well-known/ofero.json",
@@ -1955,11 +1955,11 @@ Organization B (`https://company-b.com/.well-known/ofero.json`):
 
 ```json
 {
-	"fileLocation": "https://company-b.com/.well-known/ofero.json",
-	"mutualPartnerships": [
+	"canonicalUrl": "https://company-b.com/.well-known/ofero.json",
+	"partnerships": [
 		{
 			"name": "Company A",
-			"oferoJson": "https://company-a.com/.well-known/ofero.json", // Matches Company A's fileLocation ✓
+			"oferoJson": "https://company-a.com/.well-known/ofero.json", // Matches Company A's canonicalUrl ✓
 			"status": "verified"
 		}
 	]
@@ -2652,7 +2652,7 @@ All basic validation plus:
 - ISO currency codes (ISO 4217)
 - ISO language codes (ISO 639-1) and locale codes (e.g., `en-US`, `ro-RO`)
 - ISO 8601 duration format for `privacy.dataRetentionPeriod`
-- `mutualPartnerships.oferoJson` matches HTTPS URL format
+- `partnerships.oferoJson` matches HTTPS URL format
 - Conditional validation: If `entityType="company"` then `industry` required
 - Conditional validation: If `entityType` in ["association","ngo","foundation"] then `socialActivityDomain` and `nonProfitStatus` required
 - TranslatableString `translations` keys match locale pattern `^[a-z]{2}(-[A-Z]{2})?$`
@@ -2670,8 +2670,8 @@ All moderate validation plus:
 - LEI format validation (20 characters, alphanumeric)
 - DUNS format validation (9 digits)
 - Security audit date validation (not in future)
-- Cross-validation: Fetch partner's ofero.json and verify `mutualPartnerships` reciprocity
-- Cross-validation: Verify `mutualPartnerships.oferoJson` exactly matches partner's `fileLocation`
+- Cross-validation: Fetch partner's ofero.json and verify `partnerships` reciprocity
+- Cross-validation: Verify `partnerships.oferoJson` exactly matches partner's `canonicalUrl`
 - Cross-validation: Verify all HTTPS URLs are accessible (200 OK status)
 
 ### Recommended Validation Level
@@ -3020,7 +3020,7 @@ For complete examples, see:
 - `securityAudits` array under Security section for third-party audit transparency
 - E.164 phone validation pattern on 8 phone fields for international format
 - Conditional validation for entity types (company requires `industry`, NGOs require `socialActivityDomain` + `nonProfitStatus`)
-- Default value `"pending-verification"` for `mutualPartnerships.status` with validator auto-upgrade
+- Default value `"pending-verification"` for `partnerships.status` with validator auto-upgrade
 - Extended locale support in TranslatableString (e.g., `en-US`, `ro-RO`)
 - ISO 8601 duration pattern validation for `privacy.dataRetentionPeriod`
 
