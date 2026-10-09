@@ -1185,9 +1185,10 @@ Physical locations, offices, and branches.
 {
 	"locations": [
 		{
-			"id": "hq-ro-bucharest", // Unique identifier
+			"id": "hq-us-new-york", // Unique identifier
 			"type": "headquarters", // headquarters | branch | international-branch | representative-office
 			"facility": "office", // Optional: office | store | venue | workshop | warehouse | factory | distribution-center
+			"publicAccess": "by-appointment", // Optional: walk-in | by-appointment | none
 			"name": "Ofero Headquarters", // Location name (translatable)
 			"address": {
 				"street": "123 Main Street",
@@ -1198,8 +1199,8 @@ Physical locations, offices, and branches.
 			},
 			"coordinates": {
 				// Optional GPS coordinates
-				"latitude": 44.4268,
-				"longitude": 26.1025
+				"latitude": 40.7128,
+				"longitude": -74.006
 			},
 			"businessHours": {
 				// Optional business hours
@@ -1210,7 +1211,7 @@ Physical locations, offices, and branches.
 				"friday": "09:00-17:00",
 				"saturday": "Closed",
 				"sunday": "Closed",
-				"timezone": "Europe/Bucharest" // IANA timezone
+				"timezone": "America/New_York" // IANA timezone
 			},
 			"specialHours": [
 				// Optional — overrides businessHours for specific dates or periods
@@ -1280,7 +1281,25 @@ These are two independent questions. A shop in another city is `"type": "branch"
 | `factory` | Production | No |
 | `distribution-center` | Logistics, order fulfillment | No |
 
-Consumers should not show `warehouse`, `factory` or `distribution-center` locations as places a customer can visit unless `businessHours` say otherwise.
+Consumers should not show `warehouse`, `factory` or `distribution-center` locations as places a customer can visit unless `publicAccess` says otherwise.
+
+#### Public access (`publicAccess`)
+
+`facility` only suggests whether visitors are welcome. `publicAccess` (optional) states it, and when set it takes precedence over the defaults in the table above.
+
+| `publicAccess` | Meaning | How to read `businessHours` | schema.org `Place.publicAccess` |
+|---|---|---|---|
+| `walk-in` | Anyone can come in, no appointment needed | Visiting hours | `true` |
+| `by-appointment` | Visitors are received only with a prior appointment | Hours in which appointments can be booked | `true` |
+| `none` | Working space only (back office, warehouse, studio not open to clients) | Internal working hours — not visiting hours | `false` |
+
+**Consumer rules:**
+- Do not send people to a location with `"publicAccess": "none"`: no "get directions", no "open now", no listing as a place to visit. Its address may still be shown as the company's address.
+- For `by-appointment`, show the location with a "by appointment" note and point to the location's `phone`/`email` (or the organization's contact channels).
+- When `publicAccess` is missing, nothing is assumed; fall back to the `facility` defaults above.
+- A business whose only location is `none` should usually also declare `businessClassification.serviceArea`, so consumers know where it serves customers.
+
+This matches how map platforms treat locations: a place listed with a visitable address is expected to receive customers in person during its stated hours; otherwise the business is a service-area business with no public address.
 
 #### Special Hours (`specialHours`)
 
@@ -1714,7 +1733,7 @@ The `defaultAccount` section provides standardized contact and business informat
 | `vatNumber`      | string | VAT number for invoicing                 | `"GB123456789"`, `"DE123456789"`           |
 | `taxId`          | string | Tax ID for invoicing                     | `"12-3456789"`                             |
 | `website`        | uri    | Primary website URL                      | `"https://example.com"`                    |
-| `timezone`       | string | IANA timezone                            | `"Europe/Bucharest"`                       |
+| `timezone`       | string | IANA timezone                            | `"America/New_York"`                       |
 | `language`       | string | Preferred language (ISO 639-1)           | `"en"`, `"ro"`, `"de"`                     |
 | `currency`       | string | Preferred currency (ISO 4217)            | `"EUR"`, `"USD"`, `"GBP"`                  |
 

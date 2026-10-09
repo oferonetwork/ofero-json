@@ -491,11 +491,16 @@ class Ofero_Form_Handler {
             if (!in_array($facility, array('office', 'store', 'venue', 'workshop', 'warehouse', 'factory', 'distribution-center'), true)) {
                 $facility = '';
             }
+            $public_access = sanitize_text_field(wp_unslash($_POST['location_public_access'][$i] ?? ''));
+            if (!in_array($public_access, array('walk-in', 'by-appointment', 'none'), true)) {
+                $public_access = '';
+            }
 
             $location = array(
                 'name' => sanitize_text_field(wp_unslash($_POST['location_name'][$i] ?? '')),
                 'type' => $type,
                 'facility' => $facility,
+                'publicAccess' => $public_access,
                 'address' => array(
                     'street' => sanitize_text_field(wp_unslash($_POST['location_street'][$i] ?? '')),
                     'city' => sanitize_text_field(wp_unslash($_POST['location_city'][$i] ?? '')),

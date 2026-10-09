@@ -99,6 +99,7 @@
       "id": "hq-sf",
       "type": "headquarters",
       "facility": "office",
+      "publicAccess": "none",
       "name": "TechCorp Headquarters",
       "address": {
         "street": "123 Mission Street",

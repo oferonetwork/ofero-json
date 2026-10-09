@@ -81,6 +81,7 @@
       "id": "loc-1",
       "type": "headquarters",
       "facility": "office",
+      "publicAccess": "by-appointment",
       "name": "Modern Arch Studio",
       "address": {
         "street": "123 Wilshire Boulevard",

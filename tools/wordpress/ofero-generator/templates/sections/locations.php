@@ -34,6 +34,13 @@ $facilityTypes = array(
     'factory' => __('Factory', 'ofero-generator'),
     'distribution-center' => __('Distribution center', 'ofero-generator')
 );
+// "Public access" = locations[].publicAccess
+$publicAccessTypes = array(
+    '' => __('— Not specified —', 'ofero-generator'),
+    'walk-in' => __('Open to the public (walk-in)', 'ofero-generator'),
+    'by-appointment' => __('By appointment only', 'ofero-generator'),
+    'none' => __('Not open to the public (working space only)', 'ofero-generator')
+);
 // Location types written by plugin versions before 2.1.0, mapped to facility
 $legacyFacility = array(
     'store' => 'store',
@@ -98,6 +105,16 @@ $legacyFacility = array(
                                 <select name="location_facility[]">
                                     <?php foreach ($facilityTypes as $value => $label): ?>
                                         <option value="<?php echo esc_attr($value); ?>" <?php selected($currentFacility, $value); ?>>
+                                            <?php echo esc_html($label); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="ofero-field">
+                                <label><?php esc_html_e('Public access', 'ofero-generator'); ?></label>
+                                <select name="location_public_access[]">
+                                    <?php foreach ($publicAccessTypes as $value => $label): ?>
+                                        <option value="<?php echo esc_attr($value); ?>" <?php selected($location['publicAccess'] ?? '', $value); ?>>
                                             <?php echo esc_html($label); ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -363,6 +380,14 @@ $legacyFacility = array(
                     <label><?php esc_html_e('Kind of space', 'ofero-generator'); ?></label>
                     <select name="location_facility[]">
                         <?php foreach ($facilityTypes as $value => $label): ?>
+                            <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="ofero-field">
+                    <label><?php esc_html_e('Public access', 'ofero-generator'); ?></label>
+                    <select name="location_public_access[]">
+                        <?php foreach ($publicAccessTypes as $value => $label): ?>
                             <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
                         <?php endforeach; ?>
                     </select>

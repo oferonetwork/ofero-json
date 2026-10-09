@@ -50,16 +50,18 @@ ofero.json describes **who you are** (identity, classification, locations, conta
 
 ## Locations
 
-Each location has two independent fields:
+Each location has three independent fields:
 
 - `type` — its role in the company: `headquarters`, `branch`, `international-branch`, `representative-office`
 - `facility` (optional) — what kind of space it is: `office`, `store`, `venue`, `workshop`, `warehouse`, `factory`, `distribution-center`
+- `publicAccess` (optional) — whether visitors can come: `walk-in`, `by-appointment`, `none` (working space only; `businessHours` are then internal hours)
 
 ```json
 {
   "id": "downtown",
   "type": "branch",
   "facility": "store",
+  "publicAccess": "walk-in",
   "name": "Downtown Store",
   "address": { "street": "1 Main Street", "city": "Springfield", "postalCode": "12345", "country": "US" },
   "businessHours": { "monday": "09:00-18:00", "saturday": "10:00-14:00", "sunday": "Closed", "timezone": "UTC" }

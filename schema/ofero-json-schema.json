@@ -605,7 +605,16 @@
 						"factory",
 						"distribution-center"
 					],
-					"description": "What kind of space this is: office (administrative/client meetings), store (retail, customers buy on site), venue (customers are served on site: restaurant, hotel, clinic, gym, studio), workshop (repairs or services on customer goods), warehouse, factory, distribution-center. warehouse, factory and distribution-center are usually not open to the public."
+					"description": "What kind of space this is: office (administrative/client meetings), store (retail, customers buy on site), venue (customers are served on site: restaurant, hotel, clinic, gym, studio), workshop (repairs or services on customer goods), warehouse, factory, distribution-center. warehouse, factory and distribution-center are usually not open to the public; use 'publicAccess' to state it explicitly."
+				},
+				"publicAccess": {
+					"type": "string",
+					"enum": [
+						"walk-in",
+						"by-appointment",
+						"none"
+					],
+					"description": "Whether visitors can come to this location: walk-in (open to the public during businessHours, no appointment needed), by-appointment (visitors are received only with a prior appointment), none (working space only, e.g. back office or warehouse; businessHours are then internal working hours, not visiting hours). When set, it takes precedence over any default implied by 'facility'. When omitted, nothing is assumed. Maps to schema.org Place.publicAccess: walk-in and by-appointment = true, none = false."
 				},
 				"name": {
 					"type": "string",
@@ -868,7 +877,7 @@
 				},
 				"timezone": {
 					"type": "string",
-					"description": "IANA timezone (e.g., 'Europe/Bucharest', 'America/New_York')"
+					"description": "IANA timezone (e.g., 'UTC', 'America/New_York', 'Asia/Tokyo')"
 				}
 			}
 		},
@@ -2048,7 +2057,7 @@
 				},
 				"timezone": {
 					"type": "string",
-					"description": "IANA timezone (e.g., 'Europe/Bucharest', 'America/New_York')"
+					"description": "IANA timezone (e.g., 'UTC', 'America/New_York', 'Asia/Tokyo')"
 				},
 				"language": {
 					"type": "string",

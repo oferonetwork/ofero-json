@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Industry taxonomy 1.1.0: `advertising-agency` (under `marketing`), `audio-production` (under `creative-services`) with `commercial-audio` and `voice-over`.
 
 - `locations[].facility` (optional) — kind of space: `office | store | venue | workshop | warehouse | factory | distribution-center`. Independent of `locations[].type`, which stays the organizational role (`headquarters | branch | international-branch | representative-office`); the description of `type` now says so. Documented in SPECIFICATION.md → "Location role (`type`) vs. kind of space (`facility`)". All examples with locations now set `facility`.
+- `locations[].publicAccess` (optional) — whether visitors can come to the location: `walk-in | by-appointment | none`. With `none`, `businessHours` are internal working hours, not visiting hours, and consumers must not send people there. Takes precedence over the defaults implied by `facility`; when omitted, nothing is assumed. Maps to schema.org `Place.publicAccess` (`walk-in`/`by-appointment` = `true`, `none` = `false`). Documented in SPECIFICATION.md → "Public access (`publicAccess`)". Shown in `company-full` (`none`), `architecture-firm-example` (`by-appointment`), `restaurant-example` and `ecommerce-store` (`walk-in`). Backward compatible; `schemaVersion` unchanged.
 - New example: [`docs/examples/audio-agency-example.json`](examples/audio-agency-example.json) — remote audio advertising agency with no `locations`, using `serviceArea`.
 
 ### Fixed

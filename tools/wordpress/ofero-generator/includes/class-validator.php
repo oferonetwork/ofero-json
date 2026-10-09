@@ -54,6 +54,15 @@ class Ofero_Validator {
     );
 
     /**
+     * Valid location public access values
+     */
+    const LOCATION_PUBLIC_ACCESS = array(
+        'walk-in',
+        'by-appointment',
+        'none'
+    );
+
+    /**
      * Valid social platforms
      */
     const SOCIAL_PLATFORMS = array(
@@ -339,6 +348,17 @@ class Ofero_Validator {
                         'message' => sprintf(
                             /* translators: %d: zero-based position of the location in the locations array. */
                             __('Invalid kind of space at location index %d.', 'ofero-generator'),
+                            $i
+                        )
+                    );
+                }
+
+                if (!empty($location['publicAccess']) && !in_array($location['publicAccess'], self::LOCATION_PUBLIC_ACCESS, true)) {
+                    $errors[] = array(
+                        'field' => "locations.{$i}.publicAccess",
+                        'message' => sprintf(
+                            /* translators: %d: zero-based position of the location in the locations array. */
+                            __('Invalid public access value at location index %d. Use walk-in, by-appointment or none.', 'ofero-generator'),
                             $i
                         )
                     );

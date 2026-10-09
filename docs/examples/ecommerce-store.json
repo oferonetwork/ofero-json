@@ -96,6 +96,7 @@
       "id": "store-london",
       "type": "branch",
       "facility": "store",
+      "publicAccess": "walk-in",
       "name": "Fashion Boutique London Flagship",
       "address": {
         "street": "45 King's Road",

@@ -488,6 +488,13 @@ const OFERO_LOCATION_FACILITIES = [
     'distribution-center' => 'Distribution center',
 ];
 
+const OFERO_LOCATION_PUBLIC_ACCESS = [
+    '' => '— Not specified —',
+    'walk-in' => 'Open to the public (walk-in)',
+    'by-appointment' => 'By appointment only',
+    'none' => 'Not open to the public (working space only)',
+];
+
 /**
  * Role (locations[].type) and kind of space (locations[].facility) for the editor.
  * Earlier versions stored store/warehouse/office in `type`, which the schema rejects;
@@ -1134,6 +1141,14 @@ if ($view === 'editor') {
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label class="form-label">Public access</label>
+                                    <select class="form-select loc-public-access">
+                                        <?php foreach (OFERO_LOCATION_PUBLIC_ACCESS as $value => $label): ?>
+                                        <option value="<?php echo $value; ?>" <?php echo ($location['publicAccess'] ?? '') === $value ? 'selected' : ''; ?>><?php echo htmlspecialchars($label); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label class="form-label">Street Address</label>
                                     <input type="text" class="form-input loc-street" value="<?php echo htmlspecialchars($location['address']['street'] ?? ''); ?>">
                                 </div>
@@ -1774,6 +1789,7 @@ if ($view === 'editor') {
                     name: item.querySelector('.loc-name')?.value || '',
                     type: item.querySelector('.loc-type')?.value || 'headquarters',
                     facility: item.querySelector('.loc-facility')?.value || undefined,
+                    publicAccess: item.querySelector('.loc-public-access')?.value || undefined,
                     address: {
                         street: item.querySelector('.loc-street')?.value || '',
                         city: item.querySelector('.loc-city')?.value || '',
@@ -1996,6 +2012,15 @@ if ($view === 'editor') {
                                 <option value="warehouse">Warehouse</option>
                                 <option value="factory">Factory</option>
                                 <option value="distribution-center">Distribution center</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Public access</label>
+                            <select class="form-select loc-public-access">
+                                <option value="">— Not specified —</option>
+                                <option value="walk-in">Open to the public (walk-in)</option>
+                                <option value="by-appointment">By appointment only</option>
+                                <option value="none">Not open to the public (working space only)</option>
                             </select>
                         </div>
                         <div class="form-group">
