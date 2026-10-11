@@ -214,6 +214,46 @@ class Ofero_Validator {
                     'message' => __('catalog.highlights is capped at 6 items in v2.0. Move the rest to a catalog.feeds[] entry.', 'ofero-generator')
                 );
             }
+
+            if (isset($data['catalog']['feeds']) && is_array($data['catalog']['feeds'])) {
+                foreach ($data['catalog']['feeds'] as $i => $feed) {
+                    if (is_array($feed) && isset($feed['audience']) && !in_array($feed['audience'], array('retail', 'wholesale'), true)) {
+                        $errors[] = array(
+                            'field' => 'catalog.feeds[' . $i . '].audience',
+                            'message' => __('Feed audience must be "retail" or "wholesale".', 'ofero-generator')
+                        );
+                    }
+                }
+            }
+
+            if (isset($data['catalog']['wholesale']) && is_array($data['catalog']['wholesale'])) {
+                $wholesale = $data['catalog']['wholesale'];
+                if (isset($wholesale['buyers']) && is_array($wholesale['buyers'])) {
+                    foreach ($wholesale['buyers'] as $buyer) {
+                        if (!in_array($buyer, array('businesses', 'resellers', 'professionals'), true)) {
+                            $errors[] = array(
+                                'field' => 'catalog.wholesale.buyers',
+                                'message' => __('Wholesale buyers must be "businesses", "resellers" or "professionals".', 'ofero-generator')
+                            );
+                            break;
+                        }
+                    }
+                }
+                foreach (array('applicationUrl', 'portalUrl', 'priceListUrl') as $key) {
+                    if (!empty($wholesale[$key]) && strpos((string) $wholesale[$key], 'https://') !== 0) {
+                        $errors[] = array(
+                            'field' => 'catalog.wholesale.' . $key,
+                            'message' => __('Wholesale URLs must use HTTPS.', 'ofero-generator')
+                        );
+                    }
+                }
+                if (isset($wholesale['minimumOrder']['currency']) && !preg_match('/^[A-Z]{3}$/', (string) $wholesale['minimumOrder']['currency'])) {
+                    $errors[] = array(
+                        'field' => 'catalog.wholesale.minimumOrder.currency',
+                        'message' => __('Minimum order currency must be an ISO 4217 code (e.g., USD, EUR).', 'ofero-generator')
+                    );
+                }
+            }
         }
 
         if (isset($data['featured']) && is_array($data['featured'])) {

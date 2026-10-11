@@ -42,8 +42,8 @@
   "businessClassification": {
     "industry": [
       "hospitality",
-      "hotel",
-      "luxury-hotel"
+      "hotels",
+      "luxury-hotels"
     ],
     "mccCode": "7011",
     "primaryProducts": [

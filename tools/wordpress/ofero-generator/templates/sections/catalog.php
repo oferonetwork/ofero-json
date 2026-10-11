@@ -4,6 +4,7 @@
  *
  * v2 forbids inline catalog data. This editor only manages:
  *   - defaultCurrency, priceListUrl
+ *   - catalog.wholesale (trade terms: buyers, account, minimum order, ...)
  *   - catalog.feeds[] (external feed references — manual entries plus the
  *     WooCommerce REST endpoint when WooCommerce is active)
  *   - catalog.signature[] and catalog.highlights[] (tiny inline previews, <=6 each)
@@ -26,12 +27,26 @@ $signature = isset($catalog['signature']) && is_array($catalog['signature']) ? $
 $highlights = isset($catalog['highlights']) && is_array($catalog['highlights']) ? $catalog['highlights'] : array();
 $default_currency = $catalog['defaultCurrency'] ?? 'USD';
 $price_list_url = $catalog['priceListUrl'] ?? '';
+$wholesale = is_array($catalog['wholesale'] ?? null) ? $catalog['wholesale'] : array();
+$wholesale_buyers = is_array($wholesale['buyers'] ?? null) ? $wholesale['buyers'] : array();
+$wholesale_eligibility = isset($wholesale['eligibility']) && is_array($wholesale['eligibility']) ? ($wholesale['eligibility']['default'] ?? '') : '';
+$wholesale_min_order = is_array($wholesale['minimumOrder'] ?? null) ? $wholesale['minimumOrder'] : array();
 
 $woo_active = Ofero_WooCommerce_Sync::is_woocommerce_active();
 $woo_feed_url = $woo_active ? Ofero_WooCommerce_Sync::get_feed_url() : '';
 
 $feed_types = array('products','menu','services','packages','portfolio','reservations','rooms','other');
 $feed_formats = array('json','jsonl','xml','csv','rss','atom','schema.org-jsonld','google-merchant-xml','gtfs','ical','other');
+$feed_audiences = array(
+    ''          => __('All buyers', 'ofero-generator'),
+    'retail'    => __('Retail', 'ofero-generator'),
+    'wholesale' => __('Wholesale', 'ofero-generator'),
+);
+$wholesale_buyer_options = array(
+    'businesses'    => __('Any registered business', 'ofero-generator'),
+    'resellers'     => __('Resellers (shops, distributors)', 'ofero-generator'),
+    'professionals' => __('Professionals buying for their own work (contractors, salons, clinics)', 'ofero-generator'),
+);
 
 $preview_text = function ($entry) {
     if (!is_array($entry)) return '';
@@ -67,6 +82,106 @@ $preview_text = function ($entry) {
                 <input type="url" id="catalog_price_list_url" name="catalog_price_list_url"
                        value="<?php echo esc_attr($price_list_url); ?>"
                        class="regular-text" placeholder="https://example.com/pricing.pdf">
+                <p class="description"><?php esc_html_e('Public price list. Trade prices go in the Wholesale card below.', 'ofero-generator'); ?></p>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="ofero-card">
+    <h2><?php esc_html_e('Wholesale (catalog.wholesale)', 'ofero-generator'); ?></h2>
+    <p class="description">
+        <?php esc_html_e('Fill this in only if you sell in bulk to other businesses. Per-product case prices and quantity tiers belong in a feed marked "Wholesale" below, not here.', 'ofero-generator'); ?>
+    </p>
+
+    <table class="form-table">
+        <tr>
+            <th scope="row"><?php esc_html_e('Offer wholesale', 'ofero-generator'); ?></th>
+            <td>
+                <label>
+                    <input type="checkbox" name="wholesale_enabled" value="1" <?php checked(!empty($wholesale)); ?>>
+                    <?php esc_html_e('We sell at wholesale / trade terms', 'ofero-generator'); ?>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><?php esc_html_e('Who can buy', 'ofero-generator'); ?></th>
+            <td>
+                <?php foreach ($wholesale_buyer_options as $value => $label): ?>
+                    <label style="display:block;">
+                        <input type="checkbox" name="wholesale_buyers[]" value="<?php echo esc_attr($value); ?>" <?php checked(in_array($value, $wholesale_buyers, true)); ?>>
+                        <?php echo esc_html($label); ?>
+                    </label>
+                <?php endforeach; ?>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_eligibility"><?php esc_html_e('Conditions', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="text" id="wholesale_eligibility" name="wholesale_eligibility"
+                       value="<?php echo esc_attr($wholesale_eligibility); ?>" class="large-text"
+                       placeholder="<?php esc_attr_e('Registered business with a VAT number', 'ofero-generator'); ?>">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><?php esc_html_e('Trade account', 'ofero-generator'); ?></th>
+            <td>
+                <label>
+                    <input type="checkbox" name="wholesale_account_required" value="1" <?php checked(!empty($wholesale['accountRequired'])); ?>>
+                    <?php esc_html_e('Prices or ordering only after an approved trade account', 'ofero-generator'); ?>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_application_url"><?php esc_html_e('Apply for an account URL', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="url" id="wholesale_application_url" name="wholesale_application_url"
+                       value="<?php echo esc_attr($wholesale['applicationUrl'] ?? ''); ?>" class="regular-text"
+                       placeholder="https://example.com/trade/apply">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_portal_url"><?php esc_html_e('Trade portal / login URL', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="url" id="wholesale_portal_url" name="wholesale_portal_url"
+                       value="<?php echo esc_attr($wholesale['portalUrl'] ?? ''); ?>" class="regular-text"
+                       placeholder="https://example.com/trade/login">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_price_list_url"><?php esc_html_e('Trade price list URL', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="url" id="wholesale_price_list_url" name="wholesale_price_list_url"
+                       value="<?php echo esc_attr($wholesale['priceListUrl'] ?? ''); ?>" class="regular-text"
+                       placeholder="https://example.com/trade/price-list.pdf">
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_min_order_amount"><?php esc_html_e('Minimum order value', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="number" min="0" step="0.01" id="wholesale_min_order_amount" name="wholesale_min_order_amount"
+                       value="<?php echo esc_attr($wholesale_min_order['amount'] ?? ''); ?>" style="width:120px">
+                <input type="text" name="wholesale_min_order_currency"
+                       value="<?php echo esc_attr($wholesale_min_order['currency'] ?? ''); ?>"
+                       maxlength="3" pattern="[A-Z]{3}" placeholder="<?php echo esc_attr($default_currency); ?>" style="width:70px">
+                <p class="description"><?php esc_html_e('Leave the currency empty to use the default currency.', 'ofero-generator'); ?></p>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><?php esc_html_e('Volume pricing', 'ofero-generator'); ?></th>
+            <td>
+                <label>
+                    <input type="checkbox" name="wholesale_volume_pricing" value="1" <?php checked(!empty($wholesale['volumePricing'])); ?>>
+                    <?php esc_html_e('Unit prices drop with quantity', 'ofero-generator'); ?>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="wholesale_contact_email"><?php esc_html_e('Trade enquiries email', 'ofero-generator'); ?></label></th>
+            <td>
+                <input type="email" id="wholesale_contact_email" name="wholesale_contact_email"
+                       value="<?php echo esc_attr($wholesale['contactEmail'] ?? ''); ?>" class="regular-text"
+                       placeholder="trade@example.com">
             </td>
         </tr>
     </table>
@@ -88,6 +203,7 @@ $preview_text = function ($entry) {
                 <th><?php esc_html_e('Standard', 'ofero-generator'); ?></th>
                 <th><?php esc_html_e('Lang', 'ofero-generator'); ?></th>
                 <th><?php esc_html_e('Items', 'ofero-generator'); ?></th>
+                <th><?php esc_html_e('Audience', 'ofero-generator'); ?></th>
                 <th></th>
             </tr>
         </thead>
@@ -133,6 +249,13 @@ $preview_text = function ($entry) {
                     <td>
                         <input type="number" min="0" name="catalog_feed_item_count[]" value="<?php echo esc_attr($f['itemCount'] ?? ''); ?>"
                                style="width:80px">
+                    </td>
+                    <td>
+                        <select name="catalog_feed_audience[]">
+                            <?php foreach ($feed_audiences as $value => $label): ?>
+                                <option value="<?php echo esc_attr($value); ?>" <?php selected(($f['audience'] ?? ''), $value); ?>><?php echo esc_html($label); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                     <td>
                         <button type="button" class="button-link delete catalog-feed-remove" aria-label="<?php esc_attr_e('Remove', 'ofero-generator'); ?>">&times;</button>

@@ -16,6 +16,7 @@ ofero.json describes **who you are** (identity, classification, locations, conta
 | Restaurant / Pizzeria | [`restaurant-example.json`](restaurant-example.json) | catalog.feeds (menu), catalog.signature, restaurantDetails, apiEndpoints, promotions |
 | Hotel | [`hotel-example.json`](hotel-example.json) | locations, accommodationDetails, restaurantDetails |
 | E-commerce store | [`ecommerce-store.json`](ecommerce-store.json) | catalog.feeds (products), featured, `serviceArea` (online + flagship store) |
+| Wholesale distributor | [`wholesale-distributor-example.json`](wholesale-distributor-example.json) | catalog.wholesale (trade account, minimum order), catalog.feeds with `audience`, `wholesale` industry |
 | Auto service / Mechanic | [`auto-service-example.json`](auto-service-example.json) | catalog.feeds (services), locations, certificates |
 | Architecture firm | [`architecture-firm-example.json`](architecture-firm-example.json) | catalog.feeds (services, portfolio), catalog.highlights, team, certificates |
 | Modeling agency | [`modeling-agency-example.json`](modeling-agency-example.json) | catalog.feeds (services, portfolio), catalog.highlights, team |

@@ -285,7 +285,7 @@ Every ofero.json file **must** contain these top-level fields:
 ### What v2.0.0 changes
 
 - `catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio` are **removed from the schema**. The old `catalog.productFeeds` and `catalog.serviceFeeds` are **unified into `catalog.feeds[]`**.
-- `catalog` now holds: `defaultCurrency`, `feeds[]` (external references), `signature[]` (≤ 6 inline preview items), `highlights[]` (≤ 6 inline preview items for portfolios), `priceListUrl`.
+- `catalog` now holds: `defaultCurrency`, `feeds[]` (external references), `signature[]` (≤ 6 inline preview items), `highlights[]` (≤ 6 inline preview items for portfolios), `priceListUrl`. Later 2.x releases added the optional `wholesale` terms object (see [Wholesale terms](#wholesale-terms-catalogwholesale)).
 - The recommended max file size drops from 500 KB to **100 KB**.
 - `metadata.schemaVersion` becomes `"ofero-metadata-2.0"`. v1 and v2 readers reject each other's files on purpose.
 
@@ -328,6 +328,7 @@ A `Feed` is an external reference to operational data hosted at a separate URL. 
 | `etag` | no | Optional ETag value matching the HTTP ETag header at `url` |
 | `itemCount` | no | Approximate number of items in the feed |
 | `standard` | no | Identifier of the standard the feed conforms to (e.g. `"schema.org/Menu"`, `"google-merchant"`) |
+| `audience` | no | `retail` (consumers / general public) or `wholesale` (business buyers under [`catalog.wholesale`](#wholesale-terms-catalogwholesale) terms). Omitted = applies to all buyers |
 
 ### `type` determines the domain — `signature[]` never does
 
@@ -418,6 +419,60 @@ Practical rules for consumers:
 	}
 }
 ```
+
+### Wholesale terms (`catalog.wholesale`)
+
+Wholesalers, distributors and manufacturers that sell to other businesses usually have terms that differ from retail: a trade account, a minimum order, quantity discounts and a separate price list. `catalog.wholesale` declares those terms. Its presence means the organization sells at wholesale terms; omit it otherwise.
+
+Only organization-wide, slow-changing terms go here. Per-item case prices, quantity tiers and per-item minimum quantities belong in a `catalog.feeds[]` entry with `audience: "wholesale"`, for the same reason catalogs are not inline.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `buyers` | array | Who may buy at wholesale terms: `"businesses"` (any registered business), `"resellers"` (shops and distributors buying for resale), `"professionals"` (trades and practitioners buying for their own work) |
+| `eligibility` | TranslatableString | Conditions a buyer must meet, in plain language |
+| `accountRequired` | boolean | `true` if wholesale prices or ordering need an approved trade account |
+| `applicationUrl` | URL | Where a business applies for a trade account |
+| `portalUrl` | URL | B2B ordering portal or trade login |
+| `priceListUrl` | URL | Trade price list (may require login). `catalog.priceListUrl` stays the public one |
+| `minimumOrder` | object | `{ "amount", "currency"? }` — minimum value of one order; `currency` defaults to `catalog.defaultCurrency` |
+| `volumePricing` | boolean | `true` if unit prices drop with quantity; the tiers live in the wholesale feed |
+| `contactEmail` | email | Address for trade enquiries |
+
+**Example: food distributor with a trade-only catalog**
+
+```json
+{
+	"businessClassification": {
+		"industry": ["wholesale", "food-beverage-wholesale"],
+		"targetMarket": ["B2B"]
+	},
+	"catalog": {
+		"defaultCurrency": "USD",
+		"feeds": [
+			{
+				"type": "products",
+				"format": "csv",
+				"url": "https://example.com/trade/feeds/products.csv",
+				"audience": "wholesale"
+			}
+		],
+		"wholesale": {
+			"buyers": ["businesses", "resellers"],
+			"accountRequired": true,
+			"applicationUrl": "https://example.com/trade/apply",
+			"minimumOrder": { "amount": 250, "currency": "USD" },
+			"volumePricing": true
+		}
+	}
+}
+```
+
+**Consumer rules:**
+
+1. Never show prices from an `audience: "wholesale"` feed as consumer prices. When a user is not a business buyer, prefer feeds with `audience: "retail"` or no `audience`.
+2. A wholesale feed may answer `401`/`403`. That is expected, not an error: point the user to `applicationUrl` (or `portalUrl`) instead.
+3. If `accountRequired` is `true`, do not present the organization as a place where anyone can walk in and buy, even when a location has `publicAccess: "walk-in"` — walk-in can mean cash & carry for registered buyers.
+4. `targetMarket: ["B2B"]` alone does not mean the organization sells wholesale (agencies and SaaS vendors are B2B too). Rely on `catalog.wholesale` or a `wholesale` industry.
 
 ### HTTP caching guidance
 
@@ -884,7 +939,7 @@ The `businessClassification` section provides structured information about your 
 ```json
 {
 	"businessClassification": {
-		"industry": ["technology", "software", "saas"],
+		"industry": ["technology", "saas", "b2b-saas"],
 		"mccCode": "5734",
 		"naicsCode": "518210",
 		"sicCode": "7372",
@@ -912,21 +967,21 @@ The `businessClassification` section provides structured information about your 
 
 #### Industry Taxonomy
 
-The `industry` field uses a hierarchical taxonomy with 234 industries across 4 levels:
+The `industry` field uses a hierarchical taxonomy with 245 industries across 4 levels:
 
-**Level 1 - Sectors** (30 total)
+**Level 1 - Sectors** (31 total)
 
-- Examples: `"technology"`, `"fintech"`, `"healthcare"`, `"retail"`
+- Examples: `"technology"`, `"fintech"`, `"healthcare"`, `"retail"`, `"wholesale"`
 
-**Level 2 - Sub-categories** (75 total)
+**Level 2 - Sub-categories** (91 total)
 
 - Examples: `"software"`, `"blockchain"`, `"ecommerce"`, `"restaurant"`
 
-**Level 3 - Specific Types** (108 total)
+**Level 3 - Specific Types** (104 total)
 
 - Examples: `"saas"`, `"defi"`, `"marketplace"`, `"fast-food"`
 
-**Level 4 - Niches** (21 total)
+**Level 4 - Niches** (19 total)
 
 - Examples: `"enterprise-saas"`, `"defi-lending"`, `"nft-marketplace"`, `"burger-chain"`
 
@@ -934,7 +989,7 @@ The `industry` field uses a hierarchical taxonomy with 234 industries across 4 l
 
 ```json
 {
-	"industry": ["technology", "software", "saas", "enterprise-saas"]
+	"industry": ["technology", "saas", "b2b-saas", "enterprise-saas"]
 }
 ```
 
@@ -1018,7 +1073,7 @@ These codes help with automatic categorization and payment processor integration
 Specify your primary business model:
 
 - **B2C**: Business to Consumer (retail, direct sales)
-- **B2B**: Business to Business (enterprise, wholesale)
+- **B2B**: Business to Business (enterprise, wholesale). Wholesale terms themselves go in [`catalog.wholesale`](#wholesale-terms-catalogwholesale)
 - **B2G**: Business to Government (government contracts)
 - **C2C**: Consumer to Consumer (peer-to-peer marketplaces)
 

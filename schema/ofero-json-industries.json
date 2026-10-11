@@ -1,6 +1,6 @@
 {
-	"version": "1.1.0",
-	"lastUpdated": "2026-10-03",
+	"version": "1.2.0",
+	"lastUpdated": "2026-10-11",
 	"description": "Hierarchical industry taxonomy for ofero.json business classification",
 	"industries": [
 		{
@@ -207,6 +207,83 @@
 			"description": "Peer-to-peer marketplaces"
 		},
 		{
+			"id": "wholesale",
+			"label": "Wholesale & Distribution",
+			"level": 1,
+			"parent": null,
+			"description": "Businesses that sell goods in bulk to other businesses for resale or professional use"
+		},
+		{
+			"id": "food-beverage-wholesale",
+			"label": "Food & Beverage Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale distributors of food, beverages and grocery products"
+		},
+		{
+			"id": "cash-and-carry",
+			"label": "Cash & Carry",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Self-service wholesale warehouses for registered business buyers"
+		},
+		{
+			"id": "building-materials-wholesale",
+			"label": "Building Materials Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale suppliers of construction materials, timber and hardware"
+		},
+		{
+			"id": "electronics-wholesale",
+			"label": "Electronics Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale distributors of electronics, IT hardware and components"
+		},
+		{
+			"id": "apparel-wholesale",
+			"label": "Apparel & Textile Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale suppliers of clothing, footwear and textiles"
+		},
+		{
+			"id": "pharmaceutical-wholesale",
+			"label": "Pharmaceutical Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Licensed wholesale distributors of medicines and medical supplies"
+		},
+		{
+			"id": "auto-parts-wholesale",
+			"label": "Auto Parts Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale distributors of vehicle parts, tyres and accessories"
+		},
+		{
+			"id": "industrial-supplies-wholesale",
+			"label": "Industrial Supplies Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale suppliers of machinery, tools, packaging and MRO supplies"
+		},
+		{
+			"id": "agricultural-wholesale",
+			"label": "Agricultural Wholesale",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Wholesale traders of grain, produce, feed, seeds and agricultural inputs"
+		},
+		{
+			"id": "import-export",
+			"label": "Import & Export Trading",
+			"level": 2,
+			"parent": "wholesale",
+			"description": "Trading companies that import, export and resell goods across borders"
+		},
+		{
 			"id": "fintech",
 			"label": "Fintech",
 			"level": 1,
@@ -314,21 +391,21 @@
 		{
 			"id": "cex",
 			"label": "CEX",
-			"level": 3,
+			"level": 2,
 			"parent": "cryptocurrency",
 			"description": "Centralized exchanges"
 		},
 		{
 			"id": "crypto-wallet",
 			"label": "Crypto Wallet",
-			"level": 3,
+			"level": 2,
 			"parent": "cryptocurrency",
 			"description": "Cryptocurrency wallet providers"
 		},
 		{
 			"id": "crypto-payment-gateway",
 			"label": "Crypto Payment Gateway",
-			"level": 4,
+			"level": 3,
 			"parent": "crypto-wallet",
 			"description": "Cryptocurrency payment processors"
 		},
@@ -608,7 +685,7 @@
 		{
 			"id": "car-rental",
 			"label": "Car Rental",
-			"level": 3,
+			"level": 2,
 			"parent": "travel",
 			"description": "Car rental services"
 		},
@@ -846,21 +923,21 @@
 		{
 			"id": "residential-real-estate",
 			"label": "Residential Real Estate",
-			"level": 3,
+			"level": 2,
 			"parent": "real-estate",
 			"description": "Residential property"
 		},
 		{
 			"id": "commercial-real-estate",
 			"label": "Commercial Real Estate",
-			"level": 3,
+			"level": 2,
 			"parent": "real-estate",
 			"description": "Commercial property"
 		},
 		{
 			"id": "real-estate-agency",
 			"label": "Real Estate Agency",
-			"level": 4,
+			"level": 3,
 			"parent": "residential-real-estate",
 			"description": "Real estate brokerage"
 		},
@@ -888,7 +965,7 @@
 		{
 			"id": "organic-farming",
 			"label": "Organic Farming",
-			"level": 3,
+			"level": 2,
 			"parent": "agriculture",
 			"description": "Organic agricultural production"
 		},
@@ -1642,6 +1719,6 @@
 			"description": "Pet boarding and daycare"
 		}
 	],
-	"totalIndustries": 234,
+	"totalIndustries": 245,
 	"levels": [1, 2, 3, 4]
 }

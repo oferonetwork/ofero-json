@@ -578,7 +578,67 @@ function validateFeeds(data: any): ValidationError[] {
 				message: 'Feed language must be a valid ISO 639-1 code (e.g., en, fr, de)'
 			});
 		}
+		if (feed.audience !== undefined && !['retail', 'wholesale'].includes(feed.audience)) {
+			errors.push({
+				path: `${base}.audience`,
+				message: `Invalid feed audience "${feed.audience}". Must be one of: retail, wholesale`
+			});
+		}
 	});
+
+	errors.push(...validateWholesale(data));
+
+	return errors;
+}
+
+/**
+ * Validate catalog.wholesale terms
+ */
+function validateWholesale(data: any): ValidationError[] {
+	const errors: ValidationError[] = [];
+	const w = data?.catalog?.wholesale;
+	if (w === undefined) return errors;
+	if (!w || typeof w !== 'object' || Array.isArray(w)) {
+		return [{ path: 'catalog.wholesale', message: 'catalog.wholesale must be an object' }];
+	}
+
+	const validBuyers = ['businesses', 'resellers', 'professionals'];
+	if (w.buyers !== undefined) {
+		if (!Array.isArray(w.buyers) || w.buyers.length === 0) {
+			errors.push({ path: 'catalog.wholesale.buyers', message: 'buyers must be a non-empty array' });
+		} else {
+			w.buyers.forEach((b: any, idx: number) => {
+				if (!validBuyers.includes(b)) {
+					errors.push({
+						path: `catalog.wholesale.buyers[${idx}]`,
+						message: `Invalid buyer "${b}". Must be one of: ${validBuyers.join(', ')}`
+					});
+				}
+			});
+		}
+	}
+
+	(['applicationUrl', 'portalUrl', 'priceListUrl'] as const).forEach((k) => {
+		if (w[k] !== undefined && (typeof w[k] !== 'string' || !w[k].startsWith('https://'))) {
+			errors.push({ path: `catalog.wholesale.${k}`, message: `${k} must be an HTTPS URL` });
+		}
+	});
+
+	if (w.minimumOrder !== undefined) {
+		const mo = w.minimumOrder;
+		if (!mo || typeof mo !== 'object' || typeof mo.amount !== 'number' || mo.amount < 0) {
+			errors.push({
+				path: 'catalog.wholesale.minimumOrder.amount',
+				message: 'minimumOrder.amount is required and must be a non-negative number'
+			});
+		}
+		if (mo?.currency !== undefined && !/^[A-Z]{3}$/.test(mo.currency)) {
+			errors.push({
+				path: 'catalog.wholesale.minimumOrder.currency',
+				message: 'minimumOrder.currency must be an ISO 4217 code (e.g., USD, EUR)'
+			});
+		}
+	}
 
 	return errors;
 }

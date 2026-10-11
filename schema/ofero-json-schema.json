@@ -1349,7 +1349,84 @@
 					"type": "string",
 					"format": "uri",
 					"pattern": "^https://",
-					"description": "URL to full price list PDF or page"
+					"description": "URL to the full public price list (PDF or page). For trade/wholesale prices, use catalog.wholesale.priceListUrl."
+				},
+				"wholesale": {
+					"$ref": "#/$defs/WholesaleTerms"
+				}
+			}
+		},
+		"WholesaleTerms": {
+			"type": "object",
+			"description": "Terms for buying from this organization in bulk as a business (for resale or professional use). Only slow-changing, organization-wide terms live here; per-item prices, quantity tiers and per-item minimum quantities belong in a catalog.feeds[] entry with audience \"wholesale\". Presence of this object means wholesale buying is offered.",
+			"properties": {
+				"buyers": {
+					"type": "array",
+					"description": "Who may buy at wholesale terms. \"businesses\" = any registered business; \"resellers\" = shops and distributors buying for resale; \"professionals\" = trades and practitioners buying for their own work (e.g., contractors, salons, clinics).",
+					"items": {
+						"type": "string",
+						"enum": [
+							"businesses",
+							"resellers",
+							"professionals"
+						]
+					},
+					"uniqueItems": true,
+					"minItems": 1
+				},
+				"eligibility": {
+					"$ref": "#/$defs/TranslatableString",
+					"description": "Human-readable conditions a buyer must meet (e.g., \"Registered business with a VAT number\")"
+				},
+				"accountRequired": {
+					"type": "boolean",
+					"description": "true if wholesale prices or ordering are available only after the buyer has an approved trade account"
+				},
+				"applicationUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Page where a business applies for a trade/wholesale account"
+				},
+				"portalUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "B2B ordering portal or trade login page"
+				},
+				"priceListUrl": {
+					"type": "string",
+					"format": "uri",
+					"pattern": "^https://",
+					"description": "Trade/wholesale price list (PDF or page). May require login."
+				},
+				"minimumOrder": {
+					"type": "object",
+					"description": "Minimum value of a single wholesale order",
+					"required": [
+						"amount"
+					],
+					"properties": {
+						"amount": {
+							"type": "number",
+							"minimum": 0,
+							"description": "Minimum order value"
+						},
+						"currency": {
+							"type": "string",
+							"pattern": "^[A-Z]{3}$",
+							"description": "ISO 4217 code. Defaults to catalog.defaultCurrency when omitted."
+						}
+					}
+				},
+				"volumePricing": {
+					"type": "boolean",
+					"description": "true if unit prices decrease with order quantity. The tiers themselves belong in the wholesale feed."
+				},
+				"contactEmail": {
+					"type": "string",
+					"format": "email",
+					"description": "Email for wholesale or trade enquiries"
 				}
 			}
 		},
@@ -1784,6 +1861,14 @@
 				"standard": {
 					"type": "string",
 					"description": "Optional identifier of the standard the feed conforms to (e.g., \"schema.org/Menu\", \"schema.org/Product\", \"google-merchant\", \"json-feed-1.1\")"
+				},
+				"audience": {
+					"type": "string",
+					"enum": [
+						"retail",
+						"wholesale"
+					],
+					"description": "Who the prices and terms in this feed are for. \"retail\" = consumers / general public; \"wholesale\" = business buyers under catalog.wholesale terms (the URL may require credentials). When omitted, the feed is assumed to apply to all buyers."
 				}
 			}
 		},

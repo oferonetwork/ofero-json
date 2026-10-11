@@ -734,6 +734,7 @@ class Ofero_Form_Handler {
      * v2 forbids inline menus / products / services etc. The catalog block only
      * holds:
      *   - defaultCurrency, priceListUrl
+     *   - wholesale: trade terms (only when "Offer wholesale" is checked)
      *   - feeds[]: external feed references (manual entries + WooCommerce REST endpoint)
      *   - signature[] (<=6) and highlights[] (<=6): tiny inline previews
      *
@@ -749,6 +750,11 @@ class Ofero_Form_Handler {
         $price_list_url = esc_url_raw(wp_unslash($_POST['catalog_price_list_url'] ?? ''));
         if (!empty($price_list_url)) {
             $catalog['priceListUrl'] = $price_list_url;
+        }
+
+        $wholesale = $this->collect_catalog_wholesale();
+        if (!empty($wholesale)) {
+            $catalog['wholesale'] = $wholesale;
         }
 
         $feeds = $this->collect_catalog_feeds();
@@ -832,9 +838,72 @@ class Ofero_Form_Handler {
             if ($item_count > 0) {
                 $entry['itemCount'] = $item_count;
             }
+            $audience = sanitize_text_field(wp_unslash($_POST['catalog_feed_audience'][$i] ?? ''));
+            if (in_array($audience, array('retail', 'wholesale'), true)) {
+                $entry['audience'] = $audience;
+            }
             $feeds[] = $entry;
         }
         return $feeds;
+    }
+
+    /**
+     * Collect catalog.wholesale from POST. Returns an empty array when
+     * "Offer wholesale" is unchecked, so the key is omitted from ofero.json.
+     */
+    private function collect_catalog_wholesale() {
+        if (empty($_POST['wholesale_enabled'])) {
+            return array();
+        }
+
+        $wholesale = array();
+
+        $valid_buyers = array('businesses', 'resellers', 'professionals');
+        $buyers = isset($_POST['wholesale_buyers']) && is_array($_POST['wholesale_buyers'])
+            ? array_map('sanitize_text_field', wp_unslash((array) $_POST['wholesale_buyers']))
+            : array();
+        $buyers = array_values(array_unique(array_intersect($buyers, $valid_buyers)));
+        if (!empty($buyers)) {
+            $wholesale['buyers'] = $buyers;
+        }
+
+        $eligibility = sanitize_text_field(wp_unslash($_POST['wholesale_eligibility'] ?? ''));
+        if (!empty($eligibility)) {
+            $wholesale['eligibility'] = array('default' => $eligibility);
+        }
+
+        $wholesale['accountRequired'] = !empty($_POST['wholesale_account_required']);
+
+        $url_fields = array(
+            'applicationUrl' => 'wholesale_application_url',
+            'portalUrl'      => 'wholesale_portal_url',
+            'priceListUrl'   => 'wholesale_price_list_url',
+        );
+        foreach ($url_fields as $key => $field) {
+            $url = esc_url_raw(wp_unslash($_POST[$field] ?? ''), array('https'));
+            if (!empty($url)) {
+                $wholesale[$key] = $url;
+            }
+        }
+
+        $amount = sanitize_text_field(wp_unslash($_POST['wholesale_min_order_amount'] ?? ''));
+        if ($amount !== '' && is_numeric($amount) && (float) $amount >= 0) {
+            $minimum_order = array('amount' => (float) $amount);
+            $currency = strtoupper(sanitize_text_field(wp_unslash($_POST['wholesale_min_order_currency'] ?? '')));
+            if (preg_match('/^[A-Z]{3}$/', $currency)) {
+                $minimum_order['currency'] = $currency;
+            }
+            $wholesale['minimumOrder'] = $minimum_order;
+        }
+
+        $wholesale['volumePricing'] = !empty($_POST['wholesale_volume_pricing']);
+
+        $email = sanitize_email(wp_unslash($_POST['wholesale_contact_email'] ?? ''));
+        if (!empty($email)) {
+            $wholesale['contactEmail'] = $email;
+        }
+
+        return $wholesale;
     }
 
     /**
