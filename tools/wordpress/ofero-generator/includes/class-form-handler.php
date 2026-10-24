@@ -22,6 +22,119 @@ if (!defined('ABSPATH')) {
 class Ofero_Form_Handler {
 
     /**
+     * Parts of ofero.json the editor writes: true = the form owns the whole value, an array =
+     * the form owns only those sub-keys. Everything else in the saved file is kept on save.
+     * The v1 inline catalog keys are listed so they are still removed (the form never sets them).
+     */
+    const MANAGED_FIELDS = array(
+        'language' => true,
+        'domain' => true,
+        'canonicalUrl' => true,
+        'metadata' => array('version' => true, 'schemaVersion' => true, 'lastUpdated' => true, 'createdAt' => true),
+        'organization' => array(
+            'legalName' => true, 'brandName' => true, 'entityType' => true, 'legalForm' => true,
+            'industry' => true, 'description' => true, 'website' => true, 'contactEmail' => true,
+            'contactPhone' => true,
+            'identifiers' => array(
+                'primaryIncorporation' => array('country' => true, 'registrationNumber' => true, 'taxId' => true, 'vatNumber' => true)
+            )
+        ),
+        'businessClassification' => array(
+            'industry' => true, 'primaryProducts' => true, 'targetMarket' => true, 'serviceArea' => true, 'operationalStatus' => true
+        ),
+        'locations' => true,
+        'banking' => true,
+        'wallets' => true,
+        'branding' => true,
+        'catalog' => array(
+            'defaultCurrency' => true, 'priceListUrl' => true, 'wholesale' => true, 'feeds' => true,
+            'signature' => true, 'highlights' => true,
+            'menu' => true, 'dailyMenu' => true, 'services' => true, 'packages' => true,
+            'portfolio' => true, 'productFeeds' => true, 'serviceFeeds' => true
+        ),
+        'communications' => array('social' => true, 'support' => true),
+        'keywords' => true,
+        '_translations' => true
+    );
+
+    /**
+     * Location fields the Locations tab edits; id, coordinates, amenities, paymentMethods, … are kept
+     */
+    const LOCATION_FIELDS = array(
+        'name' => true, 'type' => true, 'facility' => true, 'publicAccess' => true, 'phone' => true,
+        'email' => true, 'photos' => true, 'businessHours' => true, 'specialHours' => true, 'contacts' => true,
+        'address' => array('street' => true, 'city' => true, 'region' => true, 'postalCode' => true, 'country' => true)
+    );
+
+    /**
+     * Contact fields the Locations tab edits; languages and other fields are kept
+     */
+    const CONTACT_FIELDS = array(
+        'name' => true, 'role' => true, 'email' => true, 'phone' => true, 'public' => true, 'photo' => true
+    );
+
+    /**
+     * Lay the form's values over the saved data. Managed keys come from the form (and are removed
+     * when the form leaves them out); other keys keep their saved value and position.
+     *
+     * @param mixed $existing Saved value
+     * @param array $form     Value built from the form
+     * @param array $managed  One of the *_FIELDS maps
+     * @return array
+     */
+    public static function keep_unmanaged($existing, $form, $managed) {
+        if (!is_array($existing) || (!empty($existing) && array_keys($existing) === range(0, count($existing) - 1))) {
+            return $form;
+        }
+        $form = is_array($form) ? $form : array();
+        $result = $existing;
+        foreach ($managed as $key => $sub) {
+            if ($sub !== true) {
+                $result[$key] = self::keep_unmanaged($existing[$key] ?? array(), $form[$key] ?? array(), $sub);
+            } elseif (array_key_exists($key, $form)) {
+                $result[$key] = $form[$key];
+            } else {
+                unset($result[$key]);
+            }
+        }
+        // Keys the form fills but does not own (e.g. an empty identifiers.global) only fill gaps
+        foreach ($form as $key => $value) {
+            if (!array_key_exists($key, $managed) && !array_key_exists($key, $result)) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Saved location/contact posted back by the editor as JSON (a hidden field), sanitized
+     *
+     * @param string $json
+     * @return array
+     */
+    private function decode_original($json) {
+        $decoded = json_decode((string) $json, true);
+        return is_array($decoded) ? self::sanitize_original($decoded) : array();
+    }
+
+    private static function sanitize_original($value) {
+        if (is_array($value)) {
+            $clean = array();
+            foreach ($value as $key => $item) {
+                $key = is_int($key) ? $key : preg_replace('/[^A-Za-z0-9_\-]/', '', (string) $key);
+                if ($key !== '') {
+                    $clean[$key] = self::sanitize_original($item);
+                }
+            }
+            return $clean;
+        }
+        if (is_string($value)) {
+            return sanitize_text_field($value);
+        }
+        return (is_bool($value) || is_int($value) || is_float($value) || $value === null) ? $value : '';
+    }
+
+    /**
      * File manager instance
      */
     private $file_manager;
@@ -109,6 +222,11 @@ class Ofero_Form_Handler {
         }
 
         $data = $this->collect_form_data();
+        $existing = $this->file_manager->load();
+        if (is_array($existing)) {
+            // Keep what the editor has no fields for (partnerships, security, identifiers.global, …)
+            $data = self::keep_unmanaged($existing, $data, self::MANAGED_FIELDS);
+        }
         $result = $this->file_manager->save($data);
 
         if (is_wp_error($result)) {
@@ -287,7 +405,7 @@ class Ofero_Form_Handler {
             'canonicalUrl' => esc_url_raw(wp_unslash($_POST['canonicalUrl'] ?? '')),
             'metadata' => array(
                 'version' => sanitize_text_field(wp_unslash($_POST['metadata_version'] ?? '2.0.0')),
-                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-2.0',
+                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-3.0',
                 'lastUpdated' => current_time('c'),
                 'createdAt' => sanitize_text_field(wp_unslash($_POST['metadata_createdAt'] ?? current_time('c')))
             ),
@@ -521,6 +639,24 @@ class Ofero_Form_Handler {
                 }
             }
 
+            // Collect regular business hours: one text field per day, e.g. "09:00-13:00, 14:00-18:00"
+            $business_hours = array();
+            foreach (Ofero_Opening_Hours::WEEKDAYS as $day) {
+                $day_hours = Ofero_Opening_Hours::parse(
+                    sanitize_text_field(wp_unslash($_POST['location_bh_' . $day][$i] ?? ''))
+                );
+                if ($day_hours !== null) {
+                    $business_hours[$day] = $day_hours;
+                }
+            }
+            if (!empty($business_hours)) {
+                $timezone = sanitize_text_field(wp_unslash($_POST['location_bh_timezone'][$i] ?? ''));
+                if ($timezone !== '') {
+                    $business_hours['timezone'] = $timezone;
+                }
+                $location['businessHours'] = $business_hours;
+            }
+
             // Collect special hours for this location
             $special_hours_raw = sanitize_textarea_field(wp_unslash($_POST['location_special_hours'][$i] ?? ''));
             if (!empty($special_hours_raw)) {
@@ -528,21 +664,31 @@ class Ofero_Form_Handler {
                 if (is_array($decoded) && !empty($decoded)) {
                     $special_hours = array();
                     foreach ($decoded as $entry) {
-                        if (isset($entry['name'], $entry['hours'])) {
-                            if (isset($entry['date'])) {
-                                $special_hours[] = array(
-                                    'date'  => sanitize_text_field($entry['date']),
-                                    'name'  => sanitize_text_field($entry['name']),
-                                    'hours' => sanitize_text_field($entry['hours'])
-                                );
-                            } elseif (isset($entry['from'], $entry['to'])) {
-                                $special_hours[] = array(
-                                    'from'  => sanitize_text_field($entry['from']),
-                                    'to'    => sanitize_text_field($entry['to']),
-                                    'name'  => sanitize_text_field($entry['name']),
-                                    'hours' => sanitize_text_field($entry['hours'])
-                                );
-                            }
+                        if (!isset($entry['name'], $entry['hours'])) {
+                            continue;
+                        }
+                        // Text from the editor, or a list / 2.x string from the file on disk
+                        $hours = Ofero_Opening_Hours::parse(
+                            is_array($entry['hours'])
+                                ? array_map('sanitize_text_field', $entry['hours'])
+                                : sanitize_text_field($entry['hours'])
+                        );
+                        if ($hours === null) {
+                            continue;
+                        }
+                        if (isset($entry['date'])) {
+                            $special_hours[] = array(
+                                'date'  => sanitize_text_field($entry['date']),
+                                'name'  => sanitize_text_field($entry['name']),
+                                'hours' => $hours
+                            );
+                        } elseif (isset($entry['from'], $entry['to'])) {
+                            $special_hours[] = array(
+                                'from'  => sanitize_text_field($entry['from']),
+                                'to'    => sanitize_text_field($entry['to']),
+                                'name'  => sanitize_text_field($entry['name']),
+                                'hours' => $hours
+                            );
                         }
                     }
                     if (!empty($special_hours)) {
@@ -575,14 +721,16 @@ class Ofero_Form_Handler {
                     if (!empty($contact_photo)) {
                         $contact['photo'] = $contact_photo;
                     }
-                    $contacts[] = $contact;
+                    $contact_original = $this->decode_original(wp_unslash($_POST['location_contact_original'][$i][$ci] ?? ''));
+                    $contacts[] = self::keep_unmanaged($contact_original, $contact, self::CONTACT_FIELDS);
                 }
                 if (!empty($contacts)) {
                     $location['contacts'] = $contacts;
                 }
             }
 
-            $locations[] = $location;
+            $original = $this->decode_original(wp_unslash($_POST['location_original'][$i] ?? ''));
+            $locations[] = self::keep_unmanaged($original, $location, self::LOCATION_FIELDS);
         }
 
         return $locations;

@@ -124,8 +124,8 @@ If the field should be supported by the PHP generator template:
 | Level | What it checks |
 |---|---|
 | `basic` | Required top-level fields, metadata version, schema version |
-| `moderate` | Email/URL formats, ISO country and language codes, domain consistency |
-| `strict` | GPS coordinate ranges, hex color format, IBAN length, `serviceHours` format, `dailyMenu` item integrity, menu item values |
+| `moderate` | Email/URL formats, ISO country and language codes, domain consistency, no v1 inline catalog keys, no v2 single-string opening hours |
+| `strict` | GPS coordinate ranges, hex color format, IBAN length, `catalog.feeds[]` entries, inline caps (`signature`, `highlights`, `featured`), opening-hours order (intervals chronological, not overlapping, only the last one past midnight) |
 
 Warnings (not errors) are generated at `moderate` and `strict` for:
 - Missing `ingredients` on menu items
@@ -149,5 +149,5 @@ All field names, `description` values in the schema, error messages in the valid
 - Enum values: `kebab-case` (e.g., `"gluten-free"`, `"dairy-free"`)
 - IDs in examples: `kebab-case` (e.g., `"bruschetta"`, `"main-course"`)
 - Dates: ISO 8601 (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SSZ`)
-- Time ranges: `HH:MM-HH:MM` (e.g., `"08:00-12:00"`)
+- Time ranges: `HH:MM-HH:MM` (e.g., `"08:00-12:00"`); opening hours are lists of ranges (`["09:00-13:00", "14:00-18:00"]`, closed = `[]`) — reuse `$defs.DayHours` for any new hours field
 - Weights/sizes: string with unit (e.g., `"220g"`, `"1.3kg"`, `"350ml"`)

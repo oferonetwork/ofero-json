@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Generator
  * Plugin URI: https://ofero.me/ofero-json
  * Description: A complete admin interface for generating and managing ofero.json files with all sections, validation, and auto-save.
- * Version: 2.1.0
+ * Version: 3.0.0
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -17,14 +17,15 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_GENERATOR_VERSION', '2.1.0');
-define('OFERO_GENERATOR_SCHEMA_VERSION', 'ofero-metadata-2.0');
+define('OFERO_GENERATOR_VERSION', '3.0.0');
+define('OFERO_GENERATOR_SCHEMA_VERSION', 'ofero-metadata-3.0');
 define('OFERO_GENERATOR_PATH', plugin_dir_path(__FILE__));
 define('OFERO_GENERATOR_URL', plugin_dir_url(__FILE__));
 define('OFERO_GENERATOR_BASENAME', plugin_basename(__FILE__));
 
 // Include required files
 require_once OFERO_GENERATOR_PATH . 'includes/class-admin-page.php';
+require_once OFERO_GENERATOR_PATH . 'includes/class-opening-hours.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-form-handler.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-validator.php';
 require_once OFERO_GENERATOR_PATH . 'includes/class-file-manager.php';
@@ -99,7 +100,7 @@ class Ofero_Generator {
     }
 
     /**
-     * Show a one-time admin notice if the saved ofero.json still declares v1.
+     * Show an admin notice if the saved ofero.json still declares v1 or v2.
      */
     public function maybe_show_v1_migration_notice() {
         if (!current_user_can('manage_options')) {
@@ -116,7 +117,9 @@ class Ofero_Generator {
         }
         $sv = $existing['metadata']['schemaVersion'] ?? '';
         if ($sv === 'ofero-metadata-1.0') {
-            echo '<div class="notice notice-warning"><p><strong>Ofero Generator:</strong> the ofero.json on disk still declares <code>ofero-metadata-1.0</code>. This plugin now writes v2 (<code>ofero-metadata-2.0</code>). Saving from this page will migrate the file — inline catalog data (<code>catalog.menu</code>, <code>catalog.services</code>, etc.) will be dropped because v2 only allows <code>catalog.feeds[]</code>. See <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+            echo '<div class="notice notice-warning"><p><strong>Ofero Generator:</strong> the ofero.json on disk still declares <code>ofero-metadata-1.0</code>. This plugin now writes v3 (<code>ofero-metadata-3.0</code>). Saving from this page will migrate the file — inline catalog data (<code>catalog.menu</code>, <code>catalog.services</code>, etc.) will be dropped because v2 and later only allow <code>catalog.feeds[]</code>. See <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+        } elseif ($sv === 'ofero-metadata-2.0') {
+            echo '<div class="notice notice-info"><p><strong>Ofero Generator:</strong> the ofero.json on disk declares <code>ofero-metadata-2.0</code>. This plugin now writes v3 (<code>ofero-metadata-3.0</code>), where opening hours are lists of intervals so you can add a lunch break. Your hours have been loaded into the editor; review them under Locations and save to migrate the file. See <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v2-to-v3.md" target="_blank" rel="noopener">MIGRATION-v2-to-v3.md</a>.</p></div>';
         }
     }
 

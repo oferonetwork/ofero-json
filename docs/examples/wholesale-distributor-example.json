@@ -4,7 +4,7 @@
   "canonicalUrl": "https://example.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-10-11T10:00:00Z",
     "createdAt": "2026-10-11T10:00:00Z",
     "updateFrequency": "monthly"
@@ -88,13 +88,13 @@
         "country": "US"
       },
       "businessHours": {
-        "monday": "06:00-16:00",
-        "tuesday": "06:00-16:00",
-        "wednesday": "06:00-16:00",
-        "thursday": "06:00-16:00",
-        "friday": "06:00-16:00",
-        "saturday": "07:00-12:00",
-        "sunday": "closed"
+        "monday": ["06:00-16:00"],
+        "tuesday": ["06:00-16:00"],
+        "wednesday": ["06:00-16:00"],
+        "thursday": ["06:00-16:00"],
+        "friday": ["06:00-16:00"],
+        "saturday": ["07:00-12:00"],
+        "sunday": []
       }
     }
   ],

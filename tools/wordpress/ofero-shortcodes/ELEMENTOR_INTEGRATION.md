@@ -1,5 +1,8 @@
 # Elementor Integration for Ofero Shortcodes
 
+> **v3.0.0 notes:**
+> - The plugin reads ofero.json v3 (`ofero-metadata-3.0`) and v2. The Location widget's **Business Hours** field shows every interval of a day, e.g. "09:00–13:00, 14:00–18:00" for a lunch break.
+
 > **v2.0.0 notes:**
 > - The plugin requires ofero.json v2 (`schemaVersion: ofero-metadata-2.0`). v1 files trigger a migration warning in the admin.
 > - The shortcodes and Elementor widgets read only ofero.json itself — they never fetch `catalog.feeds[]` URLs. Use the new `[ofero_feed type="..."]` shortcode for that, explicitly.

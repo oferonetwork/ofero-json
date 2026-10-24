@@ -8,7 +8,7 @@
   "canonicalUrl": "https://expertautoservice.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2024-06-01T10:00:00Z",
     "updateFrequency": "monthly"
@@ -94,13 +94,13 @@
         "longitude": -121.8863
       },
       "businessHours": {
-        "monday": "08:00-18:00",
-        "tuesday": "08:00-18:00",
-        "wednesday": "08:00-18:00",
-        "thursday": "08:00-18:00",
-        "friday": "08:00-18:00",
-        "saturday": "09:00-14:00",
-        "sunday": "Closed",
+        "monday": ["08:00-12:30", "13:30-18:00"],
+        "tuesday": ["08:00-12:30", "13:30-18:00"],
+        "wednesday": ["08:00-12:30", "13:30-18:00"],
+        "thursday": ["08:00-12:30", "13:30-18:00"],
+        "friday": ["08:00-12:30", "13:30-18:00"],
+        "saturday": ["09:00-14:00"],
+        "sunday": [],
         "timezone": "America/Los_Angeles"
       },
       "contacts": [

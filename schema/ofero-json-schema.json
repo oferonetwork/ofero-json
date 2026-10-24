@@ -784,7 +784,7 @@
 		},
 		"SpecialHoursEntry": {
 			"type": "object",
-			"description": "A single special/holiday hours entry that overrides regular business hours for a specific date or date range. Use 'date' for a single day (e.g., a public holiday), or 'from'+'to' for a period (e.g., summer schedule, holiday season).",
+			"description": "A single special/holiday hours entry that overrides regular business hours for a specific date or date range. Use 'date' for a single day (e.g., a public holiday), or 'from'+'to' for a period (e.g., summer schedule, holiday season). 'hours' uses the same interval list as businessHours days; an empty list means closed.",
 			"oneOf": [
 				{
 					"required": [
@@ -803,13 +803,8 @@
 							"description": "Human-readable label for this special period (e.g., 'Christmas Day', 'New Year', 'Summer Schedule')."
 						},
 						"hours": {
-							"type": "string",
-							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
-							"examples": [
-								"Closed",
-								"10:00-14:00",
-								"08:00-20:00"
-							]
+							"$ref": "#/$defs/DayHours",
+							"description": "Opening intervals that apply on each day of this period, instead of that weekday's businessHours. An empty array means closed."
 						}
 					},
 					"additionalProperties": false
@@ -837,49 +832,74 @@
 							"description": "Human-readable label for this special period (e.g., 'Christmas Day', 'New Year', 'Summer Schedule')."
 						},
 						"hours": {
-							"type": "string",
-							"description": "Opening hours for this period in HH:MM-HH:MM format, or 'Closed' if the location is closed.",
-							"examples": [
-								"Closed",
-								"10:00-14:00",
-								"08:00-20:00"
-							]
+							"$ref": "#/$defs/DayHours",
+							"description": "Opening intervals that apply on each day of this period, instead of that weekday's businessHours. An empty array means closed."
 						}
 					},
 					"additionalProperties": false
 				}
 			]
 		},
+		"TimeRange": {
+			"type": "string",
+			"description": "One opening interval, HH:MM-HH:MM in 24-hour time. The end may be 24:00 (end of day). An end earlier than the start means the interval runs past midnight into the next day (e.g., '22:00-02:00'). '00:00-24:00' means open all day.",
+			"pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]-(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$",
+			"examples": [
+				"09:00-18:00",
+				"22:00-02:00",
+				"00:00-24:00"
+			]
+		},
+		"DayHours": {
+			"type": "array",
+			"description": "Opening intervals for one day, in chronological order and not overlapping. Several intervals describe a split schedule (e.g., a lunch break). An empty array means closed all day.",
+			"items": {
+				"$ref": "#/$defs/TimeRange"
+			},
+			"uniqueItems": true,
+			"maxItems": 6,
+			"examples": [
+				[
+					"09:00-18:00"
+				],
+				[
+					"09:00-13:00",
+					"14:00-18:00"
+				],
+				[]
+			]
+		},
 		"BusinessHours": {
 			"type": "object",
-			"description": "Business hours for each day of the week (format: HH:MM-HH:MM or 'Closed')",
+			"description": "Regular weekly opening hours. Each day is a list of HH:MM-HH:MM intervals: several intervals describe a split schedule (e.g., a lunch break) and an empty list means closed. A day that is left out is unknown, not closed.",
 			"properties": {
 				"monday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"tuesday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"wednesday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"thursday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"friday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"saturday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"sunday": {
-					"type": "string"
+					"$ref": "#/$defs/DayHours"
 				},
 				"timezone": {
 					"type": "string",
 					"description": "IANA timezone (e.g., 'UTC', 'America/New_York', 'Asia/Tokyo')"
 				}
-			}
+			},
+			"additionalProperties": false
 		},
 		"Contact": {
 			"type": "object",
@@ -3497,8 +3517,8 @@
 				},
 				"schemaVersion": {
 					"type": "string",
-					"description": "ofero.json schema version identifier - always 'ofero-metadata-2.0' for v2.x schemas. v1 files (ofero-metadata-1.0) are rejected by v2 validators; see docs/MIGRATION-v1-to-v2.md.",
-					"const": "ofero-metadata-2.0"
+					"description": "ofero.json schema version identifier - always 'ofero-metadata-3.0' for v3.x schemas. Older files are rejected by v3 validators; see docs/MIGRATION-v2-to-v3.md (and docs/MIGRATION-v1-to-v2.md for v1 files).",
+					"const": "ofero-metadata-3.0"
 				},
 				"createdAt": {
 					"type": "string",

@@ -152,8 +152,8 @@ class Ofero_File_Manager {
 
             if (is_array($value)) {
                 $cleaned_value = $this->clean_empty_values($value);
-                // Keep non-empty arrays
-                if (!empty($cleaned_value)) {
+                // Keep non-empty arrays. An empty opening-hours list means "closed", so it stays.
+                if (!empty($cleaned_value) || $this->is_hours_key($key)) {
                     $cleaned[$key] = $cleaned_value;
                 }
             } elseif ($value !== '' && $value !== null) {
@@ -162,6 +162,13 @@ class Ofero_File_Manager {
         }
 
         return $cleaned;
+    }
+
+    /**
+     * Keys whose empty list is meaningful: businessHours days and specialHours[].hours ([] = closed)
+     */
+    private function is_hours_key($key) {
+        return is_string($key) && ($key === 'hours' || in_array($key, Ofero_Opening_Hours::WEEKDAYS, true));
     }
 
     /**
@@ -268,7 +275,7 @@ class Ofero_File_Manager {
             'canonicalUrl' => $site_url . '/.well-known/ofero.json',
             'metadata' => array(
                 'version' => '2.0.0',
-                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-2.0',
+                'schemaVersion' => defined('OFERO_GENERATOR_SCHEMA_VERSION') ? OFERO_GENERATOR_SCHEMA_VERSION : 'ofero-metadata-3.0',
                 'lastUpdated' => current_time('c'),
                 'createdAt' => current_time('c')
             ),

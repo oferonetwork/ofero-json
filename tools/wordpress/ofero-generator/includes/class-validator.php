@@ -171,14 +171,19 @@ class Ofero_Validator {
             } elseif ($data['metadata']['schemaVersion'] === 'ofero-metadata-1.0') {
                 $errors[] = array(
                     'field' => 'metadata.schemaVersion',
-                    'message' => __('Schema version "ofero-metadata-1.0" is no longer supported. This plugin writes v2 — upgrade your file per docs/MIGRATION-v1-to-v2.md.', 'ofero-generator')
+                    'message' => __('Schema version "ofero-metadata-1.0" is no longer supported. This plugin writes v3 — upgrade your file per docs/MIGRATION-v1-to-v2.md, then docs/MIGRATION-v2-to-v3.md.', 'ofero-generator')
                 );
-            } elseif ($data['metadata']['schemaVersion'] !== 'ofero-metadata-2.0') {
+            } elseif ($data['metadata']['schemaVersion'] === 'ofero-metadata-2.0') {
+                $errors[] = array(
+                    'field' => 'metadata.schemaVersion',
+                    'message' => __('Schema version "ofero-metadata-2.0" is no longer supported. This plugin writes v3, where opening hours are lists of intervals — save the Locations tab to convert, or see docs/MIGRATION-v2-to-v3.md.', 'ofero-generator')
+                );
+            } elseif ($data['metadata']['schemaVersion'] !== 'ofero-metadata-3.0') {
                 $errors[] = array(
                     'field' => 'metadata.schemaVersion',
                     'message' => sprintf(
                         /* translators: %s: schema version string found in the file. */
-                        __('Schema version must be "ofero-metadata-2.0", got "%s".', 'ofero-generator'),
+                        __('Schema version must be "ofero-metadata-3.0", got "%s".', 'ofero-generator'),
                         $data['metadata']['schemaVersion']
                     )
                 );
@@ -413,6 +418,36 @@ class Ofero_Validator {
                             $i
                         )
                     );
+                }
+
+                // Opening hours: lists of HH:MM-HH:MM intervals since 3.0
+                $hour_lists = array();
+                if (!empty($location['businessHours']) && is_array($location['businessHours'])) {
+                    foreach (Ofero_Opening_Hours::WEEKDAYS as $day) {
+                        if (array_key_exists($day, $location['businessHours'])) {
+                            $hour_lists["locations.{$i}.businessHours.{$day}"] = $location['businessHours'][$day];
+                        }
+                    }
+                }
+                if (!empty($location['specialHours']) && is_array($location['specialHours'])) {
+                    foreach ($location['specialHours'] as $si => $entry) {
+                        if (is_array($entry) && array_key_exists('hours', $entry)) {
+                            $hour_lists["locations.{$i}.specialHours.{$si}.hours"] = $entry['hours'];
+                        }
+                    }
+                }
+                foreach ($hour_lists as $field => $hours) {
+                    foreach (Ofero_Opening_Hours::problems($hours) as $problem) {
+                        $errors[] = array(
+                            'field' => $field,
+                            'message' => sprintf(
+                                /* translators: 1: field path, e.g. locations.0.businessHours.monday; 2: what is wrong with it. */
+                                __('Opening hours at %1$s: %2$s. See docs/MIGRATION-v2-to-v3.md.', 'ofero-generator'),
+                                $field,
+                                $problem
+                            )
+                        );
+                    }
                 }
             }
         }

@@ -49,6 +49,55 @@ $legacyFacility = array(
     'factory' => 'factory',
     'distribution_center' => 'distribution-center'
 );
+
+// Business Hours card, for saved locations and for the new-location template.
+// Each day is posted as text ("09:00-13:00, 14:00-18:00", "Closed" or empty) and parsed
+// by Ofero_Opening_Hours::parse(); 2.x strings on disk are shown the same way.
+$renderBusinessHours = function ($businessHours) {
+    $businessHours = is_array($businessHours) ? $businessHours : array();
+    ?>
+    <div style="margin-top: 20px; border: 1px solid #c3d0e8; border-radius: 4px; background: #f0f4fb; padding: 14px 16px;">
+        <div style="font-weight: 600; color: #1d2327; font-size: 13px; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+            <span class="dashicons dashicons-clock" style="color: #7986cb; font-size: 16px; width: 16px; height: 16px;"></span>
+            <?php esc_html_e('Business Hours', 'ofero-generator'); ?>
+            <span style="font-weight: 400; color: #646970; font-size: 12px;"><?php esc_html_e('(optional)', 'ofero-generator'); ?></span>
+        </div>
+        <p class="description" style="margin: 0 0 10px;">
+            <?php esc_html_e('One or more intervals per day, separated by commas — e.g. 09:00-13:00, 14:00-18:00 for a lunch break. Leave a day empty if you do not want to state it.', 'ofero-generator'); ?>
+        </p>
+        <table class="ofero-business-hours" role="presentation" style="border-collapse: collapse;">
+            <?php foreach (Ofero_Opening_Hours::weekday_labels() as $day => $dayLabel): ?>
+                <?php
+                $dayText = Ofero_Opening_Hours::to_text($businessHours[$day] ?? null);
+                $dayClosed = strcasecmp($dayText, 'closed') === 0;
+                ?>
+                <tr>
+                    <th scope="row" style="text-align: left; font-weight: 400; padding: 3px 12px 3px 0;"><?php echo esc_html($dayLabel); ?></th>
+                    <td style="padding: 3px 0;">
+                        <input type="text" name="location_bh_<?php echo esc_attr($day); ?>[]"
+                               class="ofero-bh-hours regular-text"
+                               value="<?php echo esc_attr($dayText); ?>"
+                               placeholder="09:00-13:00, 14:00-18:00"
+                               <?php echo $dayClosed ? 'readonly' : ''; ?>>
+                    </td>
+                    <td style="padding: 3px 0 3px 10px;">
+                        <label style="font-size: 12px;">
+                            <input type="checkbox" class="ofero-bh-closed" <?php checked($dayClosed); ?>>
+                            <?php esc_html_e('Closed', 'ofero-generator'); ?>
+                        </label>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+        <div class="ofero-field" style="margin-top: 8px;">
+            <label><?php esc_html_e('Timezone', 'ofero-generator'); ?></label>
+            <input type="text" name="location_bh_timezone[]" class="regular-text"
+                   value="<?php echo esc_attr($businessHours['timezone'] ?? ''); ?>"
+                   placeholder="<?php esc_attr_e('e.g. UTC, America/New_York', 'ofero-generator'); ?>">
+        </div>
+    </div>
+    <?php
+};
 ?>
 <div class="ofero-card">
     <h2><?php esc_html_e('Locations', 'ofero-generator'); ?></h2>
@@ -80,6 +129,8 @@ $legacyFacility = array(
                                 <input type="text" name="location_name[]"
                                        value="<?php echo esc_attr($location['name'] ?? ''); ?>"
                                        class="regular-text">
+                                <?php // Saved location, so fields without an editor (id, coordinates, amenities, …) survive the save ?>
+                                <input type="hidden" name="location_original[]" value="<?php echo esc_attr(wp_json_encode($location)); ?>">
                             </div>
                             <?php
                             $currentType = $location['type'] ?? 'headquarters';
@@ -184,6 +235,9 @@ $legacyFacility = array(
                             </div>
                         </div>
 
+                        <!-- Business Hours -->
+                        <?php $renderBusinessHours($location['businessHours'] ?? null); ?>
+
                         <!-- Special Hours -->
                         <div style="margin-top: 20px; border: 1px solid #c3d0e8; border-radius: 4px; background: #f0f4fb; padding: 14px 16px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -246,8 +300,8 @@ $legacyFacility = array(
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Hours', 'ofero-generator'); ?></label>
                                             <input type="text" class="ofero-special-hour-hours regular-text"
-                                                   value="<?php echo esc_attr($entry['hours'] ?? ''); ?>"
-                                                   placeholder="<?php esc_attr_e('e.g. 10:00-14:00 or Closed', 'ofero-generator'); ?>">
+                                                   value="<?php echo esc_attr(Ofero_Opening_Hours::to_text($entry['hours'] ?? null)); ?>"
+                                                   placeholder="<?php esc_attr_e('e.g. 10:00-14:00, 15:00-18:00 or Closed', 'ofero-generator'); ?>">
                                         </div>
                                     </div>
                                 </div>
@@ -298,6 +352,8 @@ $legacyFacility = array(
                                             <input type="text" name="location_contact_name[<?php echo esc_attr($i); ?>][]"
                                                    value="<?php echo esc_attr($contact['name'] ?? ''); ?>"
                                                    class="regular-text">
+                                            <input type="hidden" name="location_contact_original[<?php echo esc_attr($i); ?>][]"
+                                                   value="<?php echo esc_attr(wp_json_encode($contact)); ?>">
                                         </div>
                                         <div class="ofero-field">
                                             <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
@@ -367,6 +423,7 @@ $legacyFacility = array(
                 <div class="ofero-field">
                     <label><?php esc_html_e('Name', 'ofero-generator'); ?></label>
                     <input type="text" name="location_name[]" class="regular-text">
+                    <input type="hidden" name="location_original[]" value="{}">
                 </div>
                 <div class="ofero-field">
                     <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
@@ -441,6 +498,7 @@ $legacyFacility = array(
                     <p class="description"><?php esc_html_e('Photos of this location (storefronts, interiors, etc.). One URL per line.', 'ofero-generator'); ?></p>
                 </div>
             </div>
+            <?php $renderBusinessHours(null); ?>
             <div style="margin-top: 20px; border: 1px solid #c3d0e8; border-radius: 4px; background: #f0f4fb; padding: 14px 16px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
                     <div style="font-weight: 600; color: #1d2327; font-size: 13px; display: flex; align-items: center; gap: 6px;">
@@ -502,6 +560,7 @@ $legacyFacility = array(
             <div class="ofero-field">
                 <label><?php esc_html_e('Name', 'ofero-generator'); ?></label>
                 <input type="text" name="location_contact_name[__LOC_INDEX__][]" class="regular-text">
+                <input type="hidden" name="location_contact_original[__LOC_INDEX__][]" value="{}">
             </div>
             <div class="ofero-field">
                 <label><?php esc_html_e('Role', 'ofero-generator'); ?></label>
@@ -574,11 +633,74 @@ $legacyFacility = array(
                 '</div>' +
                 '<div class="ofero-field">' +
                     '<label><?php esc_html_e('Hours', 'ofero-generator'); ?></label>' +
-                    '<input type="text" class="ofero-special-hour-hours regular-text" placeholder="<?php esc_attr_e('e.g. 10:00-14:00 or Closed', 'ofero-generator'); ?>">' +
+                    '<input type="text" class="ofero-special-hour-hours regular-text" placeholder="<?php esc_attr_e('e.g. 10:00-14:00, 15:00-18:00 or Closed', 'ofero-generator'); ?>">' +
                 '</div>' +
             '</div>' +
         '</div>';
     }
+
+    // "Closed" checkbox: the day's text becomes "Closed" (read-only) so it is posted with the form
+    $(document).on('change', '.ofero-bh-closed', function() {
+        $(this).closest('tr').find('.ofero-bh-hours').val(this.checked ? 'Closed' : '').prop('readonly', this.checked);
+    });
+
+    var TIME_RANGE = /^([01][0-9]|2[0-3]):[0-5][0-9]-(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$/;
+
+    // "9:00 - 13:00" -> "09:00-13:00" (same as Ofero_Opening_Hours::normalize_range)
+    function normalizeRange(range) {
+        return $.trim(range).replace(/\s*[-–]\s*/, '-').replace(/(^|-)(\d):/g, function(m, sep, h) {
+            return sep + '0' + h + ':';
+        });
+    }
+
+    // Problems with one day's text, e.g. "09:00-13:00, 14:00-18:00"; empty and "Closed" are fine
+    function hoursProblems(text) {
+        text = $.trim(text || '');
+        if (!text || /^closed$/i.test(text)) return [];
+        var problems = [];
+        var previousEnd = -1;
+        var ranges = $.map(text.split(/[,;]/), function(r) { return normalizeRange(r) || null; });
+        var toMinutes = function(t) { return parseInt(t.slice(0, 2), 10) * 60 + parseInt(t.slice(3, 5), 10); };
+        $.each(ranges, function(k, range) {
+            if (!TIME_RANGE.test(range)) {
+                problems.push('"' + range + '" <?php echo esc_js(__('is not an HH:MM-HH:MM interval', 'ofero-generator')); ?>');
+                return;
+            }
+            var start = toMinutes(range.slice(0, 5));
+            var end = toMinutes(range.slice(6));
+            if (end <= start) end += 24 * 60;
+            if (start < previousEnd) {
+                problems.push('"' + range + '" <?php echo esc_js(__('overlaps or comes before the previous interval', 'ofero-generator')); ?>');
+            } else if (end > 24 * 60 && k < ranges.length - 1) {
+                problems.push('"' + range + '" <?php echo esc_js(__('runs past midnight, so it must be the last interval', 'ofero-generator')); ?>');
+                end = -1;
+            }
+            previousEnd = end;
+        });
+        return problems;
+    }
+
+    // Check every opening-hours field before the form is saved
+    $('#ofero-editor-form').on('submit', function(e) {
+        var problems = [];
+        $('#locations-container .ofero-repeater-item').each(function(i) {
+            var where = $.trim($(this).find('input[name="location_name[]"]').val()) || ('<?php echo esc_js(__('Location', 'ofero-generator')); ?> ' + (i + 1));
+            $(this).find('.ofero-bh-hours').each(function() {
+                var day = $.trim($(this).closest('tr').find('th').text());
+                $.each(hoursProblems($(this).val()), function(_, p) { problems.push(where + ', ' + day + ': ' + p); });
+            });
+            $(this).find('.ofero-special-hour-item').each(function() {
+                var label = $.trim($(this).find('.ofero-special-hour-name').val()) || '<?php echo esc_js(__('Special Hours', 'ofero-generator')); ?>';
+                $.each(hoursProblems($(this).find('.ofero-special-hour-hours').val()), function(_, p) { problems.push(where + ', ' + label + ': ' + p); });
+            });
+        });
+        if (problems.length > 0) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            alert('<?php echo esc_js(__('Please fix the opening hours:', 'ofero-generator')); ?>\n\n' + problems.join('\n'));
+            return false;
+        }
+    });
 
     // Toggle single-day / date-range fields
     $(document).on('change', '.ofero-special-hour-type', function() {

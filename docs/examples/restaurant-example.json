@@ -9,7 +9,7 @@
   "canonicalUrl": "https://bella-pizzeria.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2025-01-01T10:00:00Z",
     "updateFrequency": "weekly"
@@ -92,13 +92,13 @@
       "phone": "+14155551234",
       "email": "downtown@bella-pizzeria.com",
       "businessHours": {
-        "monday": "11:00-23:00",
-        "tuesday": "11:00-23:00",
-        "wednesday": "11:00-23:00",
-        "thursday": "11:00-23:00",
-        "friday": "11:00-24:00",
-        "saturday": "12:00-24:00",
-        "sunday": "12:00-22:00",
+        "monday": ["11:30-15:00", "18:00-23:00"],
+        "tuesday": ["11:30-15:00", "18:00-23:00"],
+        "wednesday": ["11:30-15:00", "18:00-23:00"],
+        "thursday": ["11:30-15:00", "18:00-23:00"],
+        "friday": ["11:30-15:00", "18:00-01:00"],
+        "saturday": ["12:00-01:00"],
+        "sunday": ["12:00-22:00"],
         "timezone": "America/Los_Angeles"
       },
       "amenities": [
@@ -135,23 +135,23 @@
         {
           "date": "2025-12-25",
           "name": "Christmas Day",
-          "hours": "Closed"
+          "hours": []
         },
         {
           "date": "2025-12-31",
           "name": "New Year's Eve",
-          "hours": "12:00-02:00"
+          "hours": ["12:00-02:00"]
         },
         {
           "date": "2026-01-01",
           "name": "New Year's Day",
-          "hours": "14:00-22:00"
+          "hours": ["14:00-22:00"]
         },
         {
           "from": "2025-07-01",
           "to": "2025-08-31",
           "name": "Summer Extended Hours",
-          "hours": "11:00-24:00"
+          "hours": ["11:00-24:00"]
         }
       ]
     }

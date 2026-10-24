@@ -286,7 +286,7 @@ class OferoGenerator {
             'canonicalUrl' => 'https://' . ($_SERVER['HTTP_HOST'] ?? 'example.com') . '/.well-known/ofero.json',
             'metadata' => [
                 'version' => '2.0.0',
-                'schemaVersion' => 'ofero-metadata-2.0',
+                'schemaVersion' => 'ofero-metadata-3.0',
                 'lastUpdated' => date('c'),
                 'createdAt' => date('c')
             ],
@@ -513,6 +513,49 @@ function oferoLocationRoleAndFacility(array $location): array {
         $type = 'branch';
     }
     return [$type, $facility];
+}
+
+/**
+ * Default text of a TranslatableString ({"default": "...", "translations": {...}}).
+ * Files written by earlier versions of this generator stored plain strings; those are read as-is.
+ */
+function oferoTranslatableDefault($value): string {
+    if (is_array($value)) {
+        return is_string($value['default'] ?? null) ? $value['default'] : '';
+    }
+    return is_string($value) ? $value : '';
+}
+
+/**
+ * Translations of a TranslatableString, keyed by language code
+ */
+function oferoTranslations($value): array {
+    return is_array($value) && is_array($value['translations'] ?? null) ? $value['translations'] : [];
+}
+
+const OFERO_WEEKDAYS = [
+    'monday' => 'Monday',
+    'tuesday' => 'Tuesday',
+    'wednesday' => 'Wednesday',
+    'thursday' => 'Thursday',
+    'friday' => 'Friday',
+    'saturday' => 'Saturday',
+    'sunday' => 'Sunday',
+];
+
+/**
+ * One day of opening hours for the editor: [text, closed], e.g. ['09:00-13:00, 14:00-18:00', false].
+ * Reads v3 interval lists and v2 strings ("09:00-18:00", "Closed"); v2 values are written
+ * back as lists on the next save.
+ */
+function oferoHoursForEditor($value): array {
+    if (is_array($value)) {
+        return [implode(', ', $value), $value === []];
+    }
+    if (is_string($value) && strcasecmp(trim($value), 'closed') === 0) {
+        return ['', true];
+    }
+    return [is_string($value) ? $value : '', false];
 }
 
 /**
@@ -1022,7 +1065,7 @@ if ($view === 'editor') {
                             <label class="form-label">Keywords</label>
                             <?php
                             $kw = $oferoData['keywords'] ?? '';
-                            $kwValue = is_array($kw) ? ($kw['default'] ?? '') : $kw;
+                            $kwValue = oferoTranslatableDefault($kw);
                             ?>
                             <input type="text" id="keywords" class="form-input" value="<?php echo htmlspecialchars($kwValue); ?>" placeholder="blockchain, fintech, e-commerce, web3, saas">
                             <small style="color: var(--muted-color); font-size: 12px; display: block; margin-top: 4px;">Comma-separated keywords for AI search indexing and discovery.</small>
@@ -1040,7 +1083,7 @@ if ($view === 'editor') {
 
                         <div class="form-group">
                             <label class="form-label">Brand Name</label>
-                            <input type="text" id="orgBrandName" class="form-input" value="<?php echo htmlspecialchars($oferoData['organization']['brandName'] ?? ''); ?>">
+                            <input type="text" id="orgBrandName" class="form-input" value="<?php echo htmlspecialchars(oferoTranslatableDefault($oferoData['organization']['brandName'] ?? '')); ?>">
                         </div>
 
                         <div class="form-group">
@@ -1063,7 +1106,7 @@ if ($view === 'editor') {
 
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label class="form-label">Description</label>
-                            <textarea id="orgDescription" class="form-input" rows="3"><?php echo htmlspecialchars($oferoData['organization']['description'] ?? ''); ?></textarea>
+                            <textarea id="orgDescription" class="form-input" rows="3"><?php echo htmlspecialchars(oferoTranslatableDefault($oferoData['organization']['description'] ?? '')); ?></textarea>
                         </div>
 
                         <div class="form-group">
@@ -1116,7 +1159,7 @@ if ($view === 'editor') {
                         $locations = $oferoData['locations'] ?? [];
                         foreach ($locations as $index => $location):
                         ?>
-                        <div class="array-item location-item" data-index="<?php echo $index; ?>">
+                        <div class="array-item location-item" data-index="<?php echo $index; ?>" data-original="<?php echo htmlspecialchars(json_encode($location, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES); ?>">
                             <button type="button" class="array-item-remove" onclick="removeLocation(this)">&times;</button>
                             <div class="grid">
                                 <div class="form-group">
@@ -1183,6 +1226,23 @@ if ($view === 'editor') {
                                     <small style="color: var(--muted-color); font-size: 12px; display: block; margin-top: 4px;">Photos of this location. One URL per line.</small>
                                 </div>
                             </div>
+                            <!-- Business Hours -->
+                            <div class="loc-business-hours" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                                <strong style="font-size: 13px;">Business Hours</strong>
+                                <small style="color: var(--muted-color); font-size: 12px; display: block; margin: 4px 0 8px;">One or more intervals per day, separated by commas — e.g. <code>09:00-13:00, 14:00-18:00</code> for a lunch break. Leave a day empty if you don't want to state it.</small>
+                                <div class="form-group">
+                                    <label class="form-label">Timezone</label>
+                                    <input type="text" class="form-input loc-bh-timezone" value="<?php echo htmlspecialchars($location['businessHours']['timezone'] ?? ''); ?>" placeholder="e.g. UTC, America/New_York">
+                                </div>
+                                <?php foreach (OFERO_WEEKDAYS as $day => $dayLabel): ?>
+                                <?php [$dayText, $dayClosed] = oferoHoursForEditor($location['businessHours'][$day] ?? null); ?>
+                                <div class="loc-bh-day" data-day="<?php echo $day; ?>" style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
+                                    <span style="width: 100px; font-size: 13px;"><?php echo $dayLabel; ?></span>
+                                    <input type="text" class="form-input loc-bh-hours" value="<?php echo htmlspecialchars($dayText); ?>" placeholder="09:00-13:00, 14:00-18:00" style="flex: 1;" <?php echo $dayClosed ? 'disabled' : ''; ?>>
+                                    <label style="font-size: 12px; white-space: nowrap;"><input type="checkbox" class="loc-bh-closed" onchange="toggleClosedDay(this)" <?php echo $dayClosed ? 'checked' : ''; ?>> Closed</label>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
                             <!-- Special Hours -->
                             <div class="loc-special-hours-wrapper" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
@@ -1219,7 +1279,8 @@ if ($view === 'editor') {
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Hours</label>
-                                            <input type="text" class="form-input loc-sh-hours" value="<?php echo htmlspecialchars($entry['hours'] ?? ''); ?>" placeholder="e.g. 10:00-14:00 or Closed">
+                                            <?php [$shText, $shClosed] = oferoHoursForEditor($entry['hours'] ?? null); ?>
+                                            <input type="text" class="form-input loc-sh-hours" value="<?php echo htmlspecialchars($shClosed ? 'Closed' : $shText); ?>" placeholder="e.g. 10:00-14:00, 15:00-18:00 or Closed">
                                         </div>
                                     </div>
                                     <button type="button" onclick="this.closest('.loc-special-hour-item').remove()" style="margin-top: 4px; font-size: 12px; color: #ef4444; background: none; border: none; cursor: pointer;">&times; Remove</button>
@@ -1232,7 +1293,7 @@ if ($view === 'editor') {
                             <div class="loc-contacts-wrapper" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
                                 <?php if (!empty($location['contacts'])): ?>
                                 <?php foreach ($location['contacts'] as $contact): ?>
-                                <div class="loc-contact-item" style="border-left: 3px solid #7986cb; padding-left: 12px; margin: 8px 0;">
+                                <div class="loc-contact-item" style="border-left: 3px solid #7986cb; padding-left: 12px; margin: 8px 0;" data-original="<?php echo htmlspecialchars(json_encode($contact, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES); ?>">
                                     <div class="grid">
                                         <div class="form-group">
                                             <label class="form-label">Name</label>
@@ -1537,14 +1598,14 @@ if ($view === 'editor') {
                         <h3 style="margin-bottom: 15px; color: var(--accent-color);">Brand Name Translations</h3>
                         <div class="form-group">
                             <label class="form-label">Default (<?php echo htmlspecialchars($oferoData['language'] ?? 'en'); ?>)</label>
-                            <input type="text" class="form-input" value="<?php echo htmlspecialchars(is_array($oferoData['organization']['brandName'] ?? '') ? ($oferoData['organization']['brandName']['default'] ?? '') : ($oferoData['organization']['brandName'] ?? '')); ?>" disabled style="opacity: 0.7;">
+                            <input type="text" class="form-input" value="<?php echo htmlspecialchars(oferoTranslatableDefault($oferoData['organization']['brandName'] ?? '')); ?>" disabled style="opacity: 0.7;">
                         </div>
                         <div id="brandNameTranslations" class="grid"></div>
 
                         <h3 style="margin: 30px 0 15px; color: var(--accent-color);">Description Translations</h3>
                         <div class="form-group">
                             <label class="form-label">Default (<?php echo htmlspecialchars($oferoData['language'] ?? 'en'); ?>)</label>
-                            <textarea class="form-input" rows="2" disabled style="opacity: 0.7;"><?php echo htmlspecialchars(is_array($oferoData['organization']['description'] ?? '') ? ($oferoData['organization']['description']['default'] ?? '') : ($oferoData['organization']['description'] ?? '')); ?></textarea>
+                            <textarea class="form-input" rows="2" disabled style="opacity: 0.7;"><?php echo htmlspecialchars(oferoTranslatableDefault($oferoData['organization']['description'] ?? '')); ?></textarea>
                         </div>
                         <div id="descriptionTranslations"></div>
                     </div>
@@ -1728,13 +1789,14 @@ if ($view === 'editor') {
                 }
             }
 
+            hoursErrors = [];
             const data = {
                 language: document.getElementById('language')?.value || 'en',
                 domain: document.getElementById('domain')?.value || '',
                 canonicalUrl: document.getElementById('canonicalUrl')?.value || '',
                 metadata: {
                     version: document.getElementById('metadataVersion')?.value || '2.0.0',
-                    schemaVersion: 'ofero-metadata-2.0',
+                    schemaVersion: 'ofero-metadata-3.0',
                     lastUpdated: new Date().toISOString(),
                     createdAt: '<?php echo htmlspecialchars($oferoData['metadata']['createdAt'] ?? date('c')); ?>'
                 },
@@ -1774,17 +1836,166 @@ if ($view === 'editor') {
                 }
             };
 
-            const keywords = document.getElementById('keywords')?.value?.trim() || '';
+            // No editor for keyword translations; the ones already in the file are kept
+            const keywords = buildTranslatableString(
+                document.getElementById('keywords')?.value?.trim() || '',
+                existingTranslations.keywords
+            );
             if (keywords) {
                 data.keywords = keywords;
             }
 
-            return data;
+            if (hoursErrors.length > 0) {
+                alert('Please fix the opening hours:\n\n' + hoursErrors.join('\n'));
+                return null;
+            }
+
+            return keepUnmanaged(existingData, data, MANAGED_FIELDS);
+        }
+
+        // Parts of ofero.json this editor writes: true = the form owns the whole value, an object =
+        // the form owns only those sub-keys. Everything else in the saved file (catalog,
+        // businessClassification, partnerships, identifiers.global, …) is kept instead of dropped.
+        const MANAGED_FIELDS = {
+            language: true,
+            domain: true,
+            canonicalUrl: true,
+            metadata: { version: true, schemaVersion: true, lastUpdated: true, createdAt: true },
+            organization: {
+                legalName: true, brandName: true, entityType: true, legalForm: true, description: true,
+                website: true, contactEmail: true, contactPhone: true,
+                identifiers: { primaryIncorporation: { country: true, registrationNumber: true, taxId: true, vatNumber: true } }
+            },
+            locations: true,
+            banking: true,
+            wallets: true,
+            branding: true,
+            communications: { social: true, support: true },
+            keywords: true
+        };
+        const existingData = <?php echo json_encode((object) $oferoData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+
+        function keepUnmanaged(existing, form, managed) {
+            if (!existing || typeof existing !== 'object' || Array.isArray(existing)) {
+                return form;
+            }
+            // Assigning in place keeps the key order of the saved file
+            const result = Object.assign({}, existing);
+            Object.entries(managed).forEach(([key, sub]) => {
+                if (sub !== true) {
+                    result[key] = keepUnmanaged(existing[key], form[key] || {}, sub);
+                } else if (key in form) {
+                    result[key] = form[key];
+                } else {
+                    delete result[key];
+                }
+            });
+            // Keys the form fills but does not own (e.g. empty identifiers.global) only fill gaps
+            Object.keys(form).forEach(key => {
+                if (!(key in managed) && !(key in result)) result[key] = form[key];
+            });
+            return result;
+        }
+
+        const WEEKDAYS = <?php echo json_encode(OFERO_WEEKDAYS); ?>;
+        const TIME_RANGE = /^([01][0-9]|2[0-3]):[0-5][0-9]-(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$/;
+        let hoursErrors = [];
+
+        // "9:00 - 13:00, 14:00-18:00" -> ["09:00-13:00", "14:00-18:00"]; "Closed" -> [].
+        // Problems are collected in hoursErrors and reported by collectFormData().
+        function parseHours(text, where) {
+            if (/^closed$/i.test(text.trim())) return [];
+            const ranges = text.split(/[,;]/).map(s => s.trim()).filter(Boolean).map(s => s
+                .replace(/\s*[-–]\s*/, '-')
+                .replace(/(^|-)(\d):/g, (m, sep, h) => `${sep}0${h}:`));
+            const invalid = ranges.filter(r => !TIME_RANGE.test(r));
+            if (invalid.length > 0) {
+                hoursErrors.push(`${where}: "${invalid.join('", "')}" is not an HH:MM-HH:MM interval`);
+                return ranges;
+            }
+            // Chronological, not overlapping; only the last interval may run past midnight
+            const toMin = t => parseInt(t.slice(0, 2)) * 60 + parseInt(t.slice(3, 5));
+            let previousEnd = -1;
+            ranges.forEach((r, i) => {
+                const start = toMin(r.slice(0, 5));
+                let end = toMin(r.slice(6));
+                if (end <= start) end += 24 * 60;
+                if (start < previousEnd) {
+                    hoursErrors.push(`${where}: "${r}" overlaps or comes before "${ranges[i - 1]}"`);
+                } else if (end > 24 * 60 && i < ranges.length - 1) {
+                    hoursErrors.push(`${where}: "${r}" runs past midnight, so it must be the last interval`);
+                    end = -1; // reported once; don't also flag the next interval as overlapping
+                }
+                previousEnd = end;
+            });
+            return ranges;
+        }
+
+        function collectBusinessHours(item, where) {
+            const hours = {};
+            item.querySelectorAll('.loc-bh-day').forEach(row => {
+                const day = row.dataset.day;
+                if (row.querySelector('.loc-bh-closed')?.checked) {
+                    hours[day] = [];
+                    return;
+                }
+                const text = row.querySelector('.loc-bh-hours')?.value.trim() || '';
+                if (text) hours[day] = parseHours(text, `${where}, ${WEEKDAYS[day]}`);
+            });
+            if (Object.keys(hours).length === 0) return undefined;
+            const timezone = item.querySelector('.loc-bh-timezone')?.value.trim() || '';
+            if (timezone) hours.timezone = timezone;
+            return hours;
+        }
+
+        function toggleClosedDay(checkbox) {
+            const input = checkbox.closest('.loc-bh-day').querySelector('.loc-bh-hours');
+            input.disabled = checkbox.checked;
+        }
+
+        function businessHoursHtml() {
+            const days = Object.entries(WEEKDAYS).map(([day, label]) => `
+                <div class="loc-bh-day" data-day="${day}" style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
+                    <span style="width: 100px; font-size: 13px;">${label}</span>
+                    <input type="text" class="form-input loc-bh-hours" placeholder="09:00-13:00, 14:00-18:00" style="flex: 1;">
+                    <label style="font-size: 12px; white-space: nowrap;"><input type="checkbox" class="loc-bh-closed" onchange="toggleClosedDay(this)"> Closed</label>
+                </div>`).join('');
+            return `
+                <div class="loc-business-hours" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                    <strong style="font-size: 13px;">Business Hours</strong>
+                    <small style="color: var(--muted-color); font-size: 12px; display: block; margin: 4px 0 8px;">One or more intervals per day, separated by commas — e.g. <code>09:00-13:00, 14:00-18:00</code> for a lunch break. Leave a day empty if you don't want to state it.</small>
+                    <div class="form-group">
+                        <label class="form-label">Timezone</label>
+                        <input type="text" class="form-input loc-bh-timezone" placeholder="e.g. UTC, America/New_York">
+                    </div>
+                    ${days}
+                </div>`;
+        }
+
+        // Fields the Locations tab edits. Anything else in the file (id, coordinates, amenities,
+        // paymentMethods, contact languages, …) is carried over from data-original, so saving
+        // does not drop it; managed fields always come from the form, so clearing one removes it.
+        const LOCATION_FIELDS = {
+            name: true, type: true, facility: true, publicAccess: true, phone: true, email: true,
+            photos: true, businessHours: true, specialHours: true, contacts: true,
+            address: { street: true, city: true, region: true, postalCode: true, country: true }
+        };
+        const CONTACT_FIELDS = { name: true, role: true, email: true, phone: true, public: true, photo: true };
+
+        // The saved entry (data-original) with the form's values laid over it
+        function withUnmanaged(element, values, managed) {
+            let original = {};
+            try {
+                original = JSON.parse(element.dataset.original || '{}') || {};
+            } catch (e) {
+                original = {};
+            }
+            return keepUnmanaged(original, values, managed);
         }
 
         function collectLocations() {
             const items = [];
-            document.querySelectorAll('.location-item').forEach(item => {
+            document.querySelectorAll('.location-item').forEach((item, index) => {
                 const loc = {
                     name: item.querySelector('.loc-name')?.value || '',
                     type: item.querySelector('.loc-type')?.value || 'headquarters',
@@ -1806,13 +2017,19 @@ if ($view === 'editor') {
                 if (photos.length > 0) {
                     loc.photos = photos;
                 }
+                const where = loc.name || `Location ${index + 1}`;
+                const businessHours = collectBusinessHours(item, where);
+                if (businessHours) {
+                    loc.businessHours = businessHours;
+                }
                 // Collect special hours
                 const specialHours = [];
                 item.querySelectorAll('.loc-special-hour-item').forEach(shi => {
                     const type  = shi.querySelector('.loc-sh-type')?.value || 'date';
                     const name  = shi.querySelector('.loc-sh-name')?.value.trim() || '';
-                    const hours = shi.querySelector('.loc-sh-hours')?.value.trim() || '';
-                    if (!name || !hours) return;
+                    const hoursText = shi.querySelector('.loc-sh-hours')?.value.trim() || '';
+                    if (!name || !hoursText) return;
+                    const hours = parseHours(hoursText, `${where}, ${name}`);
                     if (type === 'range') {
                         const from = shi.querySelector('.loc-sh-from')?.value || '';
                         const to   = shi.querySelector('.loc-sh-to')?.value || '';
@@ -1840,12 +2057,12 @@ if ($view === 'editor') {
                     if (phone) contact.phone = phone;
                     const photo = ci.querySelector('.loc-contact-photo')?.value || '';
                     if (photo) contact.photo = photo;
-                    contacts.push(contact);
+                    contacts.push(withUnmanaged(ci, contact, CONTACT_FIELDS));
                 });
                 if (contacts.length > 0) {
                     loc.contacts = contacts;
                 }
-                items.push(loc);
+                items.push(withUnmanaged(item, loc, LOCATION_FIELDS));
             });
             return items;
         }
@@ -2058,6 +2275,7 @@ if ($view === 'editor') {
                             <small style="color: var(--muted-color); font-size: 12px; display: block; margin-top: 4px;">Photos of this location. One URL per line.</small>
                         </div>
                     </div>
+                    ${businessHoursHtml()}
                     <div class="loc-special-hours-wrapper" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                             <strong style="font-size: 13px;">Special Hours</strong>
@@ -2110,7 +2328,7 @@ if ($view === 'editor') {
                         </div>
                         <div class="form-group">
                             <label class="form-label">Hours</label>
-                            <input type="text" class="form-input loc-sh-hours" placeholder="e.g. 10:00-14:00 or Closed">
+                            <input type="text" class="form-input loc-sh-hours" placeholder="e.g. 10:00-14:00, 15:00-18:00 or Closed">
                         </div>
                     </div>
                     <button type="button" onclick="this.closest('.loc-special-hour-item').remove()" style="margin-top: 4px; font-size: 12px; color: #ef4444; background: none; border: none; cursor: pointer;">&times; Remove</button>
@@ -2391,6 +2609,11 @@ if ($view === 'editor') {
         });
 
         // Translation management
+        const existingTranslations = <?php echo json_encode([
+            'brandName' => (object) oferoTranslations($oferoData['organization']['brandName'] ?? null),
+            'description' => (object) oferoTranslations($oferoData['organization']['description'] ?? null),
+            'keywords' => (object) oferoTranslations($oferoData['keywords'] ?? null),
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
         const selectedLanguages = new Set();
         const languageNames = {
             'ro': 'Romanian', 'de': 'German', 'fr': 'French', 'es': 'Spanish',
@@ -2456,15 +2679,39 @@ if ($view === 'editor') {
             return translations;
         }
 
+        // The schema's TranslatableString is always an object: {"default": "...", "translations": {...}}.
+        // undefined (nothing entered) drops the key from JSON.stringify.
         function buildTranslatableString(defaultValue, translations) {
-            if (Object.keys(translations).length === 0) {
-                return defaultValue;
+            const hasTranslations = Object.keys(translations).length > 0;
+            if (!defaultValue && !hasTranslations) {
+                return undefined;
             }
-            return {
-                default: defaultValue,
-                translations: translations
-            };
+            const value = { default: defaultValue };
+            if (hasTranslations) {
+                value.translations = translations;
+            }
+            return value;
         }
+
+        // Show the translations already in the file, so saving does not drop them
+        function loadExistingTranslations() {
+            const languages = new Set([
+                ...Object.keys(existingTranslations.brandName),
+                ...Object.keys(existingTranslations.description)
+            ]);
+            languages.forEach(lang => {
+                const checkbox = document.querySelector(`.trans-lang-toggle[data-lang="${lang}"]`);
+                if (checkbox) checkbox.checked = true;
+                selectedLanguages.add(lang);
+                addTranslationFields(lang);
+                const brand = document.querySelector(`.trans-brandName-${lang}`);
+                if (brand) brand.value = existingTranslations.brandName[lang] || '';
+                const description = document.querySelector(`.trans-description-${lang}`);
+                if (description) description.value = existingTranslations.description[lang] || '';
+            });
+            updateTranslationsVisibility();
+        }
+        loadExistingTranslations();
     </script>
 </body>
 </html>

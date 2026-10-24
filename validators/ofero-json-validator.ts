@@ -5,7 +5,8 @@
  * Supports three validation levels: basic, moderate, strict
  */
 
-import Ajv, { type ErrorObject } from 'ajv';
+// The schema declares JSON Schema draft 2020-12; the default `ajv` export only knows draft-07
+import Ajv2020, { type ErrorObject } from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 
 // Validation levels
@@ -34,7 +35,7 @@ export interface ValidationWarning {
 }
 
 // Create Ajv instance
-const ajv = new Ajv({
+const ajv = new Ajv2020({
 	allErrors: true,
 	verbose: true,
 	strict: false,
@@ -268,18 +269,24 @@ function validateBasic(data: any): ValidationError[] {
 		if (!data.metadata.schemaVersion) {
 			errors.push({
 				path: 'metadata.schemaVersion',
-				message: 'Schema version must be "ofero-metadata-2.0"'
+				message: 'Schema version must be "ofero-metadata-3.0"'
 			});
 		} else if (data.metadata.schemaVersion === 'ofero-metadata-1.0') {
 			errors.push({
 				path: 'metadata.schemaVersion',
 				message:
-					'Schema version "ofero-metadata-1.0" is no longer supported. This is a v2 validator — upgrade your file per docs/MIGRATION-v1-to-v2.md and bump schemaVersion to "ofero-metadata-2.0".'
+					'Schema version "ofero-metadata-1.0" is no longer supported. This is a v3 validator — upgrade your file per docs/MIGRATION-v1-to-v2.md, then docs/MIGRATION-v2-to-v3.md, and bump schemaVersion to "ofero-metadata-3.0".'
 			});
-		} else if (data.metadata.schemaVersion !== 'ofero-metadata-2.0') {
+		} else if (data.metadata.schemaVersion === 'ofero-metadata-2.0') {
 			errors.push({
 				path: 'metadata.schemaVersion',
-				message: `Schema version must be "ofero-metadata-2.0", got "${data.metadata.schemaVersion}"`
+				message:
+					'Schema version "ofero-metadata-2.0" is no longer supported. This is a v3 validator — convert opening hours to interval lists per docs/MIGRATION-v2-to-v3.md and bump schemaVersion to "ofero-metadata-3.0".'
+			});
+		} else if (data.metadata.schemaVersion !== 'ofero-metadata-3.0') {
+			errors.push({
+				path: 'metadata.schemaVersion',
+				message: `Schema version must be "ofero-metadata-3.0", got "${data.metadata.schemaVersion}"`
 			});
 		}
 
@@ -426,6 +433,9 @@ function validateModerate(data: any): ValidationError[] {
 	// Reject v1 inline-catalog fields with a clear migration message
 	errors.push(...validateNoInlineCatalog(data));
 
+	// Reject v2 single-string opening hours with a clear migration message
+	errors.push(...validateNoLegacyHours(data));
+
 	return errors;
 }
 
@@ -492,6 +502,98 @@ function validateStrict(data: any): ValidationError[] {
 	// Validate inline-catalog caps (signature, highlights, featured)
 	const capErrors = validateInlineCaps(data);
 	errors.push(...capErrors);
+
+	// Validate order of opening intervals (businessHours, specialHours)
+	errors.push(...validateHoursOrder(data));
+
+	return errors;
+}
+
+const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const TIME_RANGE_REGEX = /^([01][0-9]|2[0-3]):[0-5][0-9]-(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$/;
+
+/**
+ * Every opening-hours list in the file, with its path: businessHours days and specialHours[].hours.
+ */
+function collectDayHours(data: any): { path: string; value: any }[] {
+	const lists: { path: string; value: any }[] = [];
+	if (!Array.isArray(data.locations)) return lists;
+
+	data.locations.forEach((location: any, i: number) => {
+		const bh = location?.businessHours;
+		if (bh && typeof bh === 'object') {
+			WEEKDAYS.forEach((day) => {
+				if (day in bh) lists.push({ path: `locations[${i}].businessHours.${day}`, value: bh[day] });
+			});
+		}
+		if (Array.isArray(location?.specialHours)) {
+			location.specialHours.forEach((entry: any, j: number) => {
+				if (entry && 'hours' in entry) {
+					lists.push({ path: `locations[${i}].specialHours[${j}].hours`, value: entry.hours });
+				}
+			});
+		}
+	});
+	return lists;
+}
+
+/**
+ * Reject v2 single-string hours ("09:00-18:00", "Closed"). Used at moderate level so
+ * v2 files fail with a pointer to the migration guide instead of a bare type error.
+ */
+function validateNoLegacyHours(data: any): ValidationError[] {
+	return collectDayHours(data)
+		.filter(({ value }) => typeof value === 'string')
+		.map(({ path, value }) => {
+			const suggestion = /^closed$/i.test(value.trim())
+				? '[]'
+				: TIME_RANGE_REGEX.test(value.trim())
+					? `["${value.trim()}"]`
+					: 'a list of "HH:MM-HH:MM" intervals';
+			return {
+				path,
+				message: `Opening hours must be a list of intervals since v3.0 (got "${value}"). Use ${suggestion} — see docs/MIGRATION-v2-to-v3.md.`
+			};
+		});
+}
+
+function toMinutes(time: string): number {
+	const [h, m] = time.split(':').map(Number);
+	return h * 60 + m;
+}
+
+/**
+ * Intervals of a day must be in chronological order and must not overlap.
+ * An end earlier than the start runs past midnight, so only the last interval may do that.
+ */
+function validateHoursOrder(data: any): ValidationError[] {
+	const errors: ValidationError[] = [];
+
+	collectDayHours(data).forEach(({ path, value }) => {
+		if (!Array.isArray(value)) return;
+		if (!value.every((range) => typeof range === 'string' && TIME_RANGE_REGEX.test(range))) return; // reported by the schema
+
+		const ranges = value.map((range: string) => {
+			const [start, end] = range.split('-').map(toMinutes);
+			return { range, start, end: end <= start ? end + 24 * 60 : end };
+		});
+
+		ranges.forEach((current, k) => {
+			if (k === 0) return;
+			const previous = ranges[k - 1];
+			if (previous.end > 24 * 60) {
+				errors.push({
+					path: `${path}[${k - 1}]`,
+					message: `"${previous.range}" runs past midnight, so it must be the last interval of the day`
+				});
+			} else if (current.start < previous.end) {
+				errors.push({
+					path: `${path}[${k}]`,
+					message: `"${current.range}" must start after "${previous.range}" ends (intervals in chronological order, not overlapping)`
+				});
+			}
+		});
+	});
 
 	return errors;
 }

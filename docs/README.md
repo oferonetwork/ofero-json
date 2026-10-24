@@ -15,7 +15,7 @@ Create a file at `https://yourdomain.com/.well-known/ofero.json`:
   "canonicalUrl": "https://yourdomain.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2025-01-15T10:00:00Z",
     "createdAt": "2025-01-15T10:00:00Z"
   },
@@ -167,7 +167,7 @@ Minimum required fields:
 - `canonicalUrl` - Canonical URL of the ofero.json file
 - `metadata` - File metadata
   - `version` - Your file's content version (e.g., `"2.0.0"`)
-  - `schemaVersion` - Must be `"ofero-metadata-2.0"`
+  - `schemaVersion` - Must be `"ofero-metadata-3.0"` (upgrading? see [MIGRATION-v2-to-v3.md](MIGRATION-v2-to-v3.md))
   - `lastUpdated` - ISO 8601 timestamp
   - `createdAt` - ISO 8601 timestamp
 - `organization` - Organization details
@@ -258,8 +258,8 @@ MIT License - See [SPECIFICATION.md](SPECIFICATION.md) for details
 
 ## Version
 
-Current Version: **2.0.0**
-Schema Version: **ofero-metadata-2.0**
+Current Version: **3.0.0**
+Schema Version: **ofero-metadata-3.0**
 
 ---
 

@@ -4,7 +4,7 @@
   "canonicalUrl": "https://techcorp.example.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2025-01-10T09:00:00Z",
     "createdBy": "ofero-cli/1.2.0",
@@ -113,13 +113,13 @@
         "longitude": -122.4194
       },
       "businessHours": {
-        "monday": "09:00-18:00",
-        "tuesday": "09:00-18:00",
-        "wednesday": "09:00-18:00",
-        "thursday": "09:00-18:00",
-        "friday": "09:00-18:00",
-        "saturday": "closed",
-        "sunday": "closed"
+        "monday": ["09:00-18:00"],
+        "tuesday": ["09:00-18:00"],
+        "wednesday": ["09:00-18:00"],
+        "thursday": ["09:00-18:00"],
+        "friday": ["09:00-18:00"],
+        "saturday": [],
+        "sunday": []
       }
     }
   ],

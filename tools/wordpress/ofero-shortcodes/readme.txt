@@ -3,12 +3,14 @@ Contributors: oferome
 Tags: ofero, shortcodes, business info, structured data, json
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 2.0.1
+Stable tag: 3.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Display data from your ofero.json file using simple shortcodes. Compatible with Elementor 3.5+ (including Elementor 4.x), WPBakery, Gutenberg, and any theme.
+
+**v3.0.0 reads ofero.json v3 (`ofero-metadata-3.0`) and v2.** In v3 opening hours are lists of intervals; `[ofero_hours]` shows split schedules such as a lunch break ("09:00–13:00, 14:00–18:00"). See the MIGRATION-v2-to-v3.md guide in the ofero-json-standard repo.
 
 **v2.0.0 requires ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** v1 files are rejected with a migration warning. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
 
@@ -134,6 +136,13 @@ Yes. Enter the full URL in the "External URL" setting. The plugin will fetch and
 
 == Changelog ==
 
+= 3.0.0 =
+* NEW: reads ofero.json v3 (`ofero-metadata-3.0`), where each `businessHours` day is a list of intervals. `[ofero_hours]` and `[ofero_location show="hours"]` show every interval of the day ("09:00–13:00, 14:00–18:00") and "Closed" for `[]`. Closed days get the `ofero-hours-closed` class.
+* FIX: `[ofero_hours]`, `[ofero_location show="hours"]` and the Elementor Location widget read the schema key `businessHours`. They previously read `hours`, which is not in the schema, so they showed nothing for valid files. `hours` is still read as a fallback.
+* FIX: the `timezone` key is no longer listed as if it were a day, and days are shown Monday to Sunday with translatable names.
+* COMPAT: v2 files are still displayed (`"09:00-18:00"` is read as one interval, `"Closed"` as closed, other text is shown as written). The settings page marks them as v2 and points to the migration guide.
+* Plugin version bumped to 3.0.0.
+
 = 2.0.1 =
 * FIX: `[ofero_logo]` reads the schema's `branding` section. It previously read only `brandAssets`, a key that was never part of the ofero.json schema, so files following the schema showed no logo. `brandAssets` is still read as a fallback, including the flat list written by Ofero Generator before 2.1.0.
 * FIX: logo selection now applies the same rules to vector and raster logos: requested `variant`, then the primary logo, then requested `format`, then the first logo. Raster-only files (e.g. a single JPG) now render.
@@ -189,6 +198,9 @@ Yes. Enter the full URL in the "External URL" setting. The plugin will fetch and
 * Admin settings page
 
 == Upgrade Notice ==
+
+= 3.0.0 =
+Reads ofero.json v3 opening hours (lunch breaks, split schedules) and still reads v2. Update this plugin before migrating your ofero.json to v3.
 
 = 1.1.0 =
 Major update with native Elementor integration! Now includes 5 drag & drop widgets with visual controls.

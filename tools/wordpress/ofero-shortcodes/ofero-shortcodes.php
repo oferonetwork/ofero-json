@@ -3,7 +3,7 @@
  * Plugin Name: Ofero Shortcodes
  * Plugin URI: https://ofero.me/ofero-json
  * Description: Display data from your ofero.json file using simple shortcodes. Compatible with Elementor, WPBakery, Gutenberg, and any theme.
- * Version: 2.0.1
+ * Version: 3.0.0
  * Author: Ofero Network
  * Author URI: https://ofero.network
  * License: GPL-2.0+
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('OFERO_SHORTCODES_VERSION', '2.0.1');
+define('OFERO_SHORTCODES_VERSION', '3.0.0');
 define('OFERO_SHORTCODES_PATH', plugin_dir_path(__FILE__));
 define('OFERO_SHORTCODES_URL', plugin_dir_url(__FILE__));
 
@@ -181,7 +181,7 @@ class Ofero_Shortcodes {
 
         $schema_version = $data['metadata']['schemaVersion'] ?? '';
         if ($schema_version === 'ofero-metadata-1.0') {
-            echo '<div class="notice notice-error"><p><strong>Ofero Shortcodes:</strong> your ofero.json declares <code>ofero-metadata-1.0</code>. This plugin is v2-only and may not render catalog data correctly. Upgrade your file per <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
+            echo '<div class="notice notice-error"><p><strong>Ofero Shortcodes:</strong> your ofero.json declares <code>ofero-metadata-1.0</code>. This plugin reads v2 and v3 files only and may not render catalog data correctly. Upgrade your file per <a href="https://github.com/oferonetwork/ofero-json/blob/main/docs/MIGRATION-v1-to-v2.md" target="_blank" rel="noopener">MIGRATION-v1-to-v2.md</a>.</p></div>';
         }
 
         $v1_keys = $this->parser->v1_catalog_keys($data);
@@ -393,11 +393,18 @@ class Ofero_Shortcodes {
             $data = $this->get_ofero_data();
             if ($data) {
                 $schema_version = $data['metadata']['schemaVersion'] ?? '';
-                $version_ok = $schema_version === 'ofero-metadata-2.0';
+                $version_ok = in_array($schema_version, array('ofero-metadata-2.0', 'ofero-metadata-3.0'), true);
                 echo '<p style="color: green;">&#10003; ofero.json loaded successfully.</p>';
                 echo '<p><strong>Organization:</strong> ' . esc_html($data['organization']['legalName'] ?? 'Not set') . '</p>';
                 echo '<p><strong>Domain:</strong> ' . esc_html($data['domain'] ?? 'Not set') . '</p>';
-                echo '<p><strong>Schema version:</strong> ' . esc_html($schema_version) . ($version_ok ? ' <span style="color:green">(v2 OK)</span>' : ' <span style="color:#d63638">(plugin requires v2 — upgrade your file)</span>') . '</p>';
+                if ($schema_version === 'ofero-metadata-3.0') {
+                    $version_note = ' <span style="color:green">(v3 OK)</span>';
+                } elseif ($version_ok) {
+                    $version_note = ' <span style="color:#996800">(v2 — still displayed; upgrade to v3 to publish split opening hours, see MIGRATION-v2-to-v3.md)</span>';
+                } else {
+                    $version_note = ' <span style="color:#d63638">(plugin requires v2 or v3 — upgrade your file)</span>';
+                }
+                echo '<p><strong>Schema version:</strong> ' . esc_html($schema_version) . $version_note . '</p>';
                 echo '<p><strong>Last Updated:</strong> ' . esc_html($data['metadata']['lastUpdated'] ?? 'Not set') . '</p>';
                 if (isset($data['catalog']['feeds']) && is_array($data['catalog']['feeds'])) {
                     echo '<p><strong>catalog.feeds[]:</strong> ' . count($data['catalog']['feeds']) . ' feed(s) declared.</p>';
@@ -820,14 +827,12 @@ class Ofero_Shortcodes {
                     break;
 
                 case 'hours':
-                    if (!empty($loc['hours'])) {
+                    $hours = $this->parser->weekly_hours($loc);
+                    if (!empty($hours)) {
+                        $labels = $this->parser->weekday_labels();
                         $output .= '<div class="ofero-loc-hours">';
-                        if (is_array($loc['hours'])) {
-                            foreach ($loc['hours'] as $day => $time) {
-                                $output .= '<div>' . esc_html(ucfirst($day) . ': ' . $time) . '</div>';
-                            }
-                        } else {
-                            $output .= esc_html($loc['hours']);
+                        foreach ($hours as $day => $value) {
+                            $output .= '<div>' . esc_html($labels[$day] . ': ' . $this->parser->format_day_hours($value)) . '</div>';
                         }
                         $output .= '</div>';
                     }
@@ -1132,27 +1137,31 @@ class Ofero_Shortcodes {
         }
 
         $index = intval($atts['location']);
-        if (!isset($locations[$index]) || empty($locations[$index]['hours'])) {
+        if (!isset($locations[$index]) || !is_array($locations[$index])) {
             return '';
         }
 
-        $hours = $locations[$index]['hours'];
+        $hours = $this->parser->weekly_hours($locations[$index]);
+        if (empty($hours)) {
+            return '';
+        }
+        $labels = $this->parser->weekday_labels();
 
         if ($atts['format'] === 'table') {
             $output = '<table class="' . esc_attr($atts['class']) . '">';
-            foreach ($hours as $day => $time) {
-                $output .= '<tr>';
-                $output .= '<td class="ofero-hours-day">' . esc_html(ucfirst($day)) . '</td>';
-                $output .= '<td class="ofero-hours-time">' . esc_html($time) . '</td>';
+            foreach ($hours as $day => $value) {
+                $output .= '<tr' . ($value === array() ? ' class="ofero-hours-closed"' : '') . '>';
+                $output .= '<td class="ofero-hours-day">' . esc_html($labels[$day]) . '</td>';
+                $output .= '<td class="ofero-hours-time">' . esc_html($this->parser->format_day_hours($value)) . '</td>';
                 $output .= '</tr>';
             }
             $output .= '</table>';
         } else {
             $output = '<div class="' . esc_attr($atts['class']) . '">';
-            foreach ($hours as $day => $time) {
-                $output .= '<div class="ofero-hours-row">';
-                $output .= '<span class="ofero-hours-day">' . esc_html(ucfirst($day)) . ':</span> ';
-                $output .= '<span class="ofero-hours-time">' . esc_html($time) . '</span>';
+            foreach ($hours as $day => $value) {
+                $output .= '<div class="ofero-hours-row' . ($value === array() ? ' ofero-hours-closed' : '') . '">';
+                $output .= '<span class="ofero-hours-day">' . esc_html($labels[$day]) . ':</span> ';
+                $output .= '<span class="ofero-hours-time">' . esc_html($this->parser->format_day_hours($value)) . '</span>';
                 $output .= '</div>';
             }
             $output .= '</div>';

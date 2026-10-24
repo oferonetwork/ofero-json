@@ -8,7 +8,7 @@
   "canonicalUrl": "https://elitemodels.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2023-03-01T10:00:00Z",
     "updateFrequency": "weekly"
@@ -88,13 +88,13 @@
         "country": "US"
       },
       "businessHours": {
-        "monday": "10:00-18:00",
-        "tuesday": "10:00-18:00",
-        "wednesday": "10:00-18:00",
-        "thursday": "10:00-18:00",
-        "friday": "10:00-17:00",
-        "saturday": "Closed",
-        "sunday": "Closed",
+        "monday": ["10:00-18:00"],
+        "tuesday": ["10:00-18:00"],
+        "wednesday": ["10:00-18:00"],
+        "thursday": ["10:00-18:00"],
+        "friday": ["10:00-17:00"],
+        "saturday": [],
+        "sunday": [],
         "timezone": "America/New_York"
       },
       "contacts": [

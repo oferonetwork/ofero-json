@@ -3,7 +3,7 @@ Contributors: Ofero Network
 Tags: ofero, json, business info, structured data, generator
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 2.1.0
+Stable tag: 3.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,6 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Generate and manage your ofero.json file from the WordPress admin, with validation, auto-save and backups.
 
 == Description ==
+
+**v3.0.0 writes ofero.json v3 (schemaVersion `ofero-metadata-3.0`).** Opening hours are lists of intervals, so a location can publish a lunch break (`09:00-13:00, 14:00-18:00`). Files written by 2.x are read as before and converted on the next save. See the MIGRATION-v2-to-v3.md guide in the ofero-json-standard repo.
 
 **v2.0.0 writes ofero.json v2 (schemaVersion `ofero-metadata-2.0`).** Inline catalog data (menus, products, services, packages, portfolios) is no longer allowed — those move to external feeds referenced via `catalog.feeds[]`. WooCommerce products are now served from a built-in REST endpoint and added automatically to the feeds list. See the MIGRATION-v1-to-v2.md guide in the ofero-json-standard repo.
 
@@ -105,6 +107,16 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 
 == Changelog ==
 
+= 3.0.0 =
+* BREAKING: writes ofero.json v3 (`schemaVersion: ofero-metadata-3.0`). Each `businessHours` day and `specialHours[].hours` is written as a list of `HH:MM-HH:MM` intervals; a closed day is `[]`.
+* NEW: Business Hours editor on every location: one field per day that takes one or more intervals (`09:00-13:00, 14:00-18:00` for a lunch break), a Closed checkbox and a timezone. Hours are checked before saving (format, order, overlaps, only the last interval may run past midnight).
+* NEW: Special Hours accept several intervals too (`10:00-14:00, 15:00-18:00` or `Closed`).
+* FIX: saving the Locations tab no longer drops `businessHours` — there was no editor for them, so they were lost on every save.
+* FIX: empty hour lists (closed days) are kept when the file is written; empty values elsewhere are still removed.
+* FIX: saving no longer drops data the editor has no fields for. The form is laid over the saved file: `partnerships`, `security`, `featured`, `ai`, `organization.identifiers.global` (LEI, DUNS) and other sections are kept, and so are location `id`, `coordinates`, `amenities`, `paymentMethods` and contact `languages`. Fields the editor manages still come from the form, so clearing one removes it. v1 inline catalog keys are still removed.
+* CHANGE: 2.x hours (`"09:00-18:00"`, `"Closed"`) are loaded into the editor and written as lists on the next save. An admin notice points to the migration guide while the file on disk still declares v2. The validator rejects `ofero-metadata-2.0` and string hours with a pointer to MIGRATION-v2-to-v3.md.
+* Plugin version bumped to 3.0.0.
+
 = 2.1.0 =
 * NEW: Organization tab has a Business Classification card (industry path, main products/services, target market, operational status), written to `businessClassification`.
 * NEW: Service Area card writes `businessClassification.serviceArea` — how you serve customers (at your location, at the customer, remotely), worldwide, countries, and regions/cities. Lets businesses without a public address (remote agencies, online services) say where they serve.
@@ -156,6 +168,9 @@ No. When you uninstall the plugin, only the plugin options are removed from the 
 * Preview with JSON highlighting
 
 == Upgrade Notice ==
+
+= 3.0.0 =
+Writes ofero.json v3: opening hours become lists of intervals so you can add lunch breaks. Open the Locations tab, check the hours and save to migrate your file. Update consumers (e.g. Ofero Shortcodes 3.0) first.
 
 = 2.0.1 =
 Fixes literal HTML entities (&nbsp;) in catalog.signature[].priceFormatted for WooCommerce sites, and guards product text against invalid UTF-8. Re-save or re-sync to regenerate ofero.json.

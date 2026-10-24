@@ -65,7 +65,7 @@ Each location has three independent fields:
   "publicAccess": "walk-in",
   "name": "Downtown Store",
   "address": { "street": "1 Main Street", "city": "Springfield", "postalCode": "12345", "country": "US" },
-  "businessHours": { "monday": "09:00-18:00", "saturday": "10:00-14:00", "sunday": "Closed", "timezone": "UTC" }
+  "businessHours": { "monday": ["09:00-13:00", "14:00-18:00"], "saturday": ["10:00-14:00"], "sunday": [], "timezone": "UTC" }
 }
 ```
 

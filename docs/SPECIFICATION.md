@@ -1,11 +1,13 @@
-# Ofero.json Metadata Standard - Specification v2.0
+# Ofero.json Metadata Standard - Specification v3.0
 
 **Official Specification for the ofero.json Universal Metadata Format**
 
-**Version:** 2.0.0
-**Schema Version:** ofero-metadata-2.0
-**Last Updated:** May 22, 2026
+**Version:** 3.0.0
+**Schema Version:** ofero-metadata-3.0
+**Last Updated:** October 24, 2026
 **Status:** Public Standard
+
+> **Breaking change from v2.x.** In v3.0.0, each day in `businessHours` and each `specialHours[].hours` is a **list of intervals** (`["09:00-13:00", "14:00-18:00"]`), so split schedules such as a lunch break can be expressed. `"Closed"` becomes an empty list `[]`. See [MIGRATION-v2-to-v3.md](MIGRATION-v2-to-v3.md).
 
 > **Breaking change from v1.x.** In v2.0.0, ofero.json is an identity/metadata file only. Operational catalog data (menus, products, services, packages, portfolio items) must live in **external feeds** referenced via `catalog.feeds[]`. See [MIGRATION-v1-to-v2.md](MIGRATION-v1-to-v2.md) for the upgrade path.
 
@@ -132,7 +134,7 @@ Every ofero.json file **must** contain these top-level fields:
 	"canonicalUrl": "https://yourdomain.com/.well-known/ofero.json",
 	"metadata": {
 		"version": "1.0.0",
-		"schemaVersion": "ofero-metadata-2.0",
+		"schemaVersion": "ofero-metadata-3.0",
 		"lastUpdated": "2025-01-15T10:00:00Z",
 		"createdAt": "2025-01-15T10:00:00Z"
 	},
@@ -287,7 +289,7 @@ Every ofero.json file **must** contain these top-level fields:
 - `catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio` are **removed from the schema**. The old `catalog.productFeeds` and `catalog.serviceFeeds` are **unified into `catalog.feeds[]`**.
 - `catalog` now holds: `defaultCurrency`, `feeds[]` (external references), `signature[]` (≤ 6 inline preview items), `highlights[]` (≤ 6 inline preview items for portfolios), `priceListUrl`. Later 2.x releases added the optional `wholesale` terms object (see [Wholesale terms](#wholesale-terms-catalogwholesale)).
 - The recommended max file size drops from 500 KB to **100 KB**.
-- `metadata.schemaVersion` becomes `"ofero-metadata-2.0"`. v1 and v2 readers reject each other's files on purpose.
+- `metadata.schemaVersion` becomes `"ofero-metadata-2.0"`. v1 and v2 readers reject each other's files on purpose. (v3.0.0 later moved it to `"ofero-metadata-3.0"` for the opening-hours format; the catalog rules above are unchanged.)
 
 ### What lives inline, what lives in a feed
 
@@ -701,8 +703,8 @@ The `metadata` section contains file versioning, timestamps, and update frequenc
 
 - **Type:** String
 - **Required:** Yes
-- **Const:** `"ofero-metadata-2.0"`
-- **Description:** Ofero.json schema version. This is constant and only changes when the ofero.json standard itself gets updated. v1 files (`ofero-metadata-1.0`) are rejected by v2 validators — see [MIGRATION-v1-to-v2.md](MIGRATION-v1-to-v2.md).
+- **Const:** `"ofero-metadata-3.0"`
+- **Description:** Ofero.json schema version. This is constant and only changes with a major version of the ofero.json standard. Files declaring an older version (`ofero-metadata-2.0`, `ofero-metadata-1.0`) are rejected by v3 validators — see [MIGRATION-v2-to-v3.md](MIGRATION-v2-to-v3.md) and [MIGRATION-v1-to-v2.md](MIGRATION-v1-to-v2.md). Consumers that only display data may keep reading v2 files; see [Reading older files](#reading-older-files-v2).
 
 #### `metadata.lastUpdated`
 
@@ -1258,14 +1260,14 @@ Physical locations, offices, and branches.
 				"longitude": -74.006
 			},
 			"businessHours": {
-				// Optional business hours
-				"monday": "09:00-18:00",
-				"tuesday": "09:00-18:00",
-				"wednesday": "09:00-18:00",
-				"thursday": "09:00-18:00",
-				"friday": "09:00-17:00",
-				"saturday": "Closed",
-				"sunday": "Closed",
+				// Optional business hours — each day is a list of intervals
+				"monday": ["09:00-13:00", "14:00-18:00"], // Lunch break 13:00-14:00
+				"tuesday": ["09:00-13:00", "14:00-18:00"],
+				"wednesday": ["09:00-13:00", "14:00-18:00"],
+				"thursday": ["09:00-13:00", "14:00-18:00"],
+				"friday": ["09:00-17:00"],                // No break
+				"saturday": [],                           // Closed
+				"sunday": [],
 				"timezone": "America/New_York" // IANA timezone
 			},
 			"specialHours": [
@@ -1273,18 +1275,18 @@ Physical locations, offices, and branches.
 				{
 					"date": "2025-12-25",   // Single day: ISO 8601 date (YYYY-MM-DD)
 					"name": "Christmas Day",
-					"hours": "Closed"       // HH:MM-HH:MM or "Closed"
+					"hours": []             // Same format as a businessHours day; [] = closed
 				},
 				{
 					"date": "2025-12-31",
 					"name": "New Year's Eve",
-					"hours": "10:00-15:00"
+					"hours": ["10:00-15:00"]
 				},
 				{
 					"from": "2025-07-01",   // Date range: use from + to
 					"to": "2025-08-31",
 					"name": "Summer Schedule",
-					"hours": "09:00-15:00"
+					"hours": ["09:00-15:00"]
 				}
 			],
 			"phone": "+14155551234", // Optional direct phone for this location
@@ -1356,6 +1358,32 @@ Consumers should not show `warehouse`, `factory` or `distribution-center` locati
 
 This matches how map platforms treat locations: a place listed with a visitable address is expected to receive customers in person during its stated hours; otherwise the business is a service-area business with no public address.
 
+#### Business Hours (`businessHours`)
+
+`businessHours` is an optional object inside each `Location`, with one key per weekday (`monday` … `sunday`) and an optional `timezone`. No other keys are allowed.
+
+Each day is a **list of opening intervals** (`$defs.DayHours`). Each interval is a string `"HH:MM-HH:MM"` in 24-hour time (`$defs.TimeRange`).
+
+| Value | Meaning |
+|---|---|
+| `["09:00-18:00"]` | Open 09:00 to 18:00 |
+| `["09:00-13:00", "14:00-18:00"]` | Split schedule: closed 13:00–14:00 (lunch break) |
+| `["11:30-15:00", "18:00-23:00"]` | Two services, e.g. lunch and dinner |
+| `["18:00-02:00"]` | Opens 18:00, closes 02:00 the next morning |
+| `["00:00-24:00"]` | Open all day |
+| `[]` | Closed all day |
+| key omitted | Unknown — not stated |
+
+**Rules:**
+- Intervals are listed in chronological order and must not overlap. At most 6 intervals per day.
+- The end may be `24:00` (end of the day). Start times run from `00:00` to `23:59`.
+- An end **earlier than the start** means the interval runs past midnight. It belongs to the day on which it starts: `"friday": ["18:00-02:00"]` means Friday 18:00 to Saturday 02:00. Only the last interval of a day may cross midnight.
+- `[]` means closed. A missing day means unknown; consumers must not show it as closed.
+- Times are local to `timezone` (IANA, e.g. `"America/New_York"`). If `timezone` is missing, consumers may only show the times as written and must not compute "open now".
+- How to read the hours depends on `publicAccess` (visiting hours, appointment hours or internal working hours) — see [Public access](#public-access-publicaccess).
+
+**Mapping to schema.org:** each interval becomes one `OpeningHoursSpecification` with `dayOfWeek`, `opens` and `closes`. A day with two intervals becomes two specifications. Days with `[]` are left out, or given `opens`/`closes` of `"00:00"` where a consumer needs an explicit closed day.
+
 #### Special Hours (`specialHours`)
 
 `specialHours` is an optional array inside each `Location` object. Entries override the regular `businessHours` schedule for a specific date or date range.
@@ -1366,14 +1394,23 @@ This matches how map platforms treat locations: a place listed with a visitable 
 | `from`  | string (ISO 8601 date) | Required if no `date` | Start of a date-range override. Must be paired with `to`. |
 | `to`    | string (ISO 8601 date) | Required if no `date` | End of a date-range override. Must be paired with `from`. |
 | `name`  | string | Yes | Human-readable label (e.g., `"Christmas Day"`, `"Summer Schedule"`). |
-| `hours` | string | Yes | Hours in `HH:MM-HH:MM` format, or `"Closed"`. Same format as `businessHours` day fields. |
+| `hours` | array of `"HH:MM-HH:MM"` | Yes | Same format as a `businessHours` day: a list of intervals, `[]` = closed. For a date range, the same intervals apply to every day of the range. |
 
 **Rules:**
 - Use `date` for public holidays and one-off closures.
 - Use `from` + `to` for seasonal or multi-day schedule changes.
 - `date` and `from`/`to` are mutually exclusive within the same entry.
 - When a date falls within multiple entries, the **first matching entry** takes precedence.
+- An entry replaces the whole day: `"hours": ["10:00-14:00"]` on a day that normally has a lunch break means open 10:00–14:00 only.
 - `specialHours` does not inherit the `timezone` from `businessHours`; the parent location's `businessHours.timezone` is assumed.
+
+#### Reading older files (v2)
+
+In `ofero-metadata-2.0` files, each day and each `specialHours[].hours` was a single string: `"09:00-18:00"` or `"Closed"`. Validators reject these files. Consumers that only display data (directories, CMS plugins, AI agents) should keep reading them until publishers migrate:
+
+- A string `"HH:MM-HH:MM"` is read as `["HH:MM-HH:MM"]`.
+- `"Closed"` (any case) is read as `[]`.
+- Any other string (e.g. `"By appointment"`) is shown as written and never used to compute "open now".
 
 #### Amenities (`amenities`)
 
@@ -2473,7 +2510,7 @@ Schema version and additional notes.
 {
 	"extensions": {
 		"notes": "Additional notes about this file...", // Translatable
-		"schemaVersion": "ofero-metadata-2.0" // REQUIRED: Schema version (must be ofero-metadata-2.0 in v2.x)
+		"schemaVersion": "ofero-metadata-3.0" // REQUIRED: Schema version (must be ofero-metadata-3.0 in v3.x)
 	}
 }
 ```
@@ -2707,7 +2744,7 @@ Ofero.json supports three validation levels:
 - `organization.website` valid HTTPS URL
 - `organization.entityType` valid enum
 - `organization.primaryPhone` matches E.164 pattern (if provided)
-- `extensions.schemaVersion` = `"ofero-metadata-2.0"` (v2.x; v1 strings rejected)
+- `extensions.schemaVersion` = `"ofero-metadata-3.0"` (v3.x; v1 and v2 strings rejected)
 - TranslatableString fields have required `default` property
 - No inline catalog data: `catalog.menu`, `catalog.dailyMenu`, `catalog.services`, `catalog.packages`, `catalog.portfolio`, `catalog.productFeeds`, `catalog.serviceFeeds` must NOT be present
 
@@ -2737,7 +2774,7 @@ All moderate validation plus:
 
 - Blockchain address format validation per blockchain type
 - Bank account format validation per country (IBAN, routing numbers)
-- Business hours format validation
+- Business hours ordering: intervals of a day in chronological order, not overlapping, only the last one crossing midnight (the interval format itself is enforced by the schema)
 - GPS coordinates range validation (latitude: -90 to 90, longitude: -180 to 180)
 - E.164 strict phone number validation with country code verification
 - IBAN checksum validation
@@ -2798,7 +2835,7 @@ All moderate validation plus:
 		}
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-2.0"
+		"schemaVersion": "ofero-metadata-3.0"
 	}
 }
 ```
@@ -2877,7 +2914,7 @@ All moderate validation plus:
 		"preferredSources": ["https://globaleducation.org", "https://docs.globaleducation.org"]
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-2.0"
+		"schemaVersion": "ofero-metadata-3.0"
 	}
 }
 ```
@@ -2951,7 +2988,7 @@ All moderate validation plus:
 		]
 	},
 	"extensions": {
-		"schemaVersion": "ofero-metadata-2.0"
+		"schemaVersion": "ofero-metadata-3.0"
 	}
 }
 ```
@@ -3077,6 +3114,12 @@ For complete examples, see:
 
 ## Version History
 
+The full list of changes per release is in [CHANGELOG.md](CHANGELOG.md).
+
+### Version 3.0.0 (unreleased)
+
+**Breaking:** opening hours are lists of intervals, so split schedules (lunch breaks, lunch and dinner services) can be expressed. `businessHours` days and `specialHours[].hours` change from `"09:00-18:00"` / `"Closed"` to `["09:00-18:00"]` / `[]`; `businessHours` no longer allows unknown keys; `schemaVersion` becomes `ofero-metadata-3.0`. See [MIGRATION-v2-to-v3.md](MIGRATION-v2-to-v3.md).
+
 ### Version 1.0.0 (January 15, 2025)
 
 **Initial Public Release**
@@ -3106,7 +3149,7 @@ For complete examples, see:
 - Comprehensive field reference documentation
 - Three validation levels (basic, moderate, strict)
 
-**Schema Version:** `ofero-metadata-2.0` (v2.x)
+**Schema Version:** `ofero-metadata-3.0` (v3.x)
 
 **Security & Standards:**
 

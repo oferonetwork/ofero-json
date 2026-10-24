@@ -2,7 +2,9 @@
 
 **ofero.json** is an open, machine-readable metadata standard for organizations, businesses, and protocols. It provides structured identity and business data in a single well-known JSON file at `/.well-known/ofero.json`.
 
-> **v2.0.0 is a breaking change.** Operational catalog data (menus, products, services, packages, portfolios) is no longer allowed inline — it must live in external feeds referenced via `catalog.feeds[]`. v1 files are rejected by v2 validators on purpose. See [`docs/MIGRATION-v1-to-v2.md`](docs/MIGRATION-v1-to-v2.md) for the upgrade path and the reasoning.
+> **v3.0.0 is a breaking change.** Opening hours (`businessHours` days, `specialHours[].hours`) are now lists of intervals, so split schedules such as a lunch break can be published: `"monday": ["09:00-13:00", "14:00-18:00"]`, closed = `[]`. `schemaVersion` becomes `ofero-metadata-3.0`. See [`docs/MIGRATION-v2-to-v3.md`](docs/MIGRATION-v2-to-v3.md).
+
+> **v2.0.0 was a breaking change.** Operational catalog data (menus, products, services, packages, portfolios) is no longer allowed inline — it must live in external feeds referenced via `catalog.feeds[]`. v1 files are rejected by v2 validators on purpose. See [`docs/MIGRATION-v1-to-v2.md`](docs/MIGRATION-v1-to-v2.md) for the upgrade path and the reasoning.
 
 ## What is ofero.json?
 
@@ -26,7 +28,7 @@ Place your `ofero.json` at `/.well-known/ofero.json` on your domain:
   "canonicalUrl": "https://example.com/.well-known/ofero.json",
   "metadata": {
     "version": "2.0.0",
-    "schemaVersion": "ofero-metadata-2.0",
+    "schemaVersion": "ofero-metadata-3.0",
     "lastUpdated": "2026-05-22T10:00:00Z",
     "createdAt": "2026-05-22T10:00:00Z"
   },
@@ -71,6 +73,8 @@ ofero-json-standard/
 │   ├── SPECIFICATION.md             # Full field-level specification
 │   ├── IMPLEMENTATION.md            # How to extend the standard
 │   ├── CHANGELOG.md                 # Version history
+│   ├── MIGRATION-v1-to-v2.md        # Upgrade guide: inline catalogs → feeds
+│   ├── MIGRATION-v2-to-v3.md        # Upgrade guide: opening hours as interval lists
 │   └── examples/                    # Ready-to-use example files per business type
 └── tools/
     ├── wordpress/

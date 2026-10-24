@@ -339,6 +339,80 @@ class Ofero_Parser {
     }
 
     /**
+     * Weekly opening hours of a location, Monday to Sunday.
+     *
+     * Reads `businessHours` as written by ofero.json 3.x (each day a list of "HH:MM-HH:MM"
+     * intervals, [] = closed) and 2.x (one string per day: "09:00-18:00" or "Closed").
+     * Plugin versions before 3.0 read a non-schema `hours` key; it is kept as a fallback.
+     * Days that are not stated are left out.
+     *
+     * @param array $location One entry of `locations`
+     * @return array          Day key => list of intervals (empty = closed), or a string for free text
+     */
+    public function weekly_hours($location) {
+        $source = $location['businessHours'] ?? ($location['hours'] ?? null);
+        $days = array();
+        if (!is_array($source)) {
+            return $days;
+        }
+        foreach (array_keys($this->weekday_labels()) as $day) {
+            if (!array_key_exists($day, $source)) {
+                continue;
+            }
+            $value = $source[$day];
+            if (is_string($value)) {
+                $text = trim($value);
+                if (strcasecmp($text, 'closed') === 0) {
+                    $value = array();
+                } elseif (preg_match('/^\d{2}:\d{2}-\d{2}:\d{2}$/', $text)) {
+                    $value = array($text);
+                } else {
+                    $value = $text;
+                }
+            }
+            if (is_array($value) || $value !== '') {
+                $days[$day] = $value;
+            }
+        }
+        return $days;
+    }
+
+    /**
+     * One day's hours for display: "09:00–13:00, 14:00–18:00", "Closed", or free text from older files
+     *
+     * @param array|string $value A value from weekly_hours()
+     * @return string
+     */
+    public function format_day_hours($value) {
+        if (!is_array($value)) {
+            return (string) $value;
+        }
+        if (empty($value)) {
+            return __('Closed', 'ofero-shortcodes');
+        }
+        return implode(', ', array_map(function ($range) {
+            return str_replace('-', "\u{2013}", (string) $range);
+        }, $value));
+    }
+
+    /**
+     * Translated weekday names keyed by schema key (monday … sunday)
+     *
+     * @return array
+     */
+    public function weekday_labels() {
+        return array(
+            'monday' => __('Monday', 'ofero-shortcodes'),
+            'tuesday' => __('Tuesday', 'ofero-shortcodes'),
+            'wednesday' => __('Wednesday', 'ofero-shortcodes'),
+            'thursday' => __('Thursday', 'ofero-shortcodes'),
+            'friday' => __('Friday', 'ofero-shortcodes'),
+            'saturday' => __('Saturday', 'ofero-shortcodes'),
+            'sunday' => __('Sunday', 'ofero-shortcodes')
+        );
+    }
+
+    /**
      * Format a field value for display
      *
      * @param mixed  $value  The value to format
