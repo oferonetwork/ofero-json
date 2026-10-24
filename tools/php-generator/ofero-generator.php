@@ -1101,7 +1101,7 @@ if ($view === 'editor') {
 
                         <div class="form-group">
                             <label class="form-label">Legal Form</label>
-                            <input type="text" id="orgLegalForm" class="form-input" value="<?php echo htmlspecialchars($oferoData['organization']['legalForm'] ?? ''); ?>" placeholder="LLC, SRL, etc.">
+                            <input type="text" id="orgLegalForm" class="form-input" value="<?php echo htmlspecialchars($oferoData['organization']['legalForm'] ?? ''); ?>" placeholder="LLC, GmbH, etc.">
                         </div>
 
                         <div class="form-group" style="grid-column: 1 / -1;">
@@ -1129,7 +1129,7 @@ if ($view === 'editor') {
                     <div class="grid">
                         <div class="form-group">
                             <label class="form-label">Country Code</label>
-                            <input type="text" id="incCountry" class="form-input" value="<?php echo htmlspecialchars($oferoData['organization']['identifiers']['primaryIncorporation']['country'] ?? ''); ?>" placeholder="US, RO, etc.">
+                            <input type="text" id="incCountry" class="form-input" value="<?php echo htmlspecialchars($oferoData['organization']['identifiers']['primaryIncorporation']['country'] ?? ''); ?>" placeholder="US, DE, etc.">
                         </div>
 
                         <div class="form-group">
@@ -1309,7 +1309,7 @@ if ($view === 'editor') {
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Phone</label>
-                                            <input type="tel" class="form-input loc-contact-phone" value="<?php echo htmlspecialchars($contact['phone'] ?? ''); ?>" placeholder="+40722333444">
+                                            <input type="tel" class="form-input loc-contact-phone" value="<?php echo htmlspecialchars($contact['phone'] ?? ''); ?>" placeholder="+14155551234">
                                         </div>
                                         <div class="form-group" style="grid-column: 1 / -1;">
                                             <label class="form-label">Photo URL</label>
@@ -1362,7 +1362,7 @@ if ($view === 'editor') {
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Currency</label>
-                                    <input type="text" class="form-input bank-currency" value="<?php echo htmlspecialchars($account['currency'] ?? ''); ?>" placeholder="EUR, USD, RON">
+                                    <input type="text" class="form-input bank-currency" value="<?php echo htmlspecialchars($account['currency'] ?? ''); ?>" placeholder="EUR, USD, GBP">
                                 </div>
                             </div>
                         </div>
@@ -1578,8 +1578,8 @@ if ($view === 'editor') {
                         <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
                             <?php
                             $languages = [
-                                'ro' => 'Romanian', 'de' => 'German', 'fr' => 'French', 'es' => 'Spanish',
-                                'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'pl' => 'Polish',
+                                'de' => 'German', 'fr' => 'French', 'es' => 'Spanish', 'it' => 'Italian',
+                                'pt' => 'Portuguese', 'nl' => 'Dutch', 'pl' => 'Polish', 'ro' => 'Romanian',
                                 'cs' => 'Czech', 'hu' => 'Hungarian', 'bg' => 'Bulgarian', 'ru' => 'Russian',
                                 'uk' => 'Ukrainian', 'tr' => 'Turkish', 'ar' => 'Arabic', 'zh' => 'Chinese',
                                 'ja' => 'Japanese', 'ko' => 'Korean'
@@ -1611,7 +1611,7 @@ if ($view === 'editor') {
                     </div>
 
                     <p style="margin-top: 20px; font-size: 14px; opacity: 0.7;">
-                        <strong>Note:</strong> Translations are stored inline using the TranslatableString format: <code>{"default": "...", "translations": {"ro": "..."}}</code>
+                        <strong>Note:</strong> Translations are stored inline using the TranslatableString format: <code>{"default": "...", "translations": {"de": "..."}}</code>
                     </p>
                 </div>
 
@@ -2356,7 +2356,7 @@ if ($view === 'editor') {
                         </div>
                         <div class="form-group">
                             <label class="form-label">Phone</label>
-                            <input type="tel" class="form-input loc-contact-phone" placeholder="+40722333444">
+                            <input type="tel" class="form-input loc-contact-phone" placeholder="+14155551234">
                         </div>
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label class="form-label">Photo URL</label>
@@ -2400,7 +2400,7 @@ if ($view === 'editor') {
                         </div>
                         <div class="form-group">
                             <label class="form-label">Currency</label>
-                            <input type="text" class="form-input bank-currency" placeholder="EUR, USD, RON">
+                            <input type="text" class="form-input bank-currency" placeholder="EUR, USD, GBP">
                         </div>
                     </div>
                 </div>
@@ -2616,8 +2616,8 @@ if ($view === 'editor') {
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP); ?>;
         const selectedLanguages = new Set();
         const languageNames = {
-            'ro': 'Romanian', 'de': 'German', 'fr': 'French', 'es': 'Spanish',
-            'it': 'Italian', 'pt': 'Portuguese', 'nl': 'Dutch', 'pl': 'Polish',
+            'de': 'German', 'fr': 'French', 'es': 'Spanish', 'it': 'Italian',
+            'pt': 'Portuguese', 'nl': 'Dutch', 'pl': 'Polish', 'ro': 'Romanian',
             'cs': 'Czech', 'hu': 'Hungarian', 'bg': 'Bulgarian', 'ru': 'Russian',
             'uk': 'Ukrainian', 'tr': 'Turkish', 'ar': 'Arabic', 'zh': 'Chinese',
             'ja': 'Japanese', 'ko': 'Korean'

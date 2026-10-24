@@ -278,7 +278,7 @@ class Ofero_WooCommerce_Sync {
      * get_price_html() returns markup (<del>/<ins> for sales, <bdi>, currency
      * spans) and HTML entities such as &nbsp; between amount and currency.
      * Stripping tags alone leaves those entities literal in the JSON, so
-     * consumers that correctly escape the value render "8.66&nbsp;lei".
+     * consumers that correctly escape the value render "8.66&nbsp;€".
      * Decode entities, normalise non-breaking spaces, collapse whitespace.
      */
     private function clean_price_html($price_html) {

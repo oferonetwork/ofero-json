@@ -18,25 +18,25 @@ Checks if a domain is registered and has a valid license.
 
 **Example:**
 ```bash
-curl https://licence.ofero.network/api/v1/registry/verify/irigarden.ro
+curl https://licence.ofero.network/api/v1/registry/verify/ofero.network
 ```
 
 **Success Response (200):**
 ```json
 {
   "valid": true,
-  "domain": "irigarden.ro",
+  "domain": "ofero.network",
   "license": {
     "tier": "enterprise",
     "lifetime": true,
     "expires_at": null
   },
   "organization": {
-    "name": "Iri Garden",
-    "email": "contact@irigarden.ro"
+    "name": "Ofero Network",
+    "email": "contact@ofero.network"
   },
-  "registered_at": "2025-01-28T12:00:00+02:00",
-  "last_verified": "2025-01-28T14:30:00+02:00"
+  "registered_at": "2025-01-28T12:00:00+00:00",
+  "last_verified": "2025-01-28T14:30:00+00:00"
 }
 ```
 
@@ -55,12 +55,12 @@ curl https://licence.ofero.network/api/v1/registry/verify/irigarden.ro
 {
   "valid": false,
   "error": "license_expired",
-  "message": "License expired on 2024-12-31T23:59:59+02:00",
+  "message": "License expired on 2024-12-31T23:59:59+00:00",
   "domain": "example.com",
   "license": {
     "tier": "business",
     "lifetime": false,
-    "expires_at": "2024-12-31T23:59:59+02:00"
+    "expires_at": "2024-12-31T23:59:59+00:00"
   }
 }
 ```
@@ -99,7 +99,7 @@ curl -X POST https://licence.ofero.network/api/v1/registry/register \
     "domain": "newdomain.com",
     "tier": "business",
     "lifetime": false,
-    "expires_at": "2026-12-31T23:59:59+02:00",
+    "expires_at": "2026-12-31T23:59:59+00:00",
     "organization": {
       "name": "New Domain Inc",
       "email": "admin@newdomain.com"
@@ -124,8 +124,8 @@ curl -X POST https://licence.ofero.network/api/v1/registry/register \
       "name": "Example Company",
       "email": "contact@example.com"
     },
-    "registered_at": "2025-01-28T14:30:00+02:00",
-    "updated_at": "2025-01-28T14:30:00+02:00"
+    "registered_at": "2025-01-28T14:30:00+00:00",
+    "updated_at": "2025-01-28T14:30:00+00:00"
   }
 }
 ```
@@ -154,7 +154,7 @@ curl https://licence.ofero.network/api/v1/registry/list \
   "count": 3,
   "domains": [
     {
-      "domain": "irigarden.ro",
+      "domain": "ofero.network",
       "license": { ... },
       "organization": { ... }
     },
@@ -180,7 +180,7 @@ curl https://licence.ofero.network/api/v1/registry/health
   "status": "healthy",
   "service": "Ofero Registry API",
   "version": "1.0.0",
-  "timestamp": "2025-01-28T14:30:00+02:00"
+  "timestamp": "2025-01-28T14:30:00+00:00"
 }
 ```
 
@@ -214,7 +214,7 @@ curl https://licence.ofero.network/api/v1/registry/health
 
 ```bash
 # Test verify endpoint
-curl http://localhost/api/v1/registry/verify/irigarden.ro
+curl http://localhost/api/v1/registry/verify/ofero.network
 
 # Test register (replace token)
 curl -X POST http://localhost/api/v1/registry/register \

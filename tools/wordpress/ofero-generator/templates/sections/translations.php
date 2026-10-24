@@ -18,7 +18,6 @@ if (!defined('ABSPATH')) {
 $available_languages = array(
     // Major European Languages
     'en' => 'English',
-    'ro' => 'Română',
     'de' => 'Deutsch',
     'fr' => 'Français',
     'es' => 'Español',
@@ -26,6 +25,7 @@ $available_languages = array(
     'pt' => 'Português',
     'nl' => 'Nederlands',
     'pl' => 'Polski',
+    'ro' => 'Română',
     'cs' => 'Čeština',
     'sk' => 'Slovenčina',
     'hu' => 'Magyar',

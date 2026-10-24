@@ -483,7 +483,7 @@ class Ofero_Validator {
             if (!preg_match('/^[A-Z]{2}$/', $country)) {
                 $errors[] = array(
                     'field' => 'organization.identifiers.primaryIncorporation.country',
-                    'message' => __('Country must be a 2-letter ISO code (e.g., "US", "RO").', 'ofero-generator')
+                    'message' => __('Country must be a 2-letter ISO code (e.g., "US", "DE").', 'ofero-generator')
                 );
             }
         }

@@ -63,8 +63,8 @@ class Ofero_Parser {
      * {
      *   "default": "Default text",
      *   "translations": {
-     *     "ro": "Text în română",
-     *     "de": "Text auf Deutsch"
+     *     "de": "Text auf Deutsch",
+     *     "fr": "Texte en français"
      *   }
      * }
      *

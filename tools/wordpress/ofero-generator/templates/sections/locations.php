@@ -208,7 +208,7 @@ $renderBusinessHours = function ($businessHours) {
                                        value="<?php echo esc_attr($location['address']['country'] ?? ''); ?>"
                                        class="small-text" maxlength="2" style="text-transform: uppercase;">
                                 <p class="description">
-                                    <?php esc_html_e('2-letter ISO code (e.g., US, GB, RO)', 'ofero-generator'); ?>
+                                    <?php esc_html_e('2-letter ISO code (e.g., US, GB, DE)', 'ofero-generator'); ?>
                                 </p>
                             </div>
                         </div>
@@ -476,7 +476,7 @@ $renderBusinessHours = function ($businessHours) {
                     <label><?php esc_html_e('Country', 'ofero-generator'); ?></label>
                     <input type="text" name="location_country[]" class="small-text" maxlength="2" style="text-transform: uppercase;">
                     <p class="description">
-                        <?php esc_html_e('2-letter ISO code (e.g., US, GB, RO)', 'ofero-generator'); ?>
+                        <?php esc_html_e('2-letter ISO code (e.g., US, GB, DE)', 'ofero-generator'); ?>
                     </p>
                 </div>
             </div>

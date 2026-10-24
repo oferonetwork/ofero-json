@@ -157,7 +157,7 @@ export function validateOverlay(overlay: any): ValidationResult {
 	if (overlay.language && !/^[a-z]{2}$/.test(overlay.language)) {
 		result.errors.push({
 			path: 'language',
-			message: 'Language must be a valid ISO 639-1 code (e.g., "en", "ro", "de")'
+			message: 'Language must be a valid ISO 639-1 code (e.g., "en", "de", "fr")'
 		});
 		result.valid = false;
 	}

@@ -15,7 +15,7 @@
 	"properties": {
 		"language": {
 			"type": "string",
-			"description": "ISO 639-1 language code (e.g., 'en', 'ro', 'de', 'fr')",
+			"description": "ISO 639-1 language code (e.g., 'en', 'de', 'fr', 'ja')",
 			"pattern": "^[a-z]{2}$"
 		},
 		"availableLanguages": {
@@ -307,7 +307,7 @@
 					"patternProperties": {
 						"^[a-z]{2}(-[A-Z]{2})?$": {
 							"type": "string",
-							"description": "Translation for specific language/locale (e.g., 'en', 'en-US', 'ro', 'ro-RO')"
+							"description": "Translation for specific language/locale (e.g., 'en', 'en-US', 'pt', 'pt-BR')"
 						}
 					},
 					"additionalProperties": false
@@ -418,7 +418,7 @@
 				"contactPhone": {
 					"type": "string",
 					"pattern": "^\\+?[1-9]\\d{1,14}$",
-					"description": "Primary contact phone number in E.164 format (e.g., +1234567890, +40722333444). Pattern: + followed by 1-15 digits, first digit cannot be 0."
+					"description": "Primary contact phone number in E.164 format (e.g., +1234567890, +442071234567). Pattern: + followed by 1-15 digits, first digit cannot be 0."
 				},
 				"identifiers": {
 					"$ref": "#/$defs/Identifiers"
@@ -2172,7 +2172,7 @@
 				"currency": {
 					"type": "string",
 					"pattern": "^[A-Z]{3}$",
-					"description": "Preferred currency (ISO 4217 code, e.g., EUR, USD, RON)"
+					"description": "Preferred currency (ISO 4217 code, e.g., EUR, USD, JPY)"
 				}
 			}
 		},
@@ -3992,7 +3992,7 @@
 				},
 				"priceFormatted": {
 					"type": "string",
-					"description": "Optional formatted price string (e.g., \"35 RON\", \"$12.99\"). Authoritative pricing lives in the external feed."
+					"description": "Optional formatted price string (e.g., \"€35\", \"$12.99\"). Authoritative pricing lives in the external feed."
 				}
 			}
 		}

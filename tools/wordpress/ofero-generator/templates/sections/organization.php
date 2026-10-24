@@ -108,7 +108,7 @@ foreach ($serviceArea['regions'] ?? array() as $region) {
                        value="<?php echo esc_attr($org['legalForm'] ?? ''); ?>"
                        class="regular-text">
                 <p class="description">
-                    <?php esc_html_e('e.g., LLC, SRL, GmbH, Inc., Ltd.', 'ofero-generator'); ?>
+                    <?php esc_html_e('e.g., LLC, GmbH, SAS, Inc., Ltd.', 'ofero-generator'); ?>
                 </p>
             </td>
         </tr>

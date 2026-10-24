@@ -2,7 +2,7 @@
   "language": "en",
   "availableLanguages": [
     "en",
-    "ro",
+    "es",
     "de"
   ],
   "domain": "grandhotel.com",
@@ -15,26 +15,25 @@
     "updateFrequency": "monthly"
   },
   "organization": {
-    "legalName": "Grand Hotel SRL",
+    "legalName": "Grand Hotel LLC",
     "brandName": {
       "default": "Grand Hotel"
     },
     "entityType": "company",
-    "legalForm": "SRL",
+    "legalForm": "LLC",
     "industry": "hospitality",
     "description": {
-      "default": "A 4-star hotel in the heart of Bucharest with 120 rooms, spa, and conference facilities."
+      "default": "A 4-star hotel in the heart of Chicago with 120 rooms, spa, and conference facilities."
     },
     "website": "https://grandhotel.com",
     "contactEmail": "info@grandhotel.com",
-    "contactPhone": "+40212345678",
+    "contactPhone": "+13125550100",
     "identifiers": {
       "global": {},
       "primaryIncorporation": {
-        "country": "RO",
-        "registrationNumber": "J40/1234/2010",
-        "taxId": "RO12345678",
-        "vatNumber": "RO12345678"
+        "country": "US",
+        "registrationNumber": "IL-1234567",
+        "taxId": "12-3456789"
       },
       "perCountry": []
     }
@@ -63,19 +62,19 @@
       "id": "loc-main",
       "type": "headquarters",
       "facility": "venue",
-      "name": "Grand Hotel Bucharest",
+      "name": "Grand Hotel Chicago",
       "address": {
-        "street": "Calea Victoriei 100",
-        "city": "Bucharest",
-        "region": "Sector 1",
-        "postalCode": "010095",
-        "country": "RO"
+        "street": "100 N Michigan Ave",
+        "city": "Chicago",
+        "region": "IL",
+        "postalCode": "60601",
+        "country": "US"
       },
       "coordinates": {
-        "latitude": 44.4396,
-        "longitude": 26.0963
+        "latitude": 41.8837,
+        "longitude": -87.6245
       },
-      "phone": "+40212345678",
+      "phone": "+13125550100",
       "email": "info@grandhotel.com",
       "businessHours": {
         "monday": ["00:00-24:00"],
@@ -85,7 +84,7 @@
         "friday": ["00:00-24:00"],
         "saturday": ["00:00-24:00"],
         "sunday": ["00:00-24:00"],
-        "timezone": "Europe/Bucharest"
+        "timezone": "America/Chicago"
       },
       "amenities": [
         "wifi",
@@ -147,13 +146,13 @@
       "wheelchair-accessible"
     ],
     "languages": [
-      "ro",
+      "es",
       "en",
       "de",
       "fr"
     ],
     "bookingUrl": "https://grandhotel.com/book",
-    "ratingsUrl": "https://booking.com/hotel/ro/grand-hotel-bucharest",
+    "ratingsUrl": "https://booking.com/hotel/us/grand-hotel-chicago",
     "schemaOrgUrl": "https://grandhotel.com/schema.json",
     "otaFeedUrl": "https://grandhotel.com/ota-feed.xml",
     "channelManagerId": "PROP-GH-001"
@@ -172,7 +171,7 @@
       "required": false,
       "recommended": true,
       "bookingUrl": "https://grandhotel.com/restaurant/book",
-      "phone": "+40212345679"
+      "phone": "+13125550101"
     },
     "amenities": [
       "wifi",
@@ -184,7 +183,7 @@
     ],
     "cuisine": [
       "international",
-      "romanian",
+      "american",
       "mediterranean"
     ],
     "priceRange": "$$$",
@@ -192,14 +191,14 @@
   },
   "communications": {
     "social": {
-      "facebook": "https://facebook.com/grandhotelbucharest",
-      "instagram": "https://instagram.com/grandhotelbucharest"
+      "facebook": "https://facebook.com/grandhotelchicago",
+      "instagram": "https://instagram.com/grandhotelchicago"
     },
     "support": {
       "email": "reservations@grandhotel.com",
-      "phone": "+40212345678",
+      "phone": "+13125550100",
       "languages": [
-        "ro",
+        "es",
         "en",
         "de"
       ]
@@ -210,7 +209,7 @@
       "businessProfileId": "ChIJxxxxx"
     },
     "facebook": {
-      "pageId": "grandhotelbucharest"
+      "pageId": "grandhotelchicago"
     }
   },
   "ai": {
@@ -218,9 +217,9 @@
       "allow": true,
       "allowTraining": false
     },
-    "contentNotes": "4-star hotel in Bucharest city center. 120 rooms, spa, pool, conference facilities for up to 300 people. Restaurant open daily. Direct booking available."
+    "contentNotes": "4-star hotel in downtown Chicago. 120 rooms, spa, pool, conference facilities for up to 300 people. Restaurant open daily. Direct booking available."
   },
   "keywords": {
-    "default": "hotel bucharest, 4 star hotel, spa hotel, conference hotel, luxury accommodation, city center bucharest"
+    "default": "hotel chicago, 4 star hotel, spa hotel, conference hotel, luxury accommodation, downtown chicago"
   }
 }

@@ -103,7 +103,7 @@ if (!defined('ABSPATH')) {
                        value="<?php echo esc_attr($data['language'] ?? 'en'); ?>"
                        class="small-text" maxlength="2" pattern="[a-z]{2}" required>
                 <p class="description">
-                    <?php esc_html_e('2-letter ISO code (e.g., "en", "ro", "de")', 'ofero-generator'); ?>
+                    <?php esc_html_e('2-letter ISO code (e.g., "en", "de", "fr")', 'ofero-generator'); ?>
                 </p>
             </td>
         </tr>

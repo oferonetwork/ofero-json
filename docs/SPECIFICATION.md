@@ -143,7 +143,7 @@ Every ofero.json file **must** contain these top-level fields:
 		"brandName": {
 			"default": "Your Brand",
 			"translations": {
-				"ro": "Your Brand in Romanian",
+				"de": "Your Brand in German",
 				"de": "Ihre Marke"
 			}
 		},
@@ -152,7 +152,7 @@ Every ofero.json file **must** contain these top-level fields:
 		"description": {
 			"default": "Brief description of your organization",
 			"translations": {
-				"ro": "Short description of your organization in Romanian",
+				"de": "Short description of your organization in German",
 				"de": "Kurze Beschreibung Ihrer Organisation"
 			}
 		},
@@ -650,7 +650,7 @@ Organizations with `entityType` of `"protocol"` or `"project"` **SHOULD** includ
 - **Required:** Yes
 - **Pattern:** `^[a-z]{2}$`
 - **Description:** ISO 639-1 language code for the primary language of this file
-- **Examples:** `"en"`, `"ro"`, `"de"`, `"fr"`, `"es"`
+- **Examples:** `"en"`, `"de"`, `"fr"`, `"es"`, `"ja"`
 
 #### `domain`
 
@@ -763,7 +763,7 @@ The `metadata` section contains file versioning, timestamps, and update frequenc
   {
   	"default": "fintech, blockchain, web3, DeFi, NFT, payments",
   	"translations": {
-  		"ro": "financial technology, blockchain, web3, DeFi, NFT, payments",
+  		"de": "Finanztechnologie, Blockchain, Web3, DeFi, NFT, Zahlungen",
   		"de": "Finanztechnologie, Blockchain, Web3, DeFi, NFT, Zahlungen"
   	}
   }
@@ -794,12 +794,12 @@ The `organization` object contains core legal entity information.
 | `legalName`    | string             | Official legal name                         | `"Ofero Network S.A."`                           |
 | `brandName`    | string             | Brand or trading name (translatable)        | `"Ofero"`                                        |
 | `entityType`   | enum               | Entity type                                 | `"company"`                                      |
-| `legalForm`    | string             | Legal form (see legal forms reference)      | `"SA (RO)"`                                      |
+| `legalForm`    | string             | Legal form (see legal forms reference)      | `"GmbH"`                                         |
 | `description`  | string             | Organization description (translatable)     | `"A global fintech platform..."`                 |
 | `tagline`      | TranslatableString | One-sentence elevator pitch (max 160 chars) | `"Decentralized exchange for cross-chain swaps"` |
 | `website`      | uri                | Primary website URL (HTTPS required)        | `"https://ofero.network"`                        |
 | `primaryEmail` | email              | Primary contact email                       | `"contact@ofero.network"`                        |
-| `primaryPhone` | string             | Primary phone number (E.164 format)         | `"+40722333444"`                                 |
+| `primaryPhone` | string             | Primary phone number (E.164 format)         | `"+14155551234"`                                 |
 | `identifiers`  | object             | Legal identifiers                           | See Identifiers section                          |
 
 #### Optional Fields
@@ -827,7 +827,7 @@ All phone number fields in the schema follow the **E.164 international format**:
 
 **Examples:**
 
-- ✅ Valid: `"+1234567890"`, `"+40722333444"`, `"12345678"`, `"+491234567890"`
+- ✅ Valid: `"+1234567890"`, `"+442071234567"`, `"12345678"`, `"+491234567890"`
 - ❌ Invalid: `"0722333444"` (starts with 0), `"phone"` (non-numeric), `"+12345678901234567"` (too long)
 
 **Fields with E.164 Validation:**
@@ -845,7 +845,7 @@ All phone number fields in the schema follow the **E.164 international format**:
 
 - Always include the `+` prefix for clarity
 - Use international format even for local numbers
-- Remove spaces, dashes, and parentheses: use `"+40722333444"` not `"+40 722 333 444"`
+- Remove spaces, dashes, and parentheses: use `"+442071234567"` not `"+44 20 7123 4567"`
 - Include country code for all numbers
 
 ### Tagline
@@ -870,7 +870,7 @@ The `tagline` field is the **most important field for AI summaries**, search res
 		"tagline": {
 			"default": "Decentralized exchange for cross-chain token swaps",
 			"translations": {
-				"ro": "Decentralized exchange for cross-chain token swaps in Romanian"
+				"fr": "Decentralized exchange for cross-chain token swaps in French"
 			}
 		}
 	}
@@ -884,13 +884,13 @@ The `hqLocationId` field allows you to reference your headquarters location from
 ```json
 {
   "organization": {
-    "hqLocationId": "hq-ro-bucharest"
+    "hqLocationId": "hq-us-new-york"
   },
   "locations": [
     {
-      "id": "hq-ro-bucharest",
+      "id": "hq-us-new-york",
       "type": "headquarters",
-      "name": "Headquarters Romania",
+      "name": "Headquarters New York",
       "address": { ... }
     }
   ]
@@ -1297,8 +1297,8 @@ Physical locations, offices, and branches.
 					"name": "John Doe",
 					"role": "Office Manager",
 					"email": "john@ofero.network",
-					"phone": "+40 711 111 111",
-					"languages": ["en", "ro"],
+					"phone": "+1 212 555 0100",
+					"languages": ["en", "es"],
 					"public": true // Publicly accessible contact
 				}
 			],
@@ -1756,7 +1756,7 @@ Information about the website manager, owner, or operator (optional).
 | `name`    | string | Company name or individual's full name | `"John Doe"` or `"Acme Web Services"`                   |
 | `website` | uri    | Website URL of the manager/company     | `"https://manager-site.com"`                            |
 | `email`   | email  | Contact email address                  | `"contact@manager.com"`                                 |
-| `phone`   | string | Contact phone number                   | `"+40 722 333 444"`                                     |
+| `phone`   | string | Contact phone number                   | `"+1 212 555 0100"`                                     |
 | `address` | string | One-line address                       | `"456 Tech Blvd, San Francisco, CA, USA"`               |
 
 ### Default Account Section
@@ -1826,7 +1826,7 @@ The `defaultAccount` section provides standardized contact and business informat
 | `taxId`          | string | Tax ID for invoicing                     | `"12-3456789"`                             |
 | `website`        | uri    | Primary website URL                      | `"https://example.com"`                    |
 | `timezone`       | string | IANA timezone                            | `"America/New_York"`                       |
-| `language`       | string | Preferred language (ISO 639-1)           | `"en"`, `"ro"`, `"de"`                     |
+| `language`       | string | Preferred language (ISO 639-1)           | `"en"`, `"de"`, `"fr"`                     |
 | `currency`       | string | Preferred currency (ISO 4217)            | `"EUR"`, `"USD"`, `"GBP"`                  |
 
 **Best Practices:**
@@ -1867,7 +1867,7 @@ Leadership, advisors, and investors.
 				"bio": "Stefan is a blockchain entrepreneur...", // Translatable
 				"department": "Executive", // Translatable
 				"email": "stefan@ofero.network",
-				"phone": "+40 711 111 111",
+				"phone": "+1 212 555 0100",
 				"social": {
 					"linkedin": "https://linkedin.com/in/stefan",
 					"twitter": "https://twitter.com/stefan",
@@ -2226,7 +2226,7 @@ Information about open source projects and repositories maintained by the organi
 				"description": {
 					"default": "Universal metadata standard for organizations",
 					"translations": {
-						"ro": "Universal metadata standard for organizations in Romanian"
+						"de": "Universal metadata standard for organizations in German"
 					}
 				},
 				"stars": 150
@@ -2582,7 +2582,7 @@ Consumers that need a specific language should read `language` from the base fil
 {
 	"brandName": {
 		"en": "Ofero",
-		"ro": "Ofero"
+		"de": "Ofero"
 	}
 }
 ```
@@ -2594,7 +2594,7 @@ Consumers that need a specific language should read `language` from the base fil
 	"brandName": {
 		"default": "Ofero",
 		"translations": {
-			"ro": "Ofero"
+			"de": "Ofero"
 		}
 	}
 }
@@ -2694,7 +2694,7 @@ Ofero.json supports 120+ legal forms across 13+ countries. See the complete list
 | `ngo`               | Non-governmental organizations | NGO, ONG                           |
 | `cooperative`       | Cooperative societies          | Cooperative, SCOP                  |
 | `social_enterprise` | Social enterprises             | CIC, B Corporation, PBC            |
-| `limited_liability` | Limited liability companies    | LLC, GmbH, Ltd, SRL                |
+| `limited_liability` | Limited liability companies    | LLC, GmbH, Ltd, SARL               |
 | `joint_stock`       | Stock corporations             | Inc, AG, SA, PLC                   |
 | `partnership`       | Partnerships                   | LP, LLP, Partnership               |
 | `sole_proprietor`   | Sole proprietorships           | Sole Proprietorship, PFA, II       |
@@ -2761,7 +2761,7 @@ All basic validation plus:
 - E.164 phone number validation (all 8 phone fields)
 - ISO country codes (ISO 3166-1 alpha-2)
 - ISO currency codes (ISO 4217)
-- ISO language codes (ISO 639-1) and locale codes (e.g., `en-US`, `ro-RO`)
+- ISO language codes (ISO 639-1) and locale codes (e.g., `en-US`, `pt-BR`)
 - ISO 8601 duration format for `privacy.dataRetentionPeriod`
 - `partnerships.oferoJson` matches HTTPS URL format
 - Conditional validation: If `entityType="company"` then `industry` required
@@ -2856,7 +2856,7 @@ All moderate validation plus:
 		"brandName": {
 			"default": "Global Education",
 			"translations": {
-				"ro": "Global Education in Romanian"
+				"es": "Global Education in Spanish"
 			}
 		},
 		"entityType": "association",
@@ -2865,7 +2865,7 @@ All moderate validation plus:
 		"description": {
 			"default": "Providing educational resources to underserved communities worldwide",
 			"translations": {
-				"ro": "Providing educational resources to underserved communities worldwide in Romanian"
+				"es": "Providing educational resources to underserved communities worldwide in Spanish"
 			}
 		},
 		"socialActivityDomain": "Education / International Development",
@@ -3138,7 +3138,7 @@ The full list of changes per release is in [CHANGELOG.md](CHANGELOG.md).
 - E.164 phone validation pattern on 8 phone fields for international format
 - Conditional validation for entity types (company requires `industry`, NGOs require `socialActivityDomain` + `nonProfitStatus`)
 - Default value `"pending-verification"` for `partnerships.status` with validator auto-upgrade
-- Extended locale support in TranslatableString (e.g., `en-US`, `ro-RO`)
+- Extended locale support in TranslatableString (e.g., `en-US`, `pt-BR`)
 - ISO 8601 duration pattern validation for `privacy.dataRetentionPeriod`
 
 **Additional Features:**

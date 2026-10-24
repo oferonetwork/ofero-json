@@ -32,7 +32,7 @@
       },
       "oferoJsonUrl": "https://empresa.es/.well-known/ofero.json"
     },
-    "exemplu.ro": {
+    "exemple.fr": {
       "verified": true,
       "verifiedAt": "2025-01-10T09:00:00Z",
       "license": {
@@ -41,10 +41,10 @@
         "expiresAt": "2026-01-10T00:00:00Z"
       },
       "organization": {
-        "name": "Exemplu SRL",
-        "country": "RO"
+        "name": "Exemple SARL",
+        "country": "FR"
       },
-      "oferoJsonUrl": "https://exemplu.ro/.well-known/ofero.json"
+      "oferoJsonUrl": "https://exemple.fr/.well-known/ofero.json"
     }
   }
 }
