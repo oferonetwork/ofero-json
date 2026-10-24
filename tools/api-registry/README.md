@@ -5,8 +5,8 @@ Simple REST API for verifying domain licenses in the Ofero Network.
 ## 🚀 Deployment
 
 1. Upload to `https://licence.ofero.network/`
-2. Make sure `registry.json` is writable: `chmod 644 registry.json`
-3. Change admin token in `index.php` (line 22)
+2. Make sure the directory is writable by the web server. `registry.json` is created on the first registration; it holds customer data, so it is not part of this repository (see `.gitignore`) and exists only on the server
+3. Change `ADMIN_TOKEN` in `index.php` and `ADMIN_PASSWORD` in `admin-panel.php`
 
 ## 📡 API Endpoints
 
@@ -235,7 +235,7 @@ curl http://localhost/api/v1/registry/list \
 licence.ofero.network/
 ├── index.php          # Main API handler
 ├── .htaccess         # URL rewriting & security
-├── registry.json     # License database (auto-created)
+├── registry.json     # License database (auto-created on the server, not in git)
 └── README.md         # This file
 ```
 

@@ -1,2 +1,4 @@
 .claude/
 node_modules/
+# License database of the registry server (customer data, lives only on the server)
+tools/api-registry/registry.json
